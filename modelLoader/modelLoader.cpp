@@ -9,7 +9,7 @@
 using namespace glm;
 
 #include "shader.hpp"
-#include "texture.hpp"
+//#include "texture.hpp"
 //#include "controls.hpp"
 #include "objloader.hpp"
 
@@ -31,7 +31,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
 		
-	GLFWwindow* window;
+	extern GLFWwindow* window;
 
 	window = glfwCreateWindow(1024, 768, "Model Loader", NULL, NULL);
 	glfwMakeContextCurrent(window);
@@ -53,8 +53,8 @@ int main()
 	glBindVertexArray(VertexArrayID);
 
 	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
-
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	//GLuint programID = glCreateProgram();
+	//GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
 	//GLuint Texture = loadDDS("uvmap.DDS");
@@ -92,11 +92,11 @@ int main()
 
 
 		// Compute the MVP matrix from keyboard and mouse input
-		/*computeMatricesFromInputs();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;*/
+		//computeMatricesFromInputs();
+		//glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		//glm::mat4 ViewMatrix = getViewMatrix();
+		//glm::mat4 ModelMatrix = glm::mat4(1.0);
+		//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
@@ -132,11 +132,12 @@ int main()
 			(void*)0                          // array buffer offset
 		);
 
+		GLsizei size = vertices.size();
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, size);
 
-		//glDisableVertexAttribArray(0);
-		//glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 		glfwPollEvents();
 	}
 
