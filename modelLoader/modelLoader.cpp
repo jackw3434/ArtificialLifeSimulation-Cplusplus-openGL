@@ -48,7 +48,7 @@ int main()
 		return -1;
 	}
 
-	GLuint VertexArrayID = 1;
+	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
@@ -57,10 +57,10 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
-	GLuint Texture = loadDDS("uvmap.DDS");
+	//GLuint Texture = loadDDS("uvmap.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
-	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	//GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	// Read our .obj file
 	std::vector< glm::vec3 > vertices;
@@ -103,10 +103,10 @@ int main()
 		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, Texture);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, Texture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);
+		//glUniform1i(TextureID, 0);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -135,8 +135,8 @@ int main()
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		//glDisableVertexAttribArray(0);
+		//glDisableVertexAttribArray(1);
 		glfwPollEvents();
 	}
 
@@ -147,8 +147,8 @@ int main()
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(programID);
-	glDeleteTextures(1, &TextureID);
-	//glDeleteVertexArrays(1, &VertexArrayID);
+	//glDeleteTextures(1, &TextureID);
+	glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
