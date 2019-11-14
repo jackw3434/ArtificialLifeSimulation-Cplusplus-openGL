@@ -5,7 +5,7 @@ using namespace glm;
 
 #include "controls.hpp"
 
-GLFWwindow* window;
+extern GLFWwindow* window;
 
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;

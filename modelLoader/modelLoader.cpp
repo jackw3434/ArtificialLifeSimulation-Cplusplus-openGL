@@ -2,19 +2,30 @@
 #include <stdlib.h>
 #include <vector>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "shader.hpp"
-//#include "texture.hpp"
-//#include "controls.hpp"
-#include "objloader.hpp"
+using namespace std;
 
+#include "shader.hpp"
+#include "texture.hpp"
+#include "controls.hpp"
+#include "objloader.hpp"
+GLFWwindow* window;
 int main()
 {	
+
+	std::string fileToLoad = "";
+
+	// How to get a string/sentence with spaces
+	cout << "Please enter a valid sentence (with spaces):\n>";
+	getline(cin, fileToLoad);
+	cout << "You entered: " << fileToLoad << endl << endl;
 
 	if (!glfwInit())
 	{
@@ -29,14 +40,17 @@ int main()
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
-		
-	extern GLFWwindow* window;
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 	
 
 	window = glfwCreateWindow(1024, 768, "Model Loader", NULL, NULL);
 	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide the mouse and enable unlimited movement
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); //Dark Blue Background
+
+	glfwPollEvents(); // Set mouse to centre of screen
+	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -48,25 +62,33 @@ int main()
 		return -1;
 	}
 
+	if (window == NULL) {
+		fprintf(stderr, "Failed to open GLFW window.\n");
+		glfwTerminate();
+		return -1;
+	}
+
+
+
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
 	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
-	//GLuint programID = glCreateProgram();
-	//GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
-	//GLuint Texture = loadDDS("uvmap.DDS");
+	GLuint Texture = loadDDS("uvmap.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
-	//GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	// Read our .obj file
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals; // Won't be used at the moment.
-	bool res = loadOBJ("cube.obj", vertices, uvs, normals);
+	bool res = loadOBJ(fileToLoad.c_str(), vertices, uvs, normals);
 
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
@@ -78,35 +100,28 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 	
-	if (window == NULL) {
-		fprintf(stderr, "Failed to open GLFW window.\n");
-		glfwTerminate();
-		return -1;
-	}		
-	
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 		glUseProgram(programID);
 
-
 		// Compute the MVP matrix from keyboard and mouse input
-		//computeMatricesFromInputs();
-		//glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		//glm::mat4 ViewMatrix = getViewMatrix();
-		//glm::mat4 ModelMatrix = glm::mat4(1.0);
-		//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		computeMatricesFromInputs();
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 		// Bind our texture in Texture Unit 0
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, Texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Texture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//glUniform1i(TextureID, 0);
+		glUniform1i(TextureID, 0);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -132,12 +147,12 @@ int main()
 			(void*)0                          // array buffer offset
 		);
 
-		GLsizei size = vertices.size();
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, size);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
@@ -148,10 +163,9 @@ int main()
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(programID);
-	//glDeleteTextures(1, &TextureID);
+	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
-
-	// Close OpenGL window and terminate GLFW
+	
 	glfwTerminate();
 
 	return 0;

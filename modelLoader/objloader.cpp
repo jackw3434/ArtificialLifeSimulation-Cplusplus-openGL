@@ -101,6 +101,6 @@ bool loadOBJ(
 		out_normals.push_back(normal);
 
 	}
-
+	printf("Loaded OBJ");
 	return true;
 }

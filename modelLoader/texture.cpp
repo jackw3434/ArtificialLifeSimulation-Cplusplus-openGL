@@ -112,15 +112,18 @@ GLuint loadTGA_glfw(const char* imagepath) {
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 
 GLuint loadDDS(const char* imagepath) {
-
+	printf("Reading image %s\n", imagepath);
 	unsigned char header[124];
 
 	FILE* fp;
 
 	/* try to open the file */
 	fp = fopen(imagepath, "rb");
-	if (fp == NULL)
-		return 0;
+	if (fp == NULL) {
+		printf("no imagePath %s\n", imagepath);
+	return 0;
+	}
+		
 
 	/* verify the type of file */
 	char filecode[4];
@@ -191,7 +194,7 @@ GLuint loadDDS(const char* imagepath) {
 	}
 
 	free(buffer);
-
+	
 	return textureID;
 
 
