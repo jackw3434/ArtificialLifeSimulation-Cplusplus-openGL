@@ -1,3 +1,2 @@
-﻿  objloader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(68,26): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
+﻿  modelLoader.cpp
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe
