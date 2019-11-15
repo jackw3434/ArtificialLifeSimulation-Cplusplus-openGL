@@ -4,11 +4,12 @@
 #include <stdio.h>
 #include <string>
 #include <cstring>
-
+#include <iostream>
+#include <fstream>
 #include <glm/glm.hpp>
 
 #include "objloader.hpp"
-
+using namespace std;
 
 bool loadOBJ(
 	const char* path,
@@ -23,21 +24,23 @@ bool loadOBJ(
 	std::vector<glm::vec2> temp_uvs;
 	std::vector<glm::vec3> temp_normals;
 
-
 	FILE* file = fopen(path, "r");
 	if (file == NULL) {
 		printf("Impossible to open the file !\n");
 		return false;
 	}
-
-	while (1) {
+	string line;
+	string textFile;
+	ifstream myFile(path);
+	
+	while (getline(myFile, line)) {
 
 		char lineHeader[128];
 		// read the first word of the line
 		int res = fscanf(file, "%s", lineHeader);
 		if (res == EOF)
 			break; // EOF = End Of File. Quit the loop.
-
+	
 		// else : parse lineHeader
 
 		if (strcmp(lineHeader, "v") == 0) {
@@ -56,24 +59,64 @@ bool loadOBJ(
 			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			temp_normals.push_back(normal);
 		}
-		else if (strcmp(lineHeader, "f") == 0) {
-			std::string vertex1, vertex2, vertex3;
-			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-			if (matches != 9) {
-				printf("File can't be read by our simple parser :-( Try exporting with other options\n");
-				return false;
-			}
-			vertexIndices.push_back(vertexIndex[0]);
-			vertexIndices.push_back(vertexIndex[1]);
-			vertexIndices.push_back(vertexIndex[2]);
-			uvIndices.push_back(uvIndex[0]);
-			uvIndices.push_back(uvIndex[1]);
-			uvIndices.push_back(uvIndex[2]);
-			normalIndices.push_back(normalIndex[0]);
-			normalIndices.push_back(normalIndex[1]);
-			normalIndices.push_back(normalIndex[2]);
-		}
+		else if (strcmp(lineHeader, "f") == 0) {	
+				
+					int length = 0;
+					size_t slashLength = count(line.begin(), line.end(), '/');
+					cout << line << "\n";
+					cout << slashLength << "\n";
+					length = slashLength;
+
+					if (length == 8) {
+						cout << "QUADS" << "\n";
+						unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+						int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &vertexIndex[3], &uvIndex[3], &normalIndex[3]);
+						if (matches != 12) {
+							printf("File can't be read by our simple parser :-( Try exporting with other options\n");
+							return false;
+						}
+						vertexIndices.push_back(vertexIndex[0]);
+						vertexIndices.push_back(vertexIndex[1]);
+						vertexIndices.push_back(vertexIndex[2]);
+						vertexIndices.push_back(vertexIndex[0]);
+						vertexIndices.push_back(vertexIndex[2]);
+						vertexIndices.push_back(vertexIndex[3]);
+
+						uvIndices.push_back(uvIndex[0]);
+						uvIndices.push_back(uvIndex[1]);
+						uvIndices.push_back(uvIndex[2]);
+						uvIndices.push_back(uvIndex[0]);
+						uvIndices.push_back(uvIndex[2]);
+						uvIndices.push_back(uvIndex[3]);
+
+						normalIndices.push_back(normalIndex[0]);
+						normalIndices.push_back(normalIndex[1]);
+						normalIndices.push_back(normalIndex[2]);
+						normalIndices.push_back(normalIndex[0]);
+						normalIndices.push_back(normalIndex[2]);
+						normalIndices.push_back(normalIndex[3]);
+					}
+
+					if (length == 6) {
+						cout << "TRI's" << "\n";
+						unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+						int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+						if (matches != 9) {
+							printf("File can't be read by our simple parser :-( Try exporting with other options\n");
+							return false;
+						}
+						vertexIndices.push_back(vertexIndex[0]);
+						vertexIndices.push_back(vertexIndex[1]);
+						vertexIndices.push_back(vertexIndex[2]);
+						uvIndices.push_back(uvIndex[0]);
+						uvIndices.push_back(uvIndex[1]);
+						uvIndices.push_back(uvIndex[2]);
+						normalIndices.push_back(normalIndex[0]);
+						normalIndices.push_back(normalIndex[1]);
+						normalIndices.push_back(normalIndex[2]);
+						}
+					}			
+		
 		else {
 			// Probably a comment, eat up the rest of the line
 			char stupidBuffer[1000];

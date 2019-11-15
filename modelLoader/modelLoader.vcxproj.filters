@@ -41,7 +41,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="TransformVertexShader.vertexshader">
       <Filter>Source Files</Filter>
     </None>
@@ -51,6 +50,7 @@
     <None Include="..\..\..\..\..\Downloads\Creeper-obj\Creeper.mtl">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objloader.hpp">
