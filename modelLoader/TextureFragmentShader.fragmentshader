@@ -1,27 +1,35 @@
+
+
+//stuff from open-gl-tutorial
 #version 330 core
-
-out vec4 FragColor;
-  
-in vec3 ourColor;
-in vec2 TexCoord;
-
-
 // Interpolated values from the vertex shaders
 in vec2 UV;
-
 // Ouput data
 out vec3 color;
-
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
 
-uniform sampler2D ourTexture;
-
 void main(){
-
-
-  FragColor = texture(ourTexture, TexCoord);
-
-	// Output color = color of the texture at the specified UV
+ Output color = color of the texture at the specified UV
 	color = texture2D( myTextureSampler, UV ).rgb;
 }
+
+
+
+//#version 330 core
+//out vec4 FragColor;
+  
+//in vec3 ourColor;
+//in vec2 TexCoord;
+
+//uniform sampler2D ourTexture;
+
+//void main()
+//{
+  //  FragColor = texture(ourTexture, TexCoord);
+//}
+
+
+
+
+

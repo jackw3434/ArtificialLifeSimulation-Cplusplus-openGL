@@ -44,10 +44,10 @@
     <None Include="TextureFragmentShader.fragmentshader">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="packages.config" />
     <None Include="..\..\..\..\..\Downloads\Creeper-obj\Creeper.mtl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objloader.hpp">
@@ -75,10 +75,10 @@
     <Object Include="boat.obj">
       <Filter>Resource Files</Filter>
     </Object>
-    <Object Include="creeper.obj">
+    <Object Include="cube.obj">
       <Filter>Resource Files</Filter>
     </Object>
-    <Object Include="cube.obj">
+    <Object Include="creeper.obj">
       <Filter>Resource Files</Filter>
     </Object>
   </ItemGroup>

@@ -23,11 +23,9 @@ GLFWwindow* window;
 
 int main()
 {		
-
 	std::string fileToLoad = "";
-
-	// How to get a string/sentence with spaces
-	cout << "Please enter a valid sentence (with spaces):\n>";
+	
+	cout << "Please enter a valid .obj file.\n>";
 	getline(cin, fileToLoad);
 	cout << "You entered: " << fileToLoad << endl << endl;
 
@@ -72,17 +70,19 @@ int main()
 		return -1;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////
+	
+
+
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
-	
+	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");	
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
 	GLuint DDSTexture = loadDDS("uvmap.DDS");
-
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
@@ -104,27 +104,28 @@ int main()
 
 
 	//png texture stuff
-	unsigned int pngTexture;
-	glGenTextures(1, &pngTexture);
-	glBindTexture(GL_TEXTURE_2D, pngTexture);
-	// set the texture wrapping/filtering options (on the currently bound texture object)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load and generate the texture
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
+
+	//unsigned int pngTexture;
+	//glGenTextures(1, &pngTexture);
+	//glBindTexture(GL_TEXTURE_2D, pngTexture);
+	//// set the texture wrapping/filtering options (on the currently bound texture object)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//// load and generate the texture
+	//int width, height, nrChannels;
+	//unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+	//if (data)
+	//{
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//	glGenerateMipmap(GL_TEXTURE_2D);
+	//}
+	//else
+	//{
+	//	std::cout << "Failed to load texture" << std::endl;
+	//}
+	//stbi_image_free(data);
 
 	//png texture stuff
 	
@@ -147,20 +148,20 @@ int main()
 
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pngTexture);
-
-
-		////PNG STUFF
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-
-		glBindTexture(GL_TEXTURE_2D, pngTexture);
-		glBindVertexArray(VertexArrayID);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		////PNG STUFF
-
+		glBindTexture(GL_TEXTURE_2D, DDSTexture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
 		glUniform1i(TextureID, 0);
+
+		//////PNG STUFF
+		//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		//glEnableVertexAttribArray(2);
+
+		//glBindTexture(GL_TEXTURE_2D, pngTexture);
+		//glBindVertexArray(VertexArrayID);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		////PNG STUFF
+
+	
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -203,7 +204,7 @@ int main()
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(programID);
-	//glDeleteTextures(1, &TextureID);
+	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 	
 	glfwTerminate();
