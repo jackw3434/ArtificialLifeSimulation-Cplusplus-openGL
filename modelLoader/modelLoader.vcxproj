@@ -161,6 +161,9 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\Downloads\LowPolyBoat-obj\low_poly_boat.mtl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="Creeper.mtl" />
     <None Include="packages.config" />
     <None Include="TextureFragmentShader.fragmentshader" />
@@ -177,6 +180,9 @@
     <Image Include="Texture.png" />
   </ItemGroup>
   <ItemGroup>
+    <Object Include="..\..\..\..\..\Downloads\LowPolyBoat-obj\boat.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
     <Object Include="boat.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </Object>

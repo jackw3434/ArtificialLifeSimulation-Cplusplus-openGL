@@ -63,12 +63,12 @@ bool loadOBJ(
 				
 					int length = 0;
 					size_t slashLength = count(line.begin(), line.end(), '/');
-					cout << line << "\n";
-					cout << slashLength << "\n";
+					//cout << line << "\n";
+					//cout << slashLength << "\n";
 					length = slashLength;
 
 					if (length == 8) {
-						cout << "QUADS" << "\n";
+						//cout << "QUADS" << "\n";
 						unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
 						int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &vertexIndex[3], &uvIndex[3], &normalIndex[3]);
 						if (matches != 12) {
@@ -98,7 +98,7 @@ bool loadOBJ(
 					}
 
 					if (length == 6) {
-						cout << "TRI's" << "\n";
+						//cout << "TRI's" << "\n";
 						unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 						int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 						if (matches != 9) {

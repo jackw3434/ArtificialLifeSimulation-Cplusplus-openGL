@@ -2,8 +2,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
-
+using namespace std;
+#include <iostream>
+#include <string>
+#include <sstream>
 #include "controls.hpp"
+
+#include "objloader.hpp"
 
 extern GLFWwindow* window;
 
@@ -26,7 +31,7 @@ float verticalAngle = 0.0f;
 // Initial Field of View
 float initialFoV = 45.0f;
 
-float speed = 3.0f; // 3 units / second
+float speed = 30.0f; // 3 units / second
 float mouseSpeed = 0.005f;
 
 
@@ -81,13 +86,28 @@ void computeMatricesFromInputs() {
 	}
 	// Strafe left
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		position -= right * deltaTime * speed;
+		position -= right * deltaTime * speed;	
+	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+		
+		std::string fileToLoad = "";
+		std::cout << "Pressed Q.\n>";
+		getline(cin, fileToLoad);
+		cout << "You entered: " << fileToLoad << endl << endl;
+
+		//std::vector< glm::vec3 > vertices;
+		//std::vector< glm::vec2 > uvs;
+		//std::vector< glm::vec3 > normals; // Won't be used at the moment.
+		//bool res = loadOBJ(fileToLoad.c_str(), vertices, uvs, normals);
+		//window = glfwCreateWindow(1024, 768, "Model Loaderr", NULL, NULL);
+		//glfwMakeContextCurrent(window);
+		
 	}
 
 	float FoV = initialFoV; //- 5 * glfwGetMouseWheel();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
 		position,           // Camera is here

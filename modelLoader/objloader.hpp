@@ -1,5 +1,6 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
+#include <vector>
 
 bool loadOBJ(
 	const char* path,

@@ -1,2 +1,4 @@
-﻿  controls.cpp
+﻿  modelLoader.cpp
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(183,48): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+x64\Debug\shader.obj : warning LNK4042: object specified more than once; extras ignored
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

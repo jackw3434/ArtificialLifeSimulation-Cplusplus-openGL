@@ -185,21 +185,19 @@ int main()
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
-		glfwPollEvents();
+		glfwPollEvents();		
 	}
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0);
+		glfwWindowShouldClose(window) == 0 || glfwGetKey(window, GLFW_KEY_Q));
 
-	// Cleanup VBO and shader
-	glDeleteBuffers(1, &vertexbuffer);
-	glDeleteBuffers(1, &uvbuffer);
-	glDeleteProgram(programID);
-	glDeleteTextures(1, &TextureID);
-	glDeleteVertexArrays(1, &VertexArrayID);
-	
-	glfwTerminate();
-
-	return 0;
+		// Cleanup VBO and shader
+		glDeleteBuffers(1, &vertexbuffer);
+		glDeleteBuffers(1, &uvbuffer);
+		glDeleteProgram(programID);
+		glDeleteTextures(1, &TextureID);
+		glDeleteVertexArrays(1, &VertexArrayID);
+		glfwTerminate();
+		return 0;
 }
 
