@@ -1,3 +1,2 @@
-﻿  modelLoader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(197,48): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+﻿  controls.cpp
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

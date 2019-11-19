@@ -44,10 +44,10 @@
     <None Include="TextureFragmentShader.fragmentshader">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="..\..\..\..\..\Downloads\Creeper-obj\Creeper.mtl">
+    <None Include="packages.config" />
+    <None Include="Creeper.mtl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objloader.hpp">
@@ -64,10 +64,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\Creeper-obj\Texture.png">
+    <Image Include="..\..\..\..\..\Downloads\uvmap.DDS">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\Downloads\uvmap.DDS">
+    <Image Include="Texture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

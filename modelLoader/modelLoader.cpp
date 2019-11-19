@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -9,18 +11,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-using namespace glm;
-using namespace std;
-
 #include "shader.hpp"
 #include "texture.hpp"
 #include "controls.hpp"
 #include "objloader.hpp"
 
-GLFWwindow* window;
+using namespace glm;
+using namespace std;
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+GLFWwindow* window;
 
 int main()
 {		
@@ -56,8 +55,7 @@ int main()
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LESS);	
 
 	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
@@ -73,8 +71,6 @@ int main()
 
 	/////////////////////////////////////////////////////////////////////////////
 	
-
-
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -104,27 +100,28 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	   // load and create a texture 
+	
+	// load and create a texture 
 	// -------------------------
-
 	//png texture stuff
 
 	unsigned int pngTexture;
 	glGenTextures(1, &pngTexture);
 	glBindTexture(GL_TEXTURE_2D, pngTexture);
 	// set the texture wrapping/filtering options (on the currently bound texture object)
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	// load and generate the texture
 	int width, height, nrChannels;
 	unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -150,24 +147,7 @@ int main()
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, DDSTexture);
-		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);
-
-		//////PNG STUFF
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-
-		glBindTexture(GL_TEXTURE_2D, pngTexture);
-		glBindVertexArray(VertexArrayID);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		////PNG STUFF
-
-	
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);	
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -193,9 +173,14 @@ int main()
 			(void*)0                          // array buffer offset
 		);
 
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
