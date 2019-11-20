@@ -161,10 +161,6 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\Downloads\LowPolyBoat-obj\low_poly_boat.mtl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Creeper.mtl" />
     <None Include="packages.config" />
     <None Include="TextureFragmentShader.fragmentshader" />
     <None Include="TransformVertexShader.vertexshader" />
@@ -177,18 +173,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Downloads\uvmap.DDS" />
-    <Image Include="Texture.png" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="..\..\..\..\..\Downloads\LowPolyBoat-obj\boat.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="boat.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
-    <Object Include="creeper.obj">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </Object>
     <Object Include="cube.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </Object>
