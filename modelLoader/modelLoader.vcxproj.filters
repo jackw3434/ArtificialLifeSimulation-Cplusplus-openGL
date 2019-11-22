@@ -30,13 +30,10 @@
     <ClCompile Include="objloader.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="controls.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="creeperObjLoaderCode.cpp">
+    <ClCompile Include="texture.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,9 +42,6 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="TextureFragmentShader.fragmentshader">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\..\..\..\..\Downloads\Creeper-obj\Creeper.mtl">
       <Filter>Source Files</Filter>
     </None>
     <None Include="packages.config" />
@@ -62,24 +56,18 @@
     <ClInclude Include="controls.hpp">
       <Filter>Source Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\Creeper-obj\Texture.png">
-      <Filter>Source Files</Filter>
-    </Image>
     <Image Include="..\..\..\..\..\Downloads\uvmap.DDS">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="cube.obj">
-      <Filter>Source Files</Filter>
-    </Object>
-    <Object Include="boat.obj">
-      <Filter>Source Files</Filter>
-    </Object>
-    <Object Include="creeper.obj">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </Object>
   </ItemGroup>
 </Project>

@@ -49,12 +49,7 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 
-	printf("again still Compiling shader : %s\n", vertex_file_path);
-	//std::vector<char> VertexShaderErrorMessage(InfoLogLength);
-	
-	//glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-
-	//fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+	printf("again still Compiling shader : %s\n", vertex_file_path);	
 
 	// Compile Fragment Shader
 	printf("Compiling shader : %s\n", fragment_file_path);
@@ -66,8 +61,6 @@ GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path)
 	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
 	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	std::vector<char> FragmentShaderErrorMessage(InfoLogLength);
-//	glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-//	fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
 
 	// Link the program
 	fprintf(stdout, "Linking program\n");
