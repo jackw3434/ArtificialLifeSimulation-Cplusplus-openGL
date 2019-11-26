@@ -35,71 +35,81 @@ public:
 
 ObjMaterial temp_mtl;
 
-vector<int> mtl_array;
-
 bool LoadMaterials(const char* mtlFile, const char* chmtl) {
-
-	cout << "Loading MTL file " << mtlFile << endl;
-
+	
 	FILE* file = fopen(mtlFile, "r");
+	string string1;
+	string string2;
+
+	string line;
+	string textFile;
+	ifstream myFile(mtlFile);
+
+	while (getline(myFile, line)) {
+		textFile += line;
+		textFile.push_back('\n');
+	};
+
+	cout << textFile << endl;
 
 	if (file == NULL) {
-		printf("Impossible to open the file !!!", mtlFile, "/n");
+		cout << "Impossible to open the file !!!" << mtlFile << endl;
 		return false;
 	}
 	else {
-		printf("opened the file !!!", mtlFile, "/n");
-	}
+		//cout << "opened the file in LoadMaterials !!!" << mtlFile << endl;
+	}		
 
-	while (true) {
+	while (true) {		
 
 		char lineHeader[128];
-		// read the first word of the line
-		int res = fscanf(file, "%f", lineHeader);
+		char lineHeader2[128];
+		// read the first and second word of the line
+		int res = fscanf(file, "%s %s", &lineHeader, &lineHeader2);
 		if (res == EOF)
 			break; // EOF = End Of File. Quit the loop.
-
+	
 		// else : parse lineHeader	
 
-	//	cout << "see if line header == chmtl.c_str() " << lineHeader << chmtl.c_str() << endl;
-		if (strcmp(lineHeader, chmtl) == 0) {
+			string1 = lineHeader2;
+			string2 = chmtl;		
 
-			cout << "here " << endl;
+		if (string1 == string2) {
 
 			temp_mtl.clear();
-			char ch[128];
-
-			fscanf(file, "%s", ch);
-
-			temp_mtl.name = ch;
-
+			temp_mtl.name = string2;
 			cout << "new mtl in MTL file " << temp_mtl.name << endl;
-
+			
+			size_t location = textFile.find(string2);
+			size_t locationWord = textFile.find(string2, location);
+			cout << "reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee " << locationWord << endl;;
+		
+		
 		}
-		else if (strcmp(lineHeader, "Kd") == 0) {		
-			fscanf(file, "%f %f %f\n", &temp_mtl.diffuse[0], &temp_mtl.diffuse[1], &temp_mtl.diffuse[2]);
-			temp_mtl.diffuse[3] = 1.0f;
-			cout << "kd " << temp_mtl.name << " " << temp_mtl.diffuse[0] << " " << temp_mtl.diffuse[1] << " " << temp_mtl.diffuse[2] << endl;
-		}
-		else if (strcmp(lineHeader, "Ka") == 0) {			
-			fscanf(file, "%f %f %f\n", &temp_mtl.ambient[0], &temp_mtl.ambient[1], &temp_mtl.ambient[2]);
-			temp_mtl.ambient[3] = 1.0f;
-			cout << "ka " << temp_mtl.name << " " << temp_mtl.ambient[0] << " " << temp_mtl.ambient[1] << " " << temp_mtl.ambient[2] << endl;
-		}
-		else if (strcmp(lineHeader, "Ks") == 0) {			
-			fscanf(file, "%f %f %f\n", &temp_mtl.specular[0], &temp_mtl.specular[1], &temp_mtl.specular[2]);
-			temp_mtl.specular[3] = 1.0f;
-			cout << "ks " << temp_mtl.name << " " << temp_mtl.specular[0] << " " << temp_mtl.specular[1] << " " << temp_mtl.specular[2] << endl;
-		}
-		else if (strcmp(lineHeader, "Ke") == 0) {		
-			fscanf(file, "%f %f %f\n", &temp_mtl.emmissive[0], &temp_mtl.emmissive[1], &temp_mtl.emmissive[2]);
-			temp_mtl.emmissive[3] = 1.0f;
-			cout << "ke " << temp_mtl.name << " " << temp_mtl.emmissive[0] << " " << temp_mtl.emmissive[1] << " " << temp_mtl.emmissive[2]  << endl;
-		}
-		else if (strcmp(lineHeader, "Ns") == 0) {	
-			fscanf(file, "%f\n", &temp_mtl.shininess);
-			cout << "Ns " << temp_mtl.name << " " << temp_mtl.shininess << endl;
-		}		
+		//if (strcmp(lineHeader, "Kd") == 0) {		
+		//	fscanf(file, "%f %f %f\n", &temp_mtl.diffuse[0], &temp_mtl.diffuse[1], &temp_mtl.diffuse[2]);
+		//	temp_mtl.diffuse[3] = 1.0f;
+		//	//cout << "kd " << temp_mtl.name << " " << temp_mtl.diffuse[0] << " " << temp_mtl.diffuse[1] << " " << temp_mtl.diffuse[2] << endl;
+		//}
+		//else if (strcmp(lineHeader, "Ka") == 0) {			
+		//	fscanf(file, "%f %f %f\n", &temp_mtl.ambient[0], &temp_mtl.ambient[1], &temp_mtl.ambient[2]);
+		//	temp_mtl.ambient[3] = 1.0f;
+		//	//cout << "ka " << temp_mtl.name << " " << temp_mtl.ambient[0] << " " << temp_mtl.ambient[1] << " " << temp_mtl.ambient[2] << endl;
+		//}
+		//else if (strcmp(lineHeader, "Ks") == 0) {			
+		//	fscanf(file, "%f %f %f\n", &temp_mtl.specular[0], &temp_mtl.specular[1], &temp_mtl.specular[2]);
+		//	temp_mtl.specular[3] = 1.0f;
+		//	//cout << "ks " << temp_mtl.name << " " << temp_mtl.specular[0] << " " << temp_mtl.specular[1] << " " << temp_mtl.specular[2] << endl;
+		//}
+		//else if (strcmp(lineHeader, "Ke") == 0) {		
+		//	fscanf(file, "%f %f %f\n", &temp_mtl.emmissive[0], &temp_mtl.emmissive[1], &temp_mtl.emmissive[2]);
+		//	temp_mtl.emmissive[3] = 1.0f;
+		//	//cout << "ke " << temp_mtl.name << " " << temp_mtl.emmissive[0] << " " << temp_mtl.emmissive[1] << " " << temp_mtl.emmissive[2]  << endl;
+		//}
+		//else if (strcmp(lineHeader, "Ns") == 0) {	
+		//	fscanf(file, "%f\n", &temp_mtl.shininess);
+		//	//cout << "Ns " << temp_mtl.name << " " << temp_mtl.shininess << endl;
+		//}		
 		/*else if (strcmp(lineHeader, "Ni") == 0) {
 			fscanf(file, "%f\n", &temp_mtl.shininess);
 			cout << "Ns " << temp_mtl.name << " " << temp_mtl.shininess << endl;
@@ -158,18 +168,11 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "usemtl") == 0) {				
 
 			char chmtl[128];
-			fscanf(file, "%s", chmtl);
-
-			chmtl[line.size + 1];
-			strcpy(chmtl, line.c_str());
-	
-			cout << " here useMTL chmtl " << chmtl << endl;			
-			cout << "line " << line << endl;		
-				
+			fscanf(file, "%s", chmtl);		
+			
 			LoadMaterials(MaterialFilename, chmtl);
 
-			//temp_group.material = chmtl;
-			//LoadMaterials(chmtl);
+			//temp_group.material = chmtl;			
 		}
 		else if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;

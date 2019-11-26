@@ -1,9 +1,6 @@
-﻿  objloader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(47,45): warning C4474:  'printf' : too many arguments passed for format string
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(47,45): message :  placeholders and their parameters expect 0 variadic arguments, but 2 were provided
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(51,33): warning C4474:  'printf' : too many arguments passed for format string
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(51,33): message :  placeholders and their parameters expect 0 variadic arguments, but 2 were provided
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(58,26): warning C4477:  'fscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 1 has type 'char *'
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(163,24): error C3867:  'std::basic_string<char,std::char_traits<char>,std::allocator<char>>::size': non-standard syntax; use '&' to create a pointer to member
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(163,24): error C2296:  '+': illegal, left operand has type 'unsigned __int64 (__cdecl std::basic_string<char,std::char_traits<char>,std::allocator<char>>::* )(void) noexcept const'
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(196,26): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
+﻿  modelLoader.cpp
+  objloader.cpp
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(183,48): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Generating Code...
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(199,26): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
+  modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

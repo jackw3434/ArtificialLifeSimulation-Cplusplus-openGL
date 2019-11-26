@@ -22,7 +22,7 @@ using namespace std;
 GLFWwindow* window;
 
 int main()
-{		
+{			
 	std::string fileToLoad = "";
 	
 	cout << "Please enter a valid .obj file.\n>";
