@@ -10,6 +10,8 @@
 
 #include "objloader.hpp"
 #include <GL\glew.h>
+
+#include "shader.hpp"
 using namespace std;
 
 class ObjMaterial {
@@ -21,20 +23,14 @@ public:
 	GLfloat emmissive[4];
 	GLfloat shininess;
 	GLuint  texture;
-	bool    isVideo = false;
-	GLuint  curFrame = 0;
-	vector<GLuint>  videoFrames;
 public:
 	void clear() {
 		name = "";
-		isVideo = false;
 		texture = -1;
-		videoFrames.clear();
 	}
 };
 
-
-std::vector<ObjMaterial> LoadMaterial;
+std::vector<ObjMaterial> Load_Mtl;
 
 bool LoadMaterials(const char* materialFilename) {
 
@@ -67,7 +63,7 @@ bool LoadMaterials(const char* materialFilename) {
 		//parser
 		if (strcmp(lineHeader, "newmtl") == 0)
 		{
-			LoadMaterial.push_back(temp_mtl);
+			Load_Mtl.push_back(temp_mtl);
 			temp_mtl.clear();
 			char newMaterialFilename[128];
 			fscanf(fileMaterial, "%s", newMaterialFilename);
@@ -97,25 +93,11 @@ bool LoadMaterials(const char* materialFilename) {
 			// Probably a comment, eat up the rest of the line
 			char stupidBuffer[1000];
 			fgets(stupidBuffer, 1000, fileMaterial);
-		}
-		// pushback loaded material
-		//loadMaterials.push_back(tempMaterial);
-
-		// test to see if anything else was loaded
-		// if not return false
-		//if (loadMaterials.empty())
-		//{
-		//	return false;
-		//}
-		//else 
-		//{
-		//	return true;
-		//}
+		}	
 	}
-	LoadMaterial.push_back(temp_mtl);
+	Load_Mtl.push_back(temp_mtl);
 	return true;
 }
-
 
 bool loadOBJ(
 	const char* path,
@@ -152,14 +134,48 @@ bool loadOBJ(
 		if (strcmp(lineHeader, "mtllib") == 0)
 		{		
 			fscanf(file, "%s", MaterialFilename);	
-			cout << "MaterialFilename " << MaterialFilename << endl;			
+			cout << "MaterialFilename " << MaterialFilename << endl;
+			LoadMaterials(MaterialFilename);
 		} 
 		else if (strcmp(lineHeader, "usemtl") == 0) {				
 
-			//char chmtl[128];
-			//fscanf(file, "%s", chmtl);		
-			
-			LoadMaterials(MaterialFilename);
+			char chmtl[128];
+			fscanf(file, "%s", chmtl);	
+			string neededmaterial = chmtl;
+			ObjMaterial current_mtl;
+			for (size_t i = 0; i < Load_Mtl.size(); i++)
+			{
+				if (Load_Mtl[i].name == neededmaterial) {
+					current_mtl = Load_Mtl[i];
+					cout << "materials needed " << Load_Mtl[i].name << " " << chmtl << endl;
+
+					GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
+					glUseProgram(shader);
+
+					GLfloat* diffuse = current_mtl.diffuse;
+					GLfloat* ambient = current_mtl.ambient;
+					GLfloat* specular = current_mtl.specular;
+					GLfloat* emmissive = current_mtl.emmissive;
+					GLfloat shininess = current_mtl.shininess;
+
+					GLuint dLightLoc = glGetUniformLocation(shader, "dLight");
+					glUniform3fv(dLightLoc, 1,diffuse);
+
+					GLuint aLoc = glGetUniformLocation(shader, "ambient");
+					glUniform4fv(aLoc, 1, ambient);
+
+					GLuint sLightLoc = glGetUniformLocation(shader, "sLight");
+					glUniform3fv(sLightLoc, 1, specular);
+
+					GLuint sShineLoc = glGetUniformLocation(shader, "sShine");
+					glUniform1fv(sShineLoc, 1, &shininess);
+
+					// dont have one for emmissive yet
+				
+					
+				}				
+
+			}	
 
 			//temp_group.material = chmtl;			
 		}

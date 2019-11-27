@@ -1,18 +1,3 @@
-//#version 330 core
-//out vec4 FragColor;
-  
-//in vec3 ourColor;
-//in vec2 TexCoord;
-
-//uniform sampler2D ourTexture;
-
-//void main()
-//{
-//  FragColor = texture(ourTexture, TexCoord);
-//}
-
-
-//stuff from open-gl-tutorial
 #version 330 core
 in vec2 UV;
 
@@ -22,7 +7,6 @@ out vec3 color;
 uniform sampler2D myTextureSampler;
 
 void main(){
-	//Output color = color of the texture at the specified UV
 	color = texture2D( myTextureSampler, UV ).rgb;
 }
 
