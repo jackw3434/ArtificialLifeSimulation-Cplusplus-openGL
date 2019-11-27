@@ -1,6 +1,3 @@
-﻿  modelLoader.cpp
-  objloader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(183,48): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  Generating Code...
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(199,26): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
+﻿  objloader.cpp
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\objloader.cpp(188,26): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe
