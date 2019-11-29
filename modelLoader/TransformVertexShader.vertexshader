@@ -5,13 +5,8 @@ layout(location = 1) in vec2 vertexUV;
 
 out vec2 UV;
 
-uniform vec3 lightPos;
-
-uniform vec4 ambient;
 uniform vec3 dLight;
-
-uniform vec3 sLight;
-uniform float sShine;
+out vec4 fragColour;
 
 uniform mat4 MVP;
 
@@ -19,5 +14,6 @@ void main(){
   gl_Position = MVP * vec4(vertexPosition_modelspace, 1);
 
   UV = vertexUV;
+  //fragColour =  (vec4(dLight,1.0)) * vertexUV;
 
 }

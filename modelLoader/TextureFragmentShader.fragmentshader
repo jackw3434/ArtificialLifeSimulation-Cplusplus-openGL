@@ -2,13 +2,16 @@
 in vec2 UV;
 
 out vec3 color;
-
+in vec4 fragColour;
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
 
+uniform vec3 dLight;
+
 void main(){
-	color = texture2D( myTextureSampler, UV ).rgb;
-	
+	color = texture2D( myTextureSampler, UV ).rgb; 
+	//fColor = texture( myTextureSampler, UV ).rgb * fragColor;
+	//color = vec4(dLight,1.0);
 }
 
 

@@ -107,25 +107,27 @@ int main()
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");	
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
+	glUseProgram(shader);
+
+	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 
 	// Load the texture
 	//GLuint DDSTexture = loadDDS("uvmap.DDS");
 	// Get a handle for our "myTextureSampler" uniform
-	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
 	// Read our .obj file
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
-	std::vector< glm::vec3 > normals; // Won't be used at the moment.
+	std::vector< glm::vec3 > normals;
 	
 	bool res = loadOBJ(fileToLoad.c_str(), vertices, uvs, normals);
 
 	std::vector< unsigned short > indices;
 	std::vector< glm::vec3 > indexed_vertices;
 	std::vector< glm::vec2 > indexed_uvs;
-	std::vector< glm::vec3 > indexed_normals; // Add code for this
+	std::vector< glm::vec3 > indexed_normals; 
 	indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 
 	GLuint vertexbuffer;
@@ -160,28 +162,28 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// load and generate the texture
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-	if (data)
-	{
-		// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
+	if (fileToLoad == "creeper.obj") {
+	
+		// load and generate the texture
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << std::endl;
+		}
+		stbi_image_free(data);	
 	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);	
-
 	//png texture stuff
 	
 	do
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
-
-		glUseProgram(programID);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			
 
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
@@ -291,7 +293,7 @@ int main()
 		// Cleanup VBO and shader
 		glDeleteBuffers(1, &vertexbuffer);
 		glDeleteBuffers(1, &uvbuffer);
-		glDeleteProgram(programID);
+		glDeleteProgram(shader);
 		glDeleteTextures(1, &TextureID);
 		glDeleteVertexArrays(1, &VertexArrayID);
 		glfwTerminate();

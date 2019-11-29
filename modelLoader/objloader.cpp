@@ -10,6 +10,7 @@
 
 #include "objloader.hpp"
 #include <GL\glew.h>
+#include <glm\gtc/type_ptr.hpp>
 
 #include "shader.hpp"
 using namespace std;
@@ -17,10 +18,10 @@ using namespace std;
 class ObjMaterial {
 public:
 	string  name;
-	GLfloat diffuse[4];
-	GLfloat ambient[4];
-	GLfloat specular[4];
-	GLfloat emmissive[4];
+	glm::vec4 diffuse;
+	glm::vec4 ambient;
+	glm::vec4 specular;
+	glm::vec4 emmissive;
 	GLfloat shininess;
 	GLuint  texture;
 public:
@@ -152,25 +153,25 @@ bool loadOBJ(
 					GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 					glUseProgram(shader);
 
-					GLfloat* diffuse = current_mtl.diffuse;
-					GLfloat* ambient = current_mtl.ambient;
-					GLfloat* specular = current_mtl.specular;
-					GLfloat* emmissive = current_mtl.emmissive;
+					glm::vec4 diffuse = current_mtl.diffuse;
+					glm::vec4 ambient = current_mtl.ambient;
+					glm::vec4 specular = current_mtl.specular;
+					glm::vec4 emmissive = current_mtl.emmissive;
 					GLfloat shininess = current_mtl.shininess;
 
 					//adding the Uniform to the shader
 					GLuint dLightLoc = glGetUniformLocation(shader, "dLight");
-					glUniform3fv(dLightLoc, 1,diffuse);
+					glUniform4fv(dLightLoc, 1,glm::value_ptr(diffuse));
 
 				/*	GLuint aLoc = glGetUniformLocation(shader, "ambient");
-					glUniform4fv(aLoc, 1, ambient);
+					glUniform4fv(aLoc, 1, glm::value_ptr(ambient));
 
 					GLuint sLightLoc = glGetUniformLocation(shader, "sLight");
-					glUniform3fv(sLightLoc, 1, specular);
+					glUniform4fv(sLightLoc, 1, glm::value_ptr(specular));
 
 					GLuint sShineLoc = glGetUniformLocation(shader, "sShine");
-					glUniform1fv(sShineLoc, 1, &shininess);
-*/
+					glUniform1fv(sShineLoc, 1, &shininess);*/
+
 					// dont have one for emmissive yet
 				
 					
