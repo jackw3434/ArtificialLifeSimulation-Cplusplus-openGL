@@ -158,10 +158,11 @@ bool loadOBJ(
 					GLfloat* emmissive = current_mtl.emmissive;
 					GLfloat shininess = current_mtl.shininess;
 
+					//adding the Uniform to the shader
 					GLuint dLightLoc = glGetUniformLocation(shader, "dLight");
 					glUniform3fv(dLightLoc, 1,diffuse);
 
-					GLuint aLoc = glGetUniformLocation(shader, "ambient");
+				/*	GLuint aLoc = glGetUniformLocation(shader, "ambient");
 					glUniform4fv(aLoc, 1, ambient);
 
 					GLuint sLightLoc = glGetUniformLocation(shader, "sLight");
@@ -169,7 +170,7 @@ bool loadOBJ(
 
 					GLuint sShineLoc = glGetUniformLocation(shader, "sShine");
 					glUniform1fv(sShineLoc, 1, &shininess);
-
+*/
 					// dont have one for emmissive yet
 				
 					
@@ -198,9 +199,7 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "f") == 0) {	
 				
 					int length = 0;
-					size_t slashLength = count(line.begin(), line.end(), '/');
-					//cout << line << "\n";
-					//cout << slashLength << "\n";
+					size_t slashLength = count(line.begin(), line.end(), '/');				
 					length = slashLength;
 
 					if (length == 8) {

@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include "loadVBO.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 #include "controls.hpp"
@@ -20,6 +20,38 @@ using namespace glm;
 using namespace std;
 
 GLFWwindow* window;
+
+
+//void display() {
+//
+//	string fileToLoad1 = "";
+//	string fileToLoad2 = "";
+//	string numOfFiles;
+//
+//	cout << "Display 1 or 2 .obj files?\n>";
+//	getline(cin, numOfFiles);
+//	int num = stoi(numOfFiles);
+//	cout << "You entered: " << numOfFiles << endl << endl;
+//
+//	if (num == 1) {	
+//		cout << "Please enter a valid .obj file.\n>";
+//		getline(cin, fileToLoad1);
+//		cout << "You entered: " << fileToLoad1 << endl << endl;
+//	}
+//	else if (num == 2) {
+//		cout << "Please enter the first valid .obj file.\n>";
+//		getline(cin, fileToLoad1);
+//		cout << "You entered: " << fileToLoad1 << endl << endl;
+//
+//		cout << "Please enter the second valid .obj file.\n>";
+//		getline(cin, fileToLoad2);
+//		cout << "You entered: " << fileToLoad2 << endl << endl;
+//	}
+//
+//	
+//
+//}
+
 
 int main()
 {			
@@ -90,6 +122,12 @@ int main()
 	
 	bool res = loadOBJ(fileToLoad.c_str(), vertices, uvs, normals);
 
+	std::vector< unsigned short > indices;
+	std::vector< glm::vec3 > indexed_vertices;
+	std::vector< glm::vec2 > indexed_uvs;
+	std::vector< glm::vec3 > indexed_normals; // Add code for this
+	indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
+
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -99,6 +137,12 @@ int main()
 	glGenBuffers(1, &uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+	// Generate buffer for the indices
+	GLuint elementbuffer;
+	glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -143,8 +187,11 @@ int main()
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+		// ---------- Start Rendering of the first object ---------- // 
+
+		glm::mat4 ModelMatrix1 = glm::mat4(1.0);
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix1;
 
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
@@ -174,6 +221,9 @@ int main()
 			(void*)0                          // array buffer offset
 		);
 
+		// Index buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, pngTexture);
@@ -181,7 +231,53 @@ int main()
 		glUniform1i(TextureID, 0);
 
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, indices.size());
+
+		glDrawElements(
+			GL_TRIANGLES,		//mode
+			indices.size(),		//count
+			GL_UNSIGNED_INT,	//type
+			(void*)0			//element array buffer offset
+		);
+
+		//// ---------- End of rendering the first object ---------- // 
+
+			//// ---------- Start of rendering the second object ---------- // 
+
+		float distanceValue = 2.0f;
+
+		if (fileToLoad == "creeper.obj") {
+			distanceValue = 2.0f;
+		}
+		else if (fileToLoad == "boat.obj") {
+			distanceValue = 200.0f;
+		}
+
+		glm::mat4 ModelMatrix2 = glm::mat4(1.0);
+		ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(distanceValue, 0.0f, 0.0f));
+		glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
+
+		// Send our transformation to the currently bound shader
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
+
+		// 1st attribute buffer : vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : uvs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Index buffer
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
+		// Draw the triangles
+		glDrawArrays(GL_TRIANGLES, 0, indices.size());
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
+
+		// ---------- End of rendering the second object ---------- // 
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -201,4 +297,5 @@ int main()
 		glfwTerminate();
 		return 0;
 }
+
 
