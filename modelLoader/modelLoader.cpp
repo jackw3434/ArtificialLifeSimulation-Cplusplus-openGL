@@ -20,51 +20,17 @@ using namespace glm;
 using namespace std;
 
 GLFWwindow* window;
+string fileToLoad1 = "";
+string fileToLoad2 = "";
+string numOfFiles;
 
 
-//void display() {
-//
-//	string fileToLoad1 = "";
-//	string fileToLoad2 = "";
-//	string numOfFiles;
-//
-//	cout << "Display 1 or 2 .obj files?\n>";
-//	getline(cin, numOfFiles);
-//	int num = stoi(numOfFiles);
-//	cout << "You entered: " << numOfFiles << endl << endl;
-//
-//	if (num == 1) {	
-//		cout << "Please enter a valid .obj file.\n>";
-//		getline(cin, fileToLoad1);
-//		cout << "You entered: " << fileToLoad1 << endl << endl;
-//	}
-//	else if (num == 2) {
-//		cout << "Please enter the first valid .obj file.\n>";
-//		getline(cin, fileToLoad1);
-//		cout << "You entered: " << fileToLoad1 << endl << endl;
-//
-//		cout << "Please enter the second valid .obj file.\n>";
-//		getline(cin, fileToLoad2);
-//		cout << "You entered: " << fileToLoad2 << endl << endl;
-//	}
-//
-//	
-//
-//}
-
-
-int main()
-{			
-	std::string fileToLoad = "";
-	
-	cout << "Please enter a valid .obj file.\n>";
-	getline(cin, fileToLoad);
-	cout << "You entered: " << fileToLoad << endl << endl;
+void init(void) {
 
 	if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
-		return -1;
+		return;
 	}
 	else {
 		fprintf(stderr, "initialized GLFW\n");
@@ -87,19 +53,79 @@ int main()
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);	
+	glDepthFunc(GL_LESS);
 
 	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
+		return;
 	}
 
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window.\n");
 		glfwTerminate();
-		return -1;
+		return;
 	}
+};
+
+
+string display() {
+
+	string fileToLoad1 = "";
+	string fileToLoad2 = "";
+	string numOfFiles;
+
+	cout << "Display 1 or 2 .obj files?\n>";
+	getline(cin, numOfFiles);
+	int num = stoi(numOfFiles);
+	cout << "You entered: " << numOfFiles << endl << endl;
+
+	if (num == 1) {	
+		cout << "Please enter a valid .obj file.\n>";
+		getline(cin, fileToLoad1);
+		cout << "You entered: " << fileToLoad1 << endl << endl;
+		return fileToLoad1;
+
+		// Read our .obj file
+		std::vector< glm::vec3 > vertices;
+		std::vector< glm::vec2 > uvs;
+		std::vector< glm::vec3 > normals;
+
+		bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+	}
+	else if (num == 2) {
+		cout << "Please enter the first valid .obj file.\n>";
+		getline(cin, fileToLoad1);
+		cout << "You entered: " << fileToLoad1 << endl << endl;
+
+		cout << "Please enter the second valid .obj file.\n>";
+		getline(cin, fileToLoad2);
+		cout << "You entered: " << fileToLoad2 << endl << endl;
+		return fileToLoad1;
+		return fileToLoad2;
+	}
+}
+
+
+int main()
+{		
+
+	//display();
+	std::string fileToLoad = "";
+	
+	//cout << "Please enter a valid .obj file.\n>";
+	//getline(cin, fileToLoad);
+	//cout << "You entered: " << fileToLoad << endl << endl;
+
+	cout << "Please enter the first valid .obj file.\n>";
+	getline(cin, fileToLoad1);
+	cout << "You entered: " << fileToLoad1 << endl << endl;
+
+	cout << "Please enter the second valid .obj file.\n>";
+	getline(cin, fileToLoad2);
+	cout << "You entered: " << fileToLoad2 << endl << endl;
+
+	init();
 
 	/////////////////////////////////////////////////////////////////////////////
 	
@@ -113,7 +139,6 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 
 	// Load the texture
-	//GLuint DDSTexture = loadDDS("uvmap.DDS");
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
@@ -122,7 +147,9 @@ int main()
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 	
-	bool res = loadOBJ(fileToLoad.c_str(), vertices, uvs, normals);
+	bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+
+	bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
 
 	std::vector< unsigned short > indices;
 	std::vector< glm::vec3 > indexed_vertices;
@@ -162,7 +189,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if (fileToLoad == "creeper.obj") {
+	//if (fileToLoad == "creeper.obj") {
 	
 		// load and generate the texture
 		int width, height, nrChannels;
@@ -178,23 +205,36 @@ int main()
 			std::cout << "Failed to load texture" << std::endl;
 		}
 		stbi_image_free(data);	
-	}
+	//}
 	//png texture stuff
 	
 	do
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 
+		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
 
 		// ---------- Start Rendering of the first object ---------- // 
+			float distanceValue = 2.0f;
+		/*if (fileToLoad == "creeper.obj") {
+			distanceValue = 20.0f;
+		}
+		else if (fileToLoad == "boat.obj") {
+			distanceValue = 200.0f;
+		}*/
 
 		glm::mat4 ModelMatrix1 = glm::mat4(1.0);
+		ModelMatrix1 = glm::translate(ModelMatrix1, glm::vec3(distanceValue, 0.0f, 0.0f));
+
+
+		//glm::mat4 ModelMatrix1 = glm::mat4(1.0);
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix1;
 
+	
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);	
@@ -246,38 +286,38 @@ int main()
 
 			//// ---------- Start of rendering the second object ---------- // 
 
-		float distanceValue = 2.0f;
+		//float distanceValue = 2.0f;
 
-		if (fileToLoad == "creeper.obj") {
-			distanceValue = 2.0f;
-		}
-		else if (fileToLoad == "boat.obj") {
-			distanceValue = 200.0f;
-		}
+		//if (fileToLoad == "creeper.obj") {
+		//	distanceValue = 2.0f;
+		//}
+		//else if (fileToLoad == "boat.obj") {
+		//	distanceValue = 200.0f;
+		//}
 
-		glm::mat4 ModelMatrix2 = glm::mat4(1.0);
-		ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(distanceValue, 0.0f, 0.0f));
-		glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
+		//glm::mat4 ModelMatrix2 = glm::mat4(1.0);
+		//ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(distanceValue, 0.0f, 0.0f));
+		//glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
 
-		// Send our transformation to the currently bound shader
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
+		//// Send our transformation to the currently bound shader
+		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
 
-		// 1st attribute buffer : vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		//// 1st attribute buffer : vertices
+		//glEnableVertexAttribArray(0);
+		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		// 2nd attribute buffer : uvs
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		//// 2nd attribute buffer : uvs
+		//glEnableVertexAttribArray(1);
+		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		// Index buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+		//// Index buffer
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
-		// Draw the triangles
-		glDrawArrays(GL_TRIANGLES, 0, indices.size());
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
+		//// Draw the triangles
+		//glDrawArrays(GL_TRIANGLES, 0, indices.size());
+		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
 
 		// ---------- End of rendering the second object ---------- // 
 

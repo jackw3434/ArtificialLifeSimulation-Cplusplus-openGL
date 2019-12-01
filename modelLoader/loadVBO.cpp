@@ -121,17 +121,17 @@ void indexVBO(
 		unsigned short index;
 		bool found = getSimilarVertexIndex_fast(packed, VertexToOutIndex, index);
 
-		if (found) { // A similar vertex is already in the VBO, use it instead !
-			out_indices.push_back(index);
-		}
-		else { // If not, it needs to be added in the output data.
+		//if (found) { // A similar vertex is already in the VBO, use it instead !
+		//	out_indices.push_back(index);
+		//}
+		//else { // If not, it needs to be added in the output data.
 			out_vertices.push_back(in_vertices[i]);
 			out_uvs.push_back(in_uvs[i]);
 			out_normals.push_back(in_normals[i]);
 			unsigned short newindex = (unsigned short)out_vertices.size() - 1;
 			out_indices.push_back(newindex);
 			VertexToOutIndex[packed] = newindex;
-		}
+		//}
 	}
 }
 
