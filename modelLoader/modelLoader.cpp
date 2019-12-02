@@ -20,6 +20,7 @@ using namespace glm;
 using namespace std;
 
 GLFWwindow* window;
+GLuint TextureID;
 string fileToLoad1 = "";
 string fileToLoad2 = "";
 string numOfFiles;
@@ -189,11 +190,11 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	//if (fileToLoad == "creeper.obj") {
+	//if (fileToLoad1 == "creeper.obj") {
 	
 		// load and generate the texture
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
 		if (data)
 		{
 			// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
@@ -211,15 +212,19 @@ int main()
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-
 		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
 
-		// ---------- Start Rendering of the first object ---------- // 
-			float distanceValue = 2.0f;
+	
+		/*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);		
+		};*/
+
+		float distanceValue = 2.0f;
 		/*if (fileToLoad == "creeper.obj") {
 			distanceValue = 20.0f;
 		}
@@ -230,10 +235,7 @@ int main()
 		glm::mat4 ModelMatrix1 = glm::mat4(1.0);
 		ModelMatrix1 = glm::translate(ModelMatrix1, glm::vec3(distanceValue, 0.0f, 0.0f));
 
-
-		//glm::mat4 ModelMatrix1 = glm::mat4(1.0);
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix1;
-
 	
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform
@@ -280,46 +282,7 @@ int main()
 			indices.size(),		//count
 			GL_UNSIGNED_INT,	//type
 			(void*)0			//element array buffer offset
-		);
-
-		//// ---------- End of rendering the first object ---------- // 
-
-			//// ---------- Start of rendering the second object ---------- // 
-
-		//float distanceValue = 2.0f;
-
-		//if (fileToLoad == "creeper.obj") {
-		//	distanceValue = 2.0f;
-		//}
-		//else if (fileToLoad == "boat.obj") {
-		//	distanceValue = 200.0f;
-		//}
-
-		//glm::mat4 ModelMatrix2 = glm::mat4(1.0);
-		//ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(distanceValue, 0.0f, 0.0f));
-		//glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
-
-		//// Send our transformation to the currently bound shader
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
-
-		//// 1st attribute buffer : vertices
-		//glEnableVertexAttribArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// 2nd attribute buffer : uvs
-		//glEnableVertexAttribArray(1);
-		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// Index buffer
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
-		//// Draw the triangles
-		//glDrawArrays(GL_TRIANGLES, 0, indices.size());
-		//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*)0);
-
-		// ---------- End of rendering the second object ---------- // 
+		);		
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -339,5 +302,3 @@ int main()
 		glfwTerminate();
 		return 0;
 }
-
-
