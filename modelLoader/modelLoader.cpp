@@ -176,8 +176,6 @@ int main()
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	// load and create a texture 
-	// -------------------------
 	//png texture stuff
 
 	unsigned int pngTexture;
@@ -189,40 +187,80 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//if (fileToLoad1 == "creeper.obj") {
 	
-		// load and generate the texture
-		int width, height, nrChannels;
-		unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			std::cout << "Failed to load texture" << std::endl;
-		}
-		stbi_image_free(data);	
-	//}
+	// load and generate the texture
+	
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);	
 	//png texture stuff
-	
+
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
+
+		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
+			//Clear The Scene
+			glDeleteVertexArrays(1, &VertexArrayID);
+		}	
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			//Reload the Scene
+			glGenVertexArrays(1, &VertexArrayID);
+			glBindVertexArray(VertexArrayID);
+		}
+		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
+			// Remove Texture Coords
+			glDeleteBuffers(1, &uvbuffer);
+		}
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+			// Removed Textures
+			glDeleteTextures(1, &TextureID);
+		}
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {			
+			
+				unsigned int pngTexture;
+				glGenTextures(1, &pngTexture);
+				glBindTexture(GL_TEXTURE_2D, pngTexture);
+				// set the texture wrapping/filtering options (on the currently bound texture object)
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+				int width, height, nrChannels;
+				unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
+				if (data)
+				{
+					// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+					glGenerateMipmap(GL_TEXTURE_2D);
+				}
+				else
+				{
+					std::cout << "Failed to load texture" << std::endl;
+				}
+				stbi_image_free(data);
+			
+		
+		}
+
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-
 	
-		/*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);		
-		};*/
 
 		float distanceValue = 2.0f;
 		/*if (fileToLoad == "creeper.obj") {
@@ -273,7 +311,7 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, pngTexture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
 		glUniform1i(TextureID, 0);
-
+		
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, indices.size());
 
