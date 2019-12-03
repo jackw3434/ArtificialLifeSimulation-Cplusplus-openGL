@@ -29,7 +29,7 @@ glm::mat4 getProjectionMatrix() {
 }
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3(0, 0, -5);
+glm::vec3 position = glm::vec3(2, 0, -5);
 // Initial horizontal angle : toward -Z
 float horizontalAngle = 0.0f;
 // Initial vertical angle : none
@@ -39,7 +39,6 @@ float initialFoV = 45.0f;
 
 float speed = 30.0f; // 3 units / second
 float mouseSpeed = 0.005f;
-
 
 void computeMatricesFromInputs() {
 
@@ -94,37 +93,7 @@ void computeMatricesFromInputs() {
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		position -= right * deltaTime * speed;	
 	}
-	//if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-	//	
-	//	glDeleteTextures(1, &TextureID);	
-	//	
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-
-	//	unsigned int pngTexture;
-	//	glGenTextures(1, &pngTexture);
-	//	glBindTexture(GL_TEXTURE_2D, pngTexture);
-	//	// set the texture wrapping/filtering options (on the currently bound texture object)
-
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//	int width, height, nrChannels;
-	//	unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
-	//	if (data)
-	//	{
-	//		// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-	//		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	//		glGenerateMipmap(GL_TEXTURE_2D);
-	//	}
-	//	else
-	//	{
-	//		std::cout << "Failed to load texture" << std::endl;
-	//	}
-	//	stbi_image_free(data);
-	//}
+	
 	float FoV = initialFoV; //- 5 * glfwGetMouseWheel();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units

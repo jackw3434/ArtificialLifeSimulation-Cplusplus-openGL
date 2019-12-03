@@ -23,8 +23,8 @@ GLFWwindow* window;
 GLuint TextureID;
 string fileToLoad1 = "";
 string fileToLoad2 = "";
+string fileToLoad3 = "";
 string numOfFiles;
-
 
 void init(void) {
 
@@ -69,7 +69,6 @@ void init(void) {
 	}
 };
 
-
 string display() {
 
 	string fileToLoad1 = "";
@@ -107,7 +106,6 @@ string display() {
 	}
 }
 
-
 int main()
 {		
 
@@ -125,6 +123,10 @@ int main()
 	cout << "Please enter the second valid .obj file.\n>";
 	getline(cin, fileToLoad2);
 	cout << "You entered: " << fileToLoad2 << endl << endl;
+
+	cout << "Please enter the third valid .obj file.\n>";
+	getline(cin, fileToLoad3);
+	cout << "You entered: " << fileToLoad3 << endl << endl;
 
 	init();
 
@@ -151,6 +153,8 @@ int main()
 	bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
 
 	bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+
+	bool res3 = loadOBJ(fileToLoad3.c_str(), vertices, uvs, normals);
 
 	std::vector< unsigned short > indices;
 	std::vector< glm::vec3 > indexed_vertices;
@@ -246,16 +250,41 @@ int main()
 				if (data)
 				{
 					// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 					glGenerateMipmap(GL_TEXTURE_2D);
 				}
 				else
 				{
 					std::cout << "Failed to load texture" << std::endl;
 				}
-				stbi_image_free(data);
-			
+				stbi_image_free(data);			
 		
+		}
+		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+
+			unsigned int pngTexture;
+			glGenTextures(1, &pngTexture);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// set the texture wrapping/filtering options (on the currently bound texture object)
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			int width, height, nrChannels;
+			unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+			if (data)
+			{
+				// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+			else
+			{
+				std::cout << "Failed to load texture" << std::endl;
+			}
+			stbi_image_free(data);
 		}
 
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();

@@ -75,5 +75,8 @@
     <Object Include="cube.obj">
       <Filter>Resource Files</Filter>
     </Object>
+    <Object Include="teapot.obj">
+      <Filter>Resource Files</Filter>
+    </Object>
   </ItemGroup>
 </Project>
