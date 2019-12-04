@@ -133,13 +133,13 @@ E : Will generate and bind the creeper texture to loaded models.
 The Application can render 2 different models, both textured.
 
 The first thing the code will do is to prompt the user for file name inputs:
-```
+```c++
 cout << "Please enter the first valid .obj file.\n>";
 getline(cin, fileToLoad);
 cout << "You entered: " << fileToLoad1 << endl << endl;
 ```
 If correct file names have been entered, we will initialize the dependancies and create a window to draw in.
-```
+```c++
 if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
@@ -165,13 +165,13 @@ if (!glfwInit())
 ```
 
 ### The next step is to generate and bind the VAO:
-```
+```c++
 GLuint VertexArrayID;
 glGenVertexArrays(1, &VertexArrayID);
 glBindVertexArray(VertexArrayID);
 ```
 ### Load the shaders:
-```
+```c++
 GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 glUseProgram(shader);
 
@@ -180,7 +180,7 @@ GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 ```
 
 ### Start Reading the object.
-```
+```c++
 std::vector< glm::vec3 > vertices;
 std::vector< glm::vec2 > uvs;
 std::vector< glm::vec3 > normals;
@@ -191,7 +191,7 @@ indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed
 ```
 
 ### Generate and Bind Buffers
-```
+```c++
 GLuint vertexbuffer;
 glGenBuffers(1, &vertexbuffer);
 glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -209,7 +209,7 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &
 ```
 
 ### Generate PNG textures
-```
+```c++
 int width, height, nrChannels;
 unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
 if (data)
@@ -225,7 +225,7 @@ stbi_image_free(data);
 ```
 
 ### Set up the Model, View and Projection and send the transformation to the currently bound shader.
-```
+```c++
 glm::mat4 ModelMatrix = glm::mat4(1.0);
 glm::mat4 ViewMatrix = getViewMatrix();
 glm::mat4 ProjectionMatrix = getProjectionMatrix();		
@@ -236,7 +236,7 @@ glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 ```
 
 ### Enable the Buffers:
-```
+```c++
 glEnableVertexAttribArray(0);
 glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 glVertexAttribPointer(
@@ -263,7 +263,7 @@ glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 ```
 
 ### Activate textures
-```
+```c++
 glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, pngTexture);
 
@@ -271,7 +271,7 @@ glUniform1i(TextureID, 0);
 ```
 
 ### Draw
-```
+```c++
 glDrawArrays(GL_TRIANGLES, 0, indices.size());
 
 glDrawElements(
@@ -283,7 +283,7 @@ glDrawElements(
 ```
 
 ### Termination/ VBO and Shader Clean up:
-```
+```c++
 glDeleteBuffers(1, &vertexbuffer);
 glDeleteBuffers(1, &uvbuffer);
 glDeleteProgram(shader);
@@ -295,7 +295,7 @@ return 0;
 
 # OBJ Paser
 The paser reads each line of the obj file and stores the values of v, vt, vn and f:
-```
+```c++
 if (strcmp(lineHeader, "v") == 0) {
 	glm::vec3 vertex;
 	fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
@@ -303,7 +303,7 @@ if (strcmp(lineHeader, "v") == 0) {
 }
 ```
 The paser checks if the obj is made of Tri's or quad's.
-```
+```c++
 if (strcmp(lineHeader, "f") == 0) {	
 
 	int length = 0;
