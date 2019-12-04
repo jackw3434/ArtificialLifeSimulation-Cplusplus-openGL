@@ -7,18 +7,18 @@
 		},
 		"paths" : 
 		{
-			"cmake" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
-			"cpack" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cpack.exe",
-			"ctest" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/ctest.exe",
-			"root" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.14"
+			"cmake" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
+			"cpack" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cpack.exe",
+			"ctest" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/ctest.exe",
+			"root" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.15"
 		},
 		"version" : 
 		{
 			"isDirty" : false,
 			"major" : 3,
-			"minor" : 14,
-			"patch" : 19060802,
-			"string" : "3.14.19060802-MSVC_2",
+			"minor" : 15,
+			"patch" : 19101501,
+			"string" : "3.15.19101501-MSVC_2",
 			"suffix" : ""
 		}
 	},
@@ -34,7 +34,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cache-v2-8d0eb91da86ace12ccd0.json",
+			"jsonFile" : "cache-v2-f21e1636b08c46c98190.json",
 			"kind" : "cache",
 			"version" : 
 			{
@@ -43,7 +43,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cmakeFiles-v1-7d5ac2d779f1f1877412.json",
+			"jsonFile" : "cmakeFiles-v1-dbbbc55df41b862f840b.json",
 			"kind" : "cmakeFiles",
 			"version" : 
 			{
@@ -76,7 +76,7 @@
 				"responses" : 
 				[
 					{
-						"jsonFile" : "cache-v2-8d0eb91da86ace12ccd0.json",
+						"jsonFile" : "cache-v2-f21e1636b08c46c98190.json",
 						"kind" : "cache",
 						"version" : 
 						{
@@ -85,7 +85,7 @@
 						}
 					},
 					{
-						"jsonFile" : "cmakeFiles-v1-7d5ac2d779f1f1877412.json",
+						"jsonFile" : "cmakeFiles-v1-dbbbc55df41b862f840b.json",
 						"kind" : "cmakeFiles",
 						"version" : 
 						{

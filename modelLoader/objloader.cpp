@@ -7,7 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <glm/glm.hpp>
-
 #include "objloader.hpp"
 #include <GL\glew.h>
 #include <glm\gtc/type_ptr.hpp>
@@ -39,7 +38,6 @@ bool LoadMaterials(const char* materialFilename) {
 
 	ObjMaterial temp_mtl;
 
-	// open the material file
 	FILE* fileMaterial = fopen(materialFilename, "r");
 	if (fileMaterial == NULL)
 	{
@@ -172,8 +170,7 @@ bool loadOBJ(
 					GLuint sShineLoc = glGetUniformLocation(shader, "sShine");
 					glUniform1fv(sShineLoc, 1, &shininess);*/
 
-					// dont have one for emmissive yet
-				
+					// dont have one for emmissive yet				
 					
 				}				
 
@@ -189,7 +186,7 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "vt") == 0) {
 			glm::vec2 uv;
 			fscanf(file, "%f %f\n", &uv.x, &uv.y);
-			uv.y = -uv.y; // Invert V coordinate since we will only use DDS texture, which are inverted. Remove if you want to use TGA or BMP loaders.
+			uv.y = -uv.y;
 			temp_uvs.push_back(uv);
 		}
 		else if (strcmp(lineHeader, "vn") == 0) {

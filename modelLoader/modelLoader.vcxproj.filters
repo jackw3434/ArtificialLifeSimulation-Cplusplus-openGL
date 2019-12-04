@@ -33,9 +33,6 @@
     <ClCompile Include="controls.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="loadVBO.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -51,9 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="objloader.hpp">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.hpp">
       <Filter>Source Files\common</Filter>
     </ClInclude>
     <ClInclude Include="controls.hpp">

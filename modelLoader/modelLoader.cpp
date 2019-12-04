@@ -12,7 +12,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "loadVBO.hpp"
 #include "shader.hpp"
-#include "texture.hpp"
 #include "controls.hpp"
 #include "objloader.hpp"
 
@@ -69,69 +68,29 @@ void init(void) {
 	}
 };
 
-string display() {
+void getInput(void) {
+	cout << "Please enter the first valid .obj file.\n>";
+	getline(cin, fileToLoad1);
+	cout << "You entered: " << fileToLoad1 << endl;
 
-	string fileToLoad1 = "";
-	string fileToLoad2 = "";
-	string numOfFiles;
+	cout << "Please enter the second valid .obj file.\n>";
+	getline(cin, fileToLoad2);
+	cout << "You entered: " << fileToLoad2 << endl;
 
-	cout << "Display 1 or 2 .obj files?\n>";
-	getline(cin, numOfFiles);
-	int num = stoi(numOfFiles);
-	cout << "You entered: " << numOfFiles << endl << endl;
+	if (fileToLoad1 != "creeper.obj" || fileToLoad1 != "boat.obj") {
+		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
+	};
 
-	if (num == 1) {	
-		cout << "Please enter a valid .obj file.\n>";
-		getline(cin, fileToLoad1);
-		cout << "You entered: " << fileToLoad1 << endl << endl;
-		return fileToLoad1;
-
-		// Read our .obj file
-		std::vector< glm::vec3 > vertices;
-		std::vector< glm::vec2 > uvs;
-		std::vector< glm::vec3 > normals;
-
-		bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-	}
-	else if (num == 2) {
-		cout << "Please enter the first valid .obj file.\n>";
-		getline(cin, fileToLoad1);
-		cout << "You entered: " << fileToLoad1 << endl << endl;
-
-		cout << "Please enter the second valid .obj file.\n>";
-		getline(cin, fileToLoad2);
-		cout << "You entered: " << fileToLoad2 << endl << endl;
-		return fileToLoad1;
-		return fileToLoad2;
-	}
+	if (fileToLoad2 != "creeper.obj" || fileToLoad2 != "boat.obj") {
+		cout << "You entered: " << fileToLoad2 << " please enter either creeper.obj or boat.obj" << endl;
+	};
 }
 
 int main()
 {		
-
-	//display();
-	std::string fileToLoad = "";
-	
-	//cout << "Please enter a valid .obj file.\n>";
-	//getline(cin, fileToLoad);
-	//cout << "You entered: " << fileToLoad << endl << endl;
-
-	cout << "Please enter the first valid .obj file.\n>";
-	getline(cin, fileToLoad1);
-	cout << "You entered: " << fileToLoad1 << endl << endl;
-
-	cout << "Please enter the second valid .obj file.\n>";
-	getline(cin, fileToLoad2);
-	cout << "You entered: " << fileToLoad2 << endl << endl;
-
-	cout << "Please enter the third valid .obj file.\n>";
-	getline(cin, fileToLoad3);
-	cout << "You entered: " << fileToLoad3 << endl << endl;
-
+	getInput();
 	init();
 
-	/////////////////////////////////////////////////////////////////////////////
-	
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -140,26 +99,20 @@ int main()
 	glUseProgram(shader);
 
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
-
-	// Load the texture
-	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
-	// Read our .obj file
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 	
 	bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-
 	bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-
-	bool res3 = loadOBJ(fileToLoad3.c_str(), vertices, uvs, normals);
 
 	std::vector< unsigned short > indices;
 	std::vector< glm::vec3 > indexed_vertices;
 	std::vector< glm::vec2 > indexed_uvs;
 	std::vector< glm::vec3 > indexed_normals; 
+
 	indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 
 	GLuint vertexbuffer;
@@ -207,7 +160,6 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);	
-	//png texture stuff
 
 	do
 	{
@@ -219,6 +171,10 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 			// draw in wireframe
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+			// draw in wireframe
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
 			//Clear The Scene
@@ -239,29 +195,27 @@ int main()
 		}
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {			
 			
-				unsigned int pngTexture;
-				glGenTextures(1, &pngTexture);
-				glBindTexture(GL_TEXTURE_2D, pngTexture);
-				// set the texture wrapping/filtering options (on the currently bound texture object)
+			unsigned int pngTexture;
+			glGenTextures(1, &pngTexture);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
 
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-				int width, height, nrChannels;
-				unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
-				if (data)
-				{
-					// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-					glGenerateMipmap(GL_TEXTURE_2D);
-				}
-				else
-				{
-					std::cout << "Failed to load texture" << std::endl;
-				}
-				stbi_image_free(data);			
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			
+			int width, height, nrChannels;
+			unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
+			if (data)
+			{
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+				glGenerateMipmap(GL_TEXTURE_2D);
+			}
+			else
+			{
+				std::cout << "Failed to load texture" << std::endl;
+			}
+			stbi_image_free(data);			
 		
 		}
 		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
@@ -269,7 +223,6 @@ int main()
 			unsigned int pngTexture;
 			glGenTextures(1, &pngTexture);
 			glBindTexture(GL_TEXTURE_2D, pngTexture);
-			// set the texture wrapping/filtering options (on the currently bound texture object)
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -280,7 +233,6 @@ int main()
 			unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
 			if (data)
 			{
-				// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
@@ -290,23 +242,14 @@ int main()
 			}
 			stbi_image_free(data);
 		}
-
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
-	
-
 		float distanceValue = 2.0f;
-		/*if (fileToLoad == "creeper.obj") {
-			distanceValue = 20.0f;
-		}
-		else if (fileToLoad == "boat.obj") {
-			distanceValue = 200.0f;
-		}*/
 
-		glm::mat4 ModelMatrix1 = glm::mat4(1.0);
-		ModelMatrix1 = glm::translate(ModelMatrix1, glm::vec3(distanceValue, 0.0f, 0.0f));
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();		
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
 
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix1;
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 	
 		// Send our transformation to the currently bound shader, 
 		// in the "MVP" uniform

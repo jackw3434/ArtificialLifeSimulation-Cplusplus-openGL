@@ -159,7 +159,6 @@
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="shader.hpp" />
-    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -171,7 +170,6 @@
     <ClInclude Include="loadVBO.hpp" />
     <ClInclude Include="objloader.hpp" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Downloads\uvmap.DDS" />

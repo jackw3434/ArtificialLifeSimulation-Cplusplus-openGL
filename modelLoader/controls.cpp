@@ -1,4 +1,3 @@
-//#define STB_IMAGE_IMPLEMENTATION
 #include <GL\glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -9,11 +8,7 @@ using namespace std;
 #include <string>
 #include <sstream>
 #include "controls.hpp"
-
 #include "objloader.hpp"
-
-
-#include "stb_image.h"
 
 extern GLFWwindow* window;
 extern GLuint TextureID;
@@ -96,7 +91,7 @@ void computeMatricesFromInputs() {
 	
 	float FoV = initialFoV; //- 5 * glfwGetMouseWheel();
 
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
