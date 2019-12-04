@@ -61,15 +61,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\uvmap.DDS">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <Object Include="cube.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
-    <Object Include="teapot.obj">
       <Filter>Resource Files</Filter>
     </Object>
   </ItemGroup>
