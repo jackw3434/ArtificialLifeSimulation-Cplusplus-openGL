@@ -180,6 +180,13 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
 			// Remove Texture Coords
 			glDeleteBuffers(1, &uvbuffer);
+		}		
+		if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
+			// Apply Texture Coords
+			GLuint uvbuffer;
+			glGenBuffers(1, &uvbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 		}
 		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 			// Removed Textures
