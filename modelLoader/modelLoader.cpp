@@ -216,6 +216,10 @@ int main()
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+			// draw in wireframe
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
 			//Clear The Scene
 			glDeleteVertexArrays(1, &VertexArrayID);

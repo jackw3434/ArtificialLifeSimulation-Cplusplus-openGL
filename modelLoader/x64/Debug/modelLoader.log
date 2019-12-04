@@ -1,5 +1,2 @@
-﻿  modelLoader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(345,47): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(352,3): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(107): warning C4715:  'display': not all control paths return a value
-  modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(433,5): warning MSB8003: The VCToolsInstallDir property is not defined. Some build tools may not be found.
+TRACKER : error TRK0005: Failed to locate: "CL.exe". The system cannot find the file specified.
