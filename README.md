@@ -18,6 +18,7 @@ F : Will fill the faces after polygon mode has been activated.
 C : Will clear the scene of models.
 R : Will reload the objects back into the scene.
 U : Will delete the UV Buffere and remove the Texture coordinates.
+I ; Will Re-apply the texture coordinates.
 Q : Will remove the textures.
 W : Will generate and bind a texture of "whitePaper.png" to loaded models.
 E : Will generate and bind the creeper texture to loaded models.
@@ -43,6 +44,13 @@ E : Will generate and bind the creeper texture to loaded models.
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
 		// Remove Texture Coords
 		glDeleteBuffers(1, &uvbuffer);
+	}
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
+		// Apply Texture Coords
+		GLuint uvbuffer;
+		glGenBuffers(1, &uvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		// Removed Textures
