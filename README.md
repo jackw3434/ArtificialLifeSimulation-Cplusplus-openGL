@@ -15,6 +15,9 @@ You will be prompted to type in the name of 2 different .obj files, either type 
 
 You can use the arrow keys and mouse to move the camera.
 
+### P : Will activate Polygon Mode.
+### F : Will fill the faces after polygon mode has been activated..
+
 
 
 
