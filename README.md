@@ -1,5 +1,27 @@
 # modelLoader
 
+## Project Aim
+To be able to create an obj loader for an artificial life simulation game.
+
+## used Software
+Visual Studio 2019
+OpenGL 3.3
+
+## Used Libraries
+```
+#include "stb_image.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+```
+
 ## Setup
 
 To run this application you will need to clone this repo and build the dependancies.
