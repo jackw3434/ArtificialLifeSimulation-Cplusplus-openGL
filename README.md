@@ -8,7 +8,7 @@ Visual Studio 2019
 OpenGL 3.3
 
 ## Used Libraries
-```
+```c++
 #include "stb_image.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,7 +54,7 @@ W : Will generate and bind a texture of "whitePaper.png" to loaded models.
 E : Will generate and bind the creeper texture to loaded models.
 
 
-```
+```c++
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		// draw in wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
