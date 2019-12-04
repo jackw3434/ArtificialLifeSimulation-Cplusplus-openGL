@@ -3,7 +3,7 @@
 ## Project Aim
 To be able to create an obj loader for an artificial life simulation game.
 
-## used Software
+## Used Software
 Visual Studio 2019
 OpenGL 3.3
 
