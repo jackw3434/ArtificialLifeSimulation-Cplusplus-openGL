@@ -21,7 +21,9 @@ using namespace std;
 GLFWwindow* window;
 GLuint TextureID;
 string fileToLoad1 = "";
+string f1ToOpen = "";
 string fileToLoad2 = "";
+string f2ToOpen = "";
 string fileToLoad3 = "";
 string numOfFiles;
 
@@ -69,21 +71,30 @@ void init(void) {
 };
 
 void getInput(void) {
+
 	cout << "Please enter the first valid .obj file.\n>";
 	getline(cin, fileToLoad1);
-	cout << "You entered: " << fileToLoad1 << endl;
+	cout << "You entered: " << fileToLoad1 << endl;	
 
+	cout << "Please enter how many " << fileToLoad1 << "'s you wish to open.\n>";
+	getline(cin, f1ToOpen);
+	cout << "You entered: " << f1ToOpen << endl;
+
+	if (fileToLoad1 != "creeper.obj" && fileToLoad1 != "boat.obj") {
+		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
+	};
+	   
 	cout << "Please enter the second valid .obj file.\n>";
 	getline(cin, fileToLoad2);
 	cout << "You entered: " << fileToLoad2 << endl;
+	
+	cout << "Please enter how many " << fileToLoad2 << "'s you wish to open.\n>";
+	getline(cin, f2ToOpen);
+	cout << "You entered: " << f2ToOpen << endl;	
 
-	if (fileToLoad1 != "creeper.obj" || fileToLoad1 != "boat.obj") {
-		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
-	};
-
-	if (fileToLoad2 != "creeper.obj" || fileToLoad2 != "boat.obj") {
+	if (fileToLoad2 != "creeper.obj" && fileToLoad2 != "boat.obj") {
 		cout << "You entered: " << fileToLoad2 << " please enter either creeper.obj or boat.obj" << endl;
-	};
+	};	
 }
 
 int main()
@@ -104,9 +115,18 @@ int main()
 	std::vector< glm::vec3 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
+
+	for (size_t i = 1; i <= stoi(f1ToOpen); i++)
+	{
+		loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+	}
+	for (size_t i = 1; i <= stoi(f2ToOpen); i++)
+	{
+		loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+	}
 	
-	bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-	bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+	//bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+	//bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
 
 	std::vector< unsigned short > indices;
 	std::vector< glm::vec3 > indexed_vertices;
@@ -152,9 +172,13 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);	
+	float distanceValue = 2.0f;
 
+
+	int count = 0;
 	do
 	{
+	
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 		
 		// Compute the MVP matrix from keyboard and mouse input
@@ -170,12 +194,12 @@ int main()
 		}
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
 			//Clear The Scene
-			glDeleteVertexArrays(1, &VertexArrayID);
+			glDeleteVertexArrays(1, &VertexArrayID);			
 		}	
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 			//Reload the Scene
 			glGenVertexArrays(1, &VertexArrayID);
-			glBindVertexArray(VertexArrayID);
+			glBindVertexArray(VertexArrayID);			
 		}
 		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
 			// Remove Texture Coords
@@ -242,14 +266,43 @@ int main()
 			stbi_image_free(data);
 		}
 		float distanceValue = 2.0f;
+		
+
+		vec3 objPositions[]
+		{
+			vec3(1.0f, 0.0f, 0.0f),
+			vec3(0.0f, 1.0f, 0.0f),
+			vec3(0.0f, 0.0f, 1.0f),
+			vec3(2.0f, 1.0f, 1.0f),
+			vec3(1.0f, 2.0f, 1.0f),
+			vec3(1.0f, 1.0f, 2.0f),
+			/*vec3(1.0f, 1.0f, 1.0f),
+			vec3(1.0f, 1.0f, 1.0f),
+			vec3(1.0f, 1.0f, 1.0f),
+			vec3(1.0f, 1.0f, 1.0f),*/
+		};	
 
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
 		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();		
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+	
 
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);	
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		/*int length =  stoi(f1ToOpen);
+		
+		for (GLuint i = 0; i < length; i++)
+		{
+
+			ModelMatrix = glm::translate(ModelMatrix, objPositions[i]);
+			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+			
+		}*/
+		
+		
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -283,7 +336,8 @@ int main()
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
-		glfwPollEvents();		
+		glfwPollEvents();	
+		count++;
 	}
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&

@@ -38,6 +38,8 @@ bool LoadMaterials(const char* materialFilename) {
 
 	ObjMaterial temp_mtl;
 
+	//FILE* files[materialFilename];
+
 	FILE* fileMaterial = fopen(materialFilename, "r");
 	if (fileMaterial == NULL)
 	{
