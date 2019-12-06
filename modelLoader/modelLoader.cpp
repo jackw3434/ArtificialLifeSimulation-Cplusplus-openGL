@@ -22,10 +22,10 @@ GLFWwindow* window;
 GLuint TextureID;
 string fileToLoad1 = "";
 string f1ToOpen = "";
-string fileToLoad2 = "";
+string fileToLoad2;
 string f2ToOpen = "";
 string fileToLoad3 = "";
-string numOfFiles;
+string numOfFiles = "0";
 
 void init(void) {
 
@@ -69,32 +69,62 @@ void init(void) {
 		return;
 	}
 };
-
+std::vector<std::string> myList;
 void getInput(void) {
 
-	cout << "Please enter the first valid .obj file.\n>";
-	getline(cin, fileToLoad1);
-	cout << "You entered: " << fileToLoad1 << endl;	
+	int number;
 
-	cout << "Please enter how many " << fileToLoad1 << "'s you wish to open.\n>";
-	getline(cin, f1ToOpen);
-	cout << "You entered: " << f1ToOpen << endl;
+	cout << "Please enter how many different .obj files you wish to load.\n>";
+	cin >> number;
+	cout << "You entered: " << number << " files to load." << endl;	
 
-	if (fileToLoad1 != "creeper.obj" && fileToLoad1 != "boat.obj") {
-		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
+	
+	
+	
+	for (int i = 0; i < number; i++)
+	{		
+		cout << "Please enter the " << i <<" valid .obj file name.\n>";
+		cin >> fileToLoad1;
+		cout << "You entered: " << fileToLoad1 << i << endl;	
+		myList.push_back(fileToLoad1.c_str());
+		cout << "myList: " << myList[i] << endl;
+		cout << "Please enter how many " << myList[i] << "'s you wish to open.\n>";
+		cin >> f1ToOpen;
+		cout << "You entered: " << f1ToOpen << endl;
+
+		for (int n = 1; n < stoi(f1ToOpen); n++)
+		{
+			myList.push_back(fileToLoad1.c_str());
+		}
 	};
+
+	//
+	//for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i)
+	//	std::cout << "myList " << *i << ' ';
+
+	//cout << "Please enter a valid .obj file name.\n>";
+	//getline(cin, fileToLoad1);
+	//cout << "You entered: " << fileToLoad1 << endl;	
+
+	//cout << "Please enter how many " << myList[i] << "'s you wish to open.\n>";
+	/*getline(cin, f1ToOpen);
+	cout << "You entered: " << f1ToOpen << endl;*/
+
+	/*if (fileToLoad1 != "creeper.obj" && fileToLoad1 != "boat.obj") {
+		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
+	};*/
 	   
-	cout << "Please enter the second valid .obj file.\n>";
+	/*cout << "Please enter the second valid .obj file.\n>";
 	getline(cin, fileToLoad2);
 	cout << "You entered: " << fileToLoad2 << endl;
 	
 	cout << "Please enter how many " << fileToLoad2 << "'s you wish to open.\n>";
 	getline(cin, f2ToOpen);
 	cout << "You entered: " << f2ToOpen << endl;	
-
-	if (fileToLoad2 != "creeper.obj" && fileToLoad2 != "boat.obj") {
+*/
+	/*if (fileToLoad2 != "creeper.obj" && fileToLoad2 != "boat.obj") {
 		cout << "You entered: " << fileToLoad2 << " please enter either creeper.obj or boat.obj" << endl;
-	};	
+	};	*/
 }
 
 int main()
@@ -116,14 +146,20 @@ int main()
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 
-	for (size_t i = 1; i <= stoi(f1ToOpen); i++)
-	{
-		loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-	}
-	for (size_t i = 1; i <= stoi(f2ToOpen); i++)
-	{
-		loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-	}
+	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+		std::cout << *i << ' ';
+		loadOBJ(i, vertices, uvs, normals);
+	};
+		
+
+	//for (size_t i = 1; i <= stoi(f1ToOpen); i++)
+	//{
+	//	loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+	//}
+	//for (size_t i = 1; i <= stoi(f2ToOpen); i++)
+	//{
+	//	loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+	//}
 	
 	//bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
 	//bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
@@ -172,10 +208,9 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);	
-	float distanceValue = 2.0f;
-
 
 	int count = 0;
+
 	do
 	{
 	
@@ -275,11 +310,7 @@ int main()
 			vec3(0.0f, 0.0f, 1.0f),
 			vec3(2.0f, 1.0f, 1.0f),
 			vec3(1.0f, 2.0f, 1.0f),
-			vec3(1.0f, 1.0f, 2.0f),
-			/*vec3(1.0f, 1.0f, 1.0f),
-			vec3(1.0f, 1.0f, 1.0f),
-			vec3(1.0f, 1.0f, 1.0f),
-			vec3(1.0f, 1.0f, 1.0f),*/
+			vec3(1.0f, 1.0f, 2.0f),			
 		};	
 
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
@@ -291,7 +322,7 @@ int main()
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-		/*int length =  stoi(f1ToOpen);
+		int length =  stoi(f1ToOpen);
 		
 		for (GLuint i = 0; i < length; i++)
 		{
@@ -300,7 +331,7 @@ int main()
 			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 			
-		}*/
+		}
 		
 		
 
