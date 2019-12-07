@@ -34,7 +34,7 @@ std::vector<ObjMaterial> Load_Mtl;
 
 bool LoadMaterials(const char* materialFilename) {
 
-	printf("Loading MTL file %s...\n", materialFilename);
+	//printf("Loading MTL file %s...\n", materialFilename);
 
 	ObjMaterial temp_mtl;
 
@@ -104,9 +104,10 @@ bool loadOBJ(
 	const char* path,
 	std::vector<glm::vec3>& out_vertices,
 	std::vector<glm::vec2>& out_uvs,
-	std::vector<glm::vec3>& out_normals
+	std::vector<glm::vec3>& out_normals,
+	double& objPosition
 ) {
-	printf("Loading OBJ file %s...\n", path);
+	//printf("Loading OBJ file %s...\n", path);
 
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> temp_vertices;
@@ -135,7 +136,7 @@ bool loadOBJ(
 		if (strcmp(lineHeader, "mtllib") == 0)
 		{		
 			fscanf(file, "%s", MaterialFilename);	
-			cout << "MaterialFilename " << MaterialFilename << endl;
+			//cout << "MaterialFilename " << MaterialFilename << endl;
 			LoadMaterials(MaterialFilename);
 		} 
 		else if (strcmp(lineHeader, "usemtl") == 0) {				
@@ -148,7 +149,7 @@ bool loadOBJ(
 			{
 				if (Load_Mtl[i].name == neededmaterial) {
 					current_mtl = Load_Mtl[i];
-					cout << "materials needed " << Load_Mtl[i].name << " " << chmtl << endl;
+					//cout << "materials needed " << Load_Mtl[i].name << " " << chmtl << endl;
 
 					GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
 					glUseProgram(shader);
@@ -183,6 +184,7 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			vertex.x = vertex.x + objPosition;
 			temp_vertices.push_back(vertex);
 		}
 		else if (strcmp(lineHeader, "vt") == 0) {

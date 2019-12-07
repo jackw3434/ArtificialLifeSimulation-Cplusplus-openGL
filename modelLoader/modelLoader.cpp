@@ -20,12 +20,10 @@ using namespace std;
 
 GLFWwindow* window;
 GLuint TextureID;
-string fileToLoad1 = "";
-string f1ToOpen = "";
-string fileToLoad2;
-string f2ToOpen = "";
-string fileToLoad3 = "";
-string numOfFiles = "0";
+string fileToLoad = "";
+string numberofFilesToOpen = "";
+
+std::vector<std::string> myList;
 
 void init(void) {
 
@@ -69,66 +67,34 @@ void init(void) {
 		return;
 	}
 };
-std::vector<std::string> myList;
+
 void getInput(void) {
 
 	int number;
 
-	cout << "Please enter how many different .obj files you wish to load.\n>";
+	std::cout << "Please enter how many different .obj files you wish to load.\n>";
 	cin >> number;
-	cout << "You entered: " << number << " files to load." << endl;	
-
-	
-	
+	std::cout << "You entered: " << number << " files to load." << endl;
 	
 	for (int i = 0; i < number; i++)
 	{		
-		cout << "Please enter the " << i <<" valid .obj file name.\n>";
-		cin >> fileToLoad1;
-		cout << "You entered: " << fileToLoad1 << i << endl;	
-		myList.push_back(fileToLoad1.c_str());
-		cout << "myList: " << myList[i] << endl;
-		cout << "Please enter how many " << myList[i] << "'s you wish to open.\n>";
-		cin >> f1ToOpen;
-		cout << "You entered: " << f1ToOpen << endl;
+		std::cout << "Please enter the " << i <<" valid .obj file name.\n>";
+		cin >> fileToLoad;
+		std::cout << "You entered: " << fileToLoad << i << endl;
+		
+		std::cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
+		cin >> numberofFilesToOpen;
+		std::cout << "You entered: " << numberofFilesToOpen << endl;
 
-		for (int n = 1; n < stoi(f1ToOpen); n++)
+		for (int n = 0; n < stoi(numberofFilesToOpen); n++)
 		{
-			myList.push_back(fileToLoad1.c_str());
-		}
+			myList.push_back(fileToLoad.c_str());
+		}	
 	};
-
-	//
-	//for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i)
-	//	std::cout << "myList " << *i << ' ';
-
-	//cout << "Please enter a valid .obj file name.\n>";
-	//getline(cin, fileToLoad1);
-	//cout << "You entered: " << fileToLoad1 << endl;	
-
-	//cout << "Please enter how many " << myList[i] << "'s you wish to open.\n>";
-	/*getline(cin, f1ToOpen);
-	cout << "You entered: " << f1ToOpen << endl;*/
-
-	/*if (fileToLoad1 != "creeper.obj" && fileToLoad1 != "boat.obj") {
-		cout << "You entered: " << fileToLoad1 << " please enter either creeper.obj or boat.obj" << endl;
-	};*/
-	   
-	/*cout << "Please enter the second valid .obj file.\n>";
-	getline(cin, fileToLoad2);
-	cout << "You entered: " << fileToLoad2 << endl;
-	
-	cout << "Please enter how many " << fileToLoad2 << "'s you wish to open.\n>";
-	getline(cin, f2ToOpen);
-	cout << "You entered: " << f2ToOpen << endl;	
-*/
-	/*if (fileToLoad2 != "creeper.obj" && fileToLoad2 != "boat.obj") {
-		cout << "You entered: " << fileToLoad2 << " please enter either creeper.obj or boat.obj" << endl;
-	};	*/
 }
 
 int main()
-{		
+{
 	getInput();
 	init();
 
@@ -146,233 +112,268 @@ int main()
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 
-	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
-		std::cout << *i << ' ';
-		loadOBJ(i, vertices, uvs, normals);
+	string fileValue;
+
+	vec3 objPositions[]
+	{
+		vec3(0.0f),
+		vec3(0.25f),
+		vec3(0.5f),
+		vec3(0.75f),
+		vec3(1.0f),
+		vec3(1.25f),
+		vec3(1.5f),
+		vec3(1.75f),
+		vec3(2.0f),
+		vec3(2.25f),
+	
 	};
-		
 
-	//for (size_t i = 1; i <= stoi(f1ToOpen); i++)
-	//{
-	//	loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-	//}
-	//for (size_t i = 1; i <= stoi(f2ToOpen); i++)
-	//{
-	//	loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-	//}
-	
-	//bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-	//bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-
-	std::vector< unsigned short > indices;
-	std::vector< glm::vec3 > indexed_vertices;
-	std::vector< glm::vec2 > indexed_uvs;
-	std::vector< glm::vec3 > indexed_normals; 
-
-	indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
-
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-	GLuint uvbuffer;
-	glGenBuffers(1, &uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-
-	// Generate buffer for the indices
-	GLuint elementbuffer;
-	glGenBuffers(1, &elementbuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
-	
-	unsigned int pngTexture;
-	glGenTextures(1, &pngTexture);
-	glBindTexture(GL_TEXTURE_2D, pngTexture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-	if (data)
+	double test[]
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);	
+		0.0,
+		0.25,
+		0.5,
+		0.75,
+		1.0,
+		1.25,
+		1.5,
+		1.75,
+		2.0,
+		2.25
+	};
 
-	int count = 0;
+	int index = 0;
 
-	do
-	{
+	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 	
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-		
-		// Compute the MVP matrix from keyboard and mouse input
-		computeMatricesFromInputs();
+		vec1 position = objPositions[index];
+		std::cout << *i << ' ' << endl;;
+		fileValue = *i;
+		cout << index;
+		loadOBJ(fileValue.c_str(), vertices, uvs, normals, test[index]);
+		index++;
+	};
+		std::cout << &myList;
+		//for (size_t i = 1; i <= stoi(f1ToOpen); i++)
+		//{
+		//	loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+		//}
+		//for (size_t i = 1; i <= stoi(f2ToOpen); i++)
+		//{
+		//	loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+		//}
+		//loadOBJ("creeper.obj", vertices, uvs, normals);
+		//bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
+		//bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
 
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-			// draw in wireframe
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-			// draw in wireframe
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
-			//Clear The Scene
-			glDeleteVertexArrays(1, &VertexArrayID);			
-		}	
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-			//Reload the Scene
-			glGenVertexArrays(1, &VertexArrayID);
-			glBindVertexArray(VertexArrayID);			
-		}
-		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
-			// Remove Texture Coords
-			glDeleteBuffers(1, &uvbuffer);
-		}		
-		if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
-			// Apply Texture Coords
-			GLuint uvbuffer;
-			glGenBuffers(1, &uvbuffer);
-			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-		}
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-			// Removed Textures
-			glDeleteTextures(1, &TextureID);
-		}
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {			
-			
-			unsigned int pngTexture;
-			glGenTextures(1, &pngTexture);
-			glBindTexture(GL_TEXTURE_2D, pngTexture);
+		std::vector< unsigned short > indices;
+		std::vector< glm::vec3 > indexed_vertices;
+		std::vector< glm::vec2 > indexed_uvs;
+		std::vector< glm::vec3 > indexed_normals;
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			
-			int width, height, nrChannels;
-			unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
-			else
-			{
-				std::cout << "Failed to load texture" << std::endl;
-			}
-			stbi_image_free(data);			
-		
-		}
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+		indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 
-			unsigned int pngTexture;
-			glGenTextures(1, &pngTexture);
-			glBindTexture(GL_TEXTURE_2D, pngTexture);
+		GLuint vertexbuffer;
+		glGenBuffers(1, &vertexbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLuint uvbuffer;
+		glGenBuffers(1, &uvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
-			int width, height, nrChannels;
-			unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
-			else
-			{
-				std::cout << "Failed to load texture" << std::endl;
-			}
-			stbi_image_free(data);
-		}
-		float distanceValue = 2.0f;
-		
+		// Generate buffer for the indices
+		GLuint elementbuffer;
+		glGenBuffers(1, &elementbuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
-		vec3 objPositions[]
+		unsigned int pngTexture;
+		glGenTextures(1, &pngTexture);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		if (data)
 		{
-			vec3(1.0f, 0.0f, 0.0f),
-			vec3(0.0f, 1.0f, 0.0f),
-			vec3(0.0f, 0.0f, 1.0f),
-			vec3(2.0f, 1.0f, 1.0f),
-			vec3(1.0f, 2.0f, 1.0f),
-			vec3(1.0f, 1.0f, 2.0f),			
-		};	
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << std::endl;
+		}
+		stbi_image_free(data);
 
-		glm::mat4 ModelMatrix = glm::mat4(1.0);
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-	
+		int count = 0;
 
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-		int length =  stoi(f1ToOpen);
-		
-		for (GLuint i = 0; i < length; i++)
+		do
 		{
 
-			ModelMatrix = glm::translate(ModelMatrix, objPositions[i]);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			// Compute the MVP matrix from keyboard and mouse input
+			computeMatricesFromInputs();
+
+			if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+				// draw in wireframe
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+				// draw in wireframe
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+			if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+				//Clear The Scene
+				glDeleteVertexArrays(1, &VertexArrayID);
+			}
+			if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+				//Reload the Scene
+				glGenVertexArrays(1, &VertexArrayID);
+				glBindVertexArray(VertexArrayID);
+			}
+			if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+				// Remove Texture Coords
+				glDeleteBuffers(1, &uvbuffer);
+			}
+			if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
+				// Apply Texture Coords
+				GLuint uvbuffer;
+				glGenBuffers(1, &uvbuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+				glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+			}
+			if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+				// Removed Textures
+				glDeleteTextures(1, &TextureID);
+			}
+			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+
+				unsigned int pngTexture;
+				glGenTextures(1, &pngTexture);
+				glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+				int width, height, nrChannels;
+				unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
+				if (data)
+				{
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+					glGenerateMipmap(GL_TEXTURE_2D);
+				}
+				else
+				{
+					std::cout << "Failed to load texture" << std::endl;
+				}
+				stbi_image_free(data);
+
+			}
+			if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+
+				unsigned int pngTexture;
+				glGenTextures(1, &pngTexture);
+				glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+				int width, height, nrChannels;
+				unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+				if (data)
+				{
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+					glGenerateMipmap(GL_TEXTURE_2D);
+				}
+				else
+				{
+					std::cout << "Failed to load texture" << std::endl;
+				}
+				stbi_image_free(data);
+			}
+			float distanceValue = 2.0f;
+
+
+			vec3 objPositions[]
+			{
+				vec3(1.0f, 0.0f, 0.0f),
+				vec3(0.0f, 1.0f, 0.0f),
+				vec3(0.0f, 0.0f, 1.0f),
+				vec3(2.0f, 1.0f, 1.0f),
+				vec3(1.0f, 2.0f, 1.0f),
+				vec3(1.0f, 1.0f, 2.0f),
+			};
+
+			glm::mat4 ModelMatrix = glm::mat4(1.0);
+			glm::mat4 ViewMatrix = getViewMatrix();
+			glm::mat4 ProjectionMatrix = getProjectionMatrix();
+
+
+			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
 			glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-			
+
+			/*int length =  stoi(f1ToOpen);
+
+			for (GLuint i = 0; i < length; i++)
+			{
+
+				ModelMatrix = glm::translate(ModelMatrix, objPositions[i]);
+				glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+				glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+			}*/
+
+			// 1rst attribute buffer : vertices
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// 2nd attribute buffer : UVs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Index buffer
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);			
+
+			// Draw the triangle !
+			glDrawArrays(GL_TRIANGLES, 0, indices.size());
+
+			glDrawElements(
+				GL_TRIANGLES,		//mode
+				indices.size(),		//count
+				GL_UNSIGNED_INT,	//type
+				(void*)0			//element array buffer offset
+			);
+
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+			count++;
 		}
-		
-		
 
-		// 1rst attribute buffer : vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);		
-
-		// 2nd attribute buffer : UVs
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0,(void*)0);
-
-		// Index buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
-		// Bind our texture in Texture Unit 0
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pngTexture);
-		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);
-		
-		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, indices.size());
-
-		glDrawElements(
-			GL_TRIANGLES,		//mode
-			indices.size(),		//count
-			GL_UNSIGNED_INT,	//type
-			(void*)0			//element array buffer offset
-		);		
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glfwSwapBuffers(window);
-		glfwPollEvents();	
-		count++;
-	}
-
-	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0 || glfwGetKey(window, GLFW_KEY_Q));
+		while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+			glfwWindowShouldClose(window) == 0 || glfwGetKey(window, GLFW_KEY_Q));
 
 		// Cleanup VBO and shader
 		glDeleteBuffers(1, &vertexbuffer);
@@ -381,5 +382,5 @@ int main()
 		glDeleteTextures(1, &TextureID);
 		glDeleteVertexArrays(1, &VertexArrayID);
 		glfwTerminate();
-		return 0;
+		return 0;	
 }
