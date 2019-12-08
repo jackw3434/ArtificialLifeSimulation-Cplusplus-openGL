@@ -52,10 +52,7 @@ void indexVBO(
 		//if (found) { // A similar vertex is already in the VBO, use it instead !
 		//	out_indices.push_back(index);
 		//}
-		//else { // If not, it needs to be added in the output data.
-
-			in_vertices[i].x = in_vertices[i].x + 1.4;		
-		
+		//else { // If not, it needs to be added in the output data.	
 
 			out_vertices.push_back(in_vertices[i]);
 			out_uvs.push_back(in_uvs[i]);

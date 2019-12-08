@@ -113,66 +113,58 @@ int main()
 	std::vector< glm::vec3 > normals;
 
 	string fileValue;
-
-	vec3 objPositions[]
-	{
-		vec3(0.0f),
-		vec3(0.25f),
-		vec3(0.5f),
-		vec3(0.75f),
-		vec3(1.0f),
-		vec3(1.25f),
-		vec3(1.5f),
-		vec3(1.75f),
-		vec3(2.0f),
-		vec3(2.25f),
 	
-	};
-
-	double test[]
+	double creeperPositions[]
 	{
 		0.0,
-		0.25,
-		0.5,
-		0.75,
-		1.0,
-		1.25,
-		1.5,
-		1.75,
 		2.0,
-		2.25
+		4.0,
+		6.0,
+		8.0,
+		10.0,
+		12.0,
+		14.0,
+		16.0,
+		18.0,
+	};
+
+	double boatPositions[]
+	{
+		100.0,
+		250.0,
+		400.0,
+		550.0,
+		700.0,
+		850.0,
+		1000.0,
+		1150.0,
+		1300.0,
+		1450.0,
 	};
 
 	int index = 0;
 
-	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {	
 	
-		vec1 position = objPositions[index];
 		std::cout << *i << ' ' << endl;;
-		fileValue = *i;
-		cout << index;
-		loadOBJ(fileValue.c_str(), vertices, uvs, normals, test[index]);
-		index++;
-	};
-		std::cout << &myList;
-		//for (size_t i = 1; i <= stoi(f1ToOpen); i++)
-		//{
-		//	loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-		//}
-		//for (size_t i = 1; i <= stoi(f2ToOpen); i++)
-		//{
-		//	loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-		//}
-		//loadOBJ("creeper.obj", vertices, uvs, normals);
-		//bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-		//bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
+		fileValue = *i;		
 
-		std::vector< unsigned short > indices;
+		if (fileValue == "creeper.obj") {
+			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[index]);
+		}
+		if (fileValue == "boat.obj") {
+			loadOBJ(fileValue.c_str(), vertices, uvs, normals, boatPositions[index]);
+		}
+	
+		index++;
+	};	
+		
+		/*std::vector< unsigned short > indices;
 		std::vector< glm::vec3 > indexed_vertices;
 		std::vector< glm::vec2 > indexed_uvs;
 		std::vector< glm::vec3 > indexed_normals;
 
-		indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
+		indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);*/
 
 		GLuint vertexbuffer;
 		glGenBuffers(1, &vertexbuffer);
@@ -185,10 +177,10 @@ int main()
 		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
 		// Generate buffer for the indices
-		GLuint elementbuffer;
-		glGenBuffers(1, &elementbuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
+		//GLuint elementbuffer;
+		//glGenBuffers(1, &elementbuffer);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
 
 		unsigned int pngTexture;
 		glGenTextures(1, &pngTexture);
@@ -303,6 +295,8 @@ int main()
 				}
 				stbi_image_free(data);
 			}
+
+
 			float distanceValue = 2.0f;
 
 
@@ -347,7 +341,7 @@ int main()
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			// Index buffer
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
 			// Bind our texture in Texture Unit 0
 			glActiveTexture(GL_TEXTURE0);
@@ -356,14 +350,14 @@ int main()
 			glUniform1i(TextureID, 0);			
 
 			// Draw the triangle !
-			glDrawArrays(GL_TRIANGLES, 0, indices.size());
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
-			glDrawElements(
-				GL_TRIANGLES,		//mode
-				indices.size(),		//count
-				GL_UNSIGNED_INT,	//type
-				(void*)0			//element array buffer offset
-			);
+			//glDrawElements(
+			//	GL_TRIANGLES,		//mode
+			//	indices.size(),		//count
+			//	GL_UNSIGNED_INT,	//type
+			//	(void*)0			//element array buffer offset
+			//);
 
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
