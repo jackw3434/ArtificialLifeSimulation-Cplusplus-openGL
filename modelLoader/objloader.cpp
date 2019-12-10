@@ -184,7 +184,7 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "v") == 0) {
 			glm::vec3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-			vertex.x = vertex.x + objPosition;
+			vertex.x += objPosition;
 			temp_vertices.push_back(vertex);
 		}
 		else if (strcmp(lineHeader, "vt") == 0) {

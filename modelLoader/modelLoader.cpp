@@ -21,11 +21,43 @@ using namespace std;
 
 GLFWwindow* window;
 GLuint TextureID;
-string fileToLoad = "";
-string numberofFilesToOpen = "";
-
 std::vector<std::string> myList;
 
+double creeperPositions[]
+{
+	0.0,
+	2.0,
+	4.0,
+	6.0,
+	8.0,
+	10.0,
+	12.0,
+	14.0,
+	16.0,
+	18.0,
+};
+
+double boatPositions[]
+{
+	100.0,
+	250.0,
+	400.0,
+	550.0,
+	700.0,
+	850.0,
+	1000.0,
+	1150.0,
+	1300.0,
+	1450.0,
+};
+
+class Matrixes {
+public:
+	string name;
+	mat4 ModelMatrix;
+};
+
+std::vector<Matrixes> MatrixArray;
 
 
 void init(void) {
@@ -74,6 +106,8 @@ void init(void) {
 void getInput(void) {
 
 	int number;
+	string fileToLoad = "";
+	string numberofFilesToOpen = "";
 
 	std::cout << "Please enter how many different .obj files you wish to load.\n>";
 	cin >> number;
@@ -116,54 +150,36 @@ int main()
 	std::vector< glm::vec3 > normals;
 
 	string fileValue;
-	
-	double creeperPositions[]
-	{
-		0.0,
-		2.0,
-		4.0,
-		6.0,
-		8.0,
-		10.0,
-		12.0,
-		14.0,
-		16.0,
-		18.0,
-	};
-
-	double boatPositions[]
-	{
-		100.0,
-		250.0,
-		400.0,
-		550.0,
-		700.0,
-		850.0,
-		1000.0,
-		1150.0,
-		1300.0,
-		1450.0,
-	};
 
 	int creeperIndex = 0;
 	int boatIndex = 0;
-	
-	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {	
-	
+	int index = 0;
+
+	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+
 		std::cout << *i << ' ' << endl;;
-		fileValue = *i;		
+		fileValue = *i;
 
 		if (fileValue == "creeper.obj") {
-			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);				
+			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
+
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
+			
+			MatrixArray.push_back(tempMatrix);
+			MatrixArray[0].ModelMatrix = glm::translate(MatrixArray[0].ModelMatrix, glm::vec3(-5.5f, 0.0f, 0.0f));
+		
 			creeperIndex++;
-			//CreeperModelMatrix[creeperIndex] = glm::translate(CreeperModelMatrix[creeperIndex], glm::vec3(creeperPositions[creeperIndex], 0.0f, 0.0f));
 		}
 		if (fileValue == "boat.obj") {
 			loadOBJ(fileValue.c_str(), vertices, uvs, normals, boatPositions[boatIndex]);
 			boatIndex++;
-		}	
-	};			
-	
+		}
+
+		index++;
+	};
+
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -173,7 +189,7 @@ int main()
 	glGenBuffers(1, &uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-	
+
 	unsigned int pngTexture;
 	glGenTextures(1, &pngTexture);
 	glBindTexture(GL_TEXTURE_2D, pngTexture);
@@ -195,12 +211,15 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
-	glm::mat4 ModelMatrix = glm::mat4(1.0);
-	do
-	{
+
+	//glm::mat4 ModelMatrix = glm::mat4(1.0);
+	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();		
+		mat4 MVP;
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 
@@ -236,7 +255,7 @@ int main()
 			// Removed Textures
 			glDeleteTextures(1, &TextureID);
 		}
-		
+
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 
 			unsigned int pngTexture;
@@ -286,11 +305,25 @@ int main()
 			}
 			stbi_image_free(data);
 		}
-		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {			
-			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
+		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+
+			mat4 currentModel = MatrixArray[0].ModelMatrix;
+			
+			MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[0].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+			cout << "Z";
 		}
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-			ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+
+			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+			cout << "X";
+		}
+
+		for (int i = 0; i <= 5; i++)
+		{
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 		}
 
 		float xValue = 0.0f;
@@ -303,17 +336,11 @@ int main()
 			vec3(2.0f, 1.0f, 1.0f),
 			vec3(1.0f, 2.0f, 1.0f),
 			vec3(1.0f, 1.0f, 2.0f),
-		};		
-		
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		};
 
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
+		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
 		//ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
 
-		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);			
-		
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -323,19 +350,19 @@ int main()
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		
+
 		// Bind our texture in Texture Unit 0
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, pngTexture);
 		// Set our "myTextureSampler" sampler to user Texture Unit 0
-		glUniform1i(TextureID, 0);			
-			
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());			
+		glUniform1i(TextureID, 0);
+
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
-		glfwPollEvents();		
+		glfwPollEvents();
 	}
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
@@ -348,5 +375,5 @@ int main()
 	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glfwTerminate();
-	return 0;	
+	return 0;
 }
