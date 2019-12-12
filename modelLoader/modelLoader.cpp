@@ -109,19 +109,19 @@ void getInput(void) {
 	string fileToLoad = "";
 	string numberofFilesToOpen = "";
 
-	std::cout << "Please enter how many different .obj files you wish to load.\n>";
+	cout << "Please enter how many different .obj files you wish to load.\n>";
 	cin >> number;
-	std::cout << "You entered: " << number << " files to load." << endl;
+	cout << "You entered: " << number << " files to load." << endl;
 	
 	for (int i = 0; i < number; i++)
 	{		
-		std::cout << "Please enter the " << i <<" valid .obj file name.\n>";
+		cout << "Please enter the " << i <<" valid .obj file name.\n>";
 		cin >> fileToLoad;
-		std::cout << "You entered: " << fileToLoad << i << endl;
+		cout << "You entered: " << fileToLoad << i << endl;
 		
-		std::cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
+		cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
 		cin >> numberofFilesToOpen;
-		std::cout << "You entered: " << numberofFilesToOpen << endl;
+		cout << "You entered: " << numberofFilesToOpen << endl;
 
 		for (int n = 0; n < stoi(numberofFilesToOpen); n++)
 		{
@@ -162,13 +162,15 @@ int main()
 
 		if (fileValue == "creeper.obj") {
 			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
-
+			glm::mat4 ModelMatrix = glm::mat4(1.0);
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);
+			tempMatrix.ModelMatrix = ModelMatrix;			
 			
 			MatrixArray.push_back(tempMatrix);
-			MatrixArray[0].ModelMatrix = glm::translate(MatrixArray[0].ModelMatrix, glm::vec3(-5.5f, 0.0f, 0.0f));
+			if (index == 1) {
+				MatrixArray[1].ModelMatrix = glm::translate(MatrixArray[1].ModelMatrix, glm::vec3(5.50f, 5.5f, 0.0f));
+			}			
 		
 			creeperIndex++;
 		}
@@ -307,25 +309,25 @@ int main()
 		}
 		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
 
-			mat4 currentModel = MatrixArray[0].ModelMatrix;
-			
-			MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
-			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[0].ModelMatrix;
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+			//MatrixArray[1].ModelMatrix[1].x =
+			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
 			cout << "Z";
 		}
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-
+			
 			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[1].ModelMatrix;
+			//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 			cout << "X";
 		}
 
 		for (int i = 0; i <= 5; i++)
-		{
+		{		
 			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-		}
 
+			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVP[0][0]);
+		} 
+		
 		float xValue = 0.0f;
 
 		vec3 objPositions[]
@@ -337,6 +339,8 @@ int main()
 			vec3(1.0f, 2.0f, 1.0f),
 			vec3(1.0f, 1.0f, 2.0f),
 		};
+
+		//MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
 
 		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
 		//ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
