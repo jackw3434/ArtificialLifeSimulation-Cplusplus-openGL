@@ -57,6 +57,10 @@ public:
 	mat4 ModelMatrix;
 };
 
+
+mat4* listMatrix;
+mat4* MVPlist;
+
 std::vector<Matrixes> MatrixArray;
 
 
@@ -162,16 +166,13 @@ int main()
 
 		if (fileValue == "creeper.obj") {
 			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
-			glm::mat4 ModelMatrix = glm::mat4(1.0);
+		
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = ModelMatrix;			
+			tempMatrix.ModelMatrix = glm::mat4(1.0);
 			
-			MatrixArray.push_back(tempMatrix);
-			if (index == 1) {
-				MatrixArray[1].ModelMatrix = glm::translate(MatrixArray[1].ModelMatrix, glm::vec3(5.50f, 5.5f, 0.0f));
-			}			
-		
+			MatrixArray.push_back(tempMatrix);					
+			
 			creeperIndex++;
 		}
 		if (fileValue == "boat.obj") {
@@ -213,16 +214,22 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
+	//	glm::mat4 ModelMatrix = glm::mat4(1.0);
 
-	//glm::mat4 ModelMatrix = glm::mat4(1.0);
+
+	MVPlist = (mat4*)malloc(sizeof(mat4) * 6);
+	listMatrix = (mat4*)malloc(sizeof(mat4) * 6);
+
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glUseProgram(shader);
 		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();		
-		mat4 MVP;
-		// Compute the MVP matrix from keyboard and mouse input
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		
+		//glm::mat4 MVP;
+		////glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+	
 		computeMatricesFromInputs();
 
 		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
@@ -307,29 +314,75 @@ int main()
 			}
 			stbi_image_free(data);
 		}
-		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {	
 
-			//MatrixArray[1].ModelMatrix[1].x =
-			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
-			cout << "Z";
+			//MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
+			listMatrix;
+			MVPlist;
+			//listMatrix[2] = glm::mat4(1.0);
+			listMatrix[2] = glm::translate(listMatrix[2], glm::vec3(0.0f, 0.5f, 0.0f));
+
+			MVPlist[2] = ProjectionMatrix * ViewMatrix * listMatrix[2];
+			glUseProgram(shader);
+			glUniformMatrix4fv(shader, 1, GL_FALSE, &MVPlist[2][0][0]);
+			glUseProgram(shader);
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+			//MVPlist[i] = ProjectionMatrix * ViewMatrix * listMatrix[i];
+
+			//glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVPlist[i][0][0]);
+
+			//cout << "Z";
 		}
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 			
-			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
-			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[1].ModelMatrix;
+			//MatrixArray[2][0].ModelMatrix = translate(MatrixArray[2][0].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+			
+			//MatrixArray[2].ModelMatrix[3].x = -0.5f;
+
+			//cout << MatrixArray[2].ModelMatrix[3].x << endl;;
+
+			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2][0].ModelMatrix;
+
+			//glUniformMatrix4fv(MatrixID, 2, GL_FALSE, &MVP[0][0]);
+
+			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2][0].ModelMatrix;
 			//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-			cout << "X";
-		}
+			//cout << "X";
+		}	
+		
 
 		for (int i = 0; i <= 5; i++)
 		{		
-			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
+			listMatrix[i] = glm::mat4(1.0);
+			//listMatrix[i] = glm::translate(listMatrix[i], glm::vec3(0.5f, 0.0f + float(i*10), 0.0f));
 
-			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVP[0][0]);
-		} 
-		
+			//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+			//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
+			MVPlist[i] = ProjectionMatrix * ViewMatrix * listMatrix[i];
+
+			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVPlist[i][0][0]);
+
+			//// 1rst attribute buffer : vertices
+			//glEnableVertexAttribArray(0);
+			//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			//// 2nd attribute buffer : UVs
+			//glEnableVertexAttribArray(1);
+			//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			//// Bind our texture in Texture Unit 0
+			//glActiveTexture(GL_TEXTURE0);
+			//glBindTexture(GL_TEXTURE_2D, pngTexture);
+			//// Set our "myTextureSampler" sampler to user Texture Unit 0
+			//glUniform1i(TextureID, 0);
+
+			//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		} 	
+
+	/*	
 		float xValue = 0.0f;
-
 		vec3 objPositions[]
 		{
 			vec3(1.0f, 0.0f, 0.0f),
@@ -339,12 +392,11 @@ int main()
 			vec3(1.0f, 2.0f, 1.0f),
 			vec3(1.0f, 1.0f, 2.0f),
 		};
-
+*/
 		//MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
-
 		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
 		//ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
-
+		
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -372,6 +424,8 @@ int main()
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(window) == 0);
 
+	free(listMatrix);
+	free(MVPlist);
 	// Cleanup VBO and shader
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
