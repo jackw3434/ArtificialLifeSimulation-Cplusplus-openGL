@@ -57,10 +57,6 @@ public:
 	mat4 ModelMatrix;
 };
 
-
-mat4* listMatrix;
-mat4* MVPlist;
-
 std::vector<Matrixes> MatrixArray;
 
 
@@ -84,8 +80,8 @@ void init(void) {
 	window = glfwCreateWindow(1024, 768, "Model Loader", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); //Dark Blue Background
 
 	glfwPollEvents(); // Set mouse to centre of screen
@@ -116,13 +112,13 @@ void getInput(void) {
 	cout << "Please enter how many different .obj files you wish to load.\n>";
 	cin >> number;
 	cout << "You entered: " << number << " files to load." << endl;
-	
+
 	for (int i = 0; i < number; i++)
-	{		
-		cout << "Please enter the " << i <<" valid .obj file name.\n>";
+	{
+		cout << "Please enter the " << i << " valid .obj file name.\n>";
 		cin >> fileToLoad;
 		cout << "You entered: " << fileToLoad << i << endl;
-		
+
 		cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
 		cin >> numberofFilesToOpen;
 		cout << "You entered: " << numberofFilesToOpen << endl;
@@ -130,7 +126,7 @@ void getInput(void) {
 		for (int n = 0; n < stoi(numberofFilesToOpen); n++)
 		{
 			myList.push_back(fileToLoad.c_str());
-		}	
+		}
 	};
 }
 
@@ -166,17 +162,22 @@ int main()
 
 		if (fileValue == "creeper.obj") {
 			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
-		
+			
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = glm::mat4(1.0);
-			
-			MatrixArray.push_back(tempMatrix);					
-			
+			tempMatrix.ModelMatrix = mat4(1.0);
+
+			MatrixArray.push_back(tempMatrix);
 			creeperIndex++;
 		}
 		if (fileValue == "boat.obj") {
 			loadOBJ(fileValue.c_str(), vertices, uvs, normals, boatPositions[boatIndex]);
+
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
+
+			MatrixArray.push_back(tempMatrix);
 			boatIndex++;
 		}
 
@@ -214,22 +215,14 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
-	//	glm::mat4 ModelMatrix = glm::mat4(1.0);
 
-
-	MVPlist = (mat4*)malloc(sizeof(mat4) * 6);
-	listMatrix = (mat4*)malloc(sizeof(mat4) * 6);
-
+	//glm::mat4 ModelMatrix = glm::mat4(1.0);
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(shader);
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		
-		//glm::mat4 MVP;
-		////glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
 	
+		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 
 		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
@@ -314,72 +307,25 @@ int main()
 			}
 			stbi_image_free(data);
 		}
-		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {	
-
-			//MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
-			listMatrix;
-			MVPlist;
-			//listMatrix[2] = glm::mat4(1.0);
-			listMatrix[2] = glm::translate(listMatrix[2], glm::vec3(0.0f, 0.5f, 0.0f));
-
-			MVPlist[2] = ProjectionMatrix * ViewMatrix * listMatrix[2];
-			glUseProgram(shader);
-			glUniformMatrix4fv(shader, 1, GL_FALSE, &MVPlist[2][0][0]);
-			glUseProgram(shader);
-			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-			//MVPlist[i] = ProjectionMatrix * ViewMatrix * listMatrix[i];
-
-			//glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVPlist[i][0][0]);
-
-			//cout << "Z";
+		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
 		}
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-			
-			//MatrixArray[2][0].ModelMatrix = translate(MatrixArray[2][0].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
-			
-			//MatrixArray[2].ModelMatrix[3].x = -0.5f;
+			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+		}
 
-			//cout << MatrixArray[2].ModelMatrix[3].x << endl;;
+		glm::mat4 ViewMatrix = getViewMatrix();
+		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		mat4 MVP;
 
-			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2][0].ModelMatrix;
+		int size = myList.size();
 
-			//glUniformMatrix4fv(MatrixID, 2, GL_FALSE, &MVP[0][0]);
+		for (int i = 0; i <= size -1; i++)
+		{
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
 
-			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2][0].ModelMatrix;
-			//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-			//cout << "X";
-		}	
-		
-
-		for (int i = 0; i <= 5; i++)
-		{		
-			listMatrix[i] = glm::mat4(1.0);
-			//listMatrix[i] = glm::translate(listMatrix[i], glm::vec3(0.5f, 0.0f + float(i*10), 0.0f));
-
-			//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-			//glm::mat4 MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
-			MVPlist[i] = ProjectionMatrix * ViewMatrix * listMatrix[i];
-
-			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVPlist[i][0][0]);
-
-			//// 1rst attribute buffer : vertices
-			//glEnableVertexAttribArray(0);
-			//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			//// 2nd attribute buffer : UVs
-			//glEnableVertexAttribArray(1);
-			//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-			//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			//// Bind our texture in Texture Unit 0
-			//glActiveTexture(GL_TEXTURE0);
-			//glBindTexture(GL_TEXTURE_2D, pngTexture);
-			//// Set our "myTextureSampler" sampler to user Texture Unit 0
-			//glUniform1i(TextureID, 0);
-
-			//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-		} 	
+			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVP[0][0]);
+		}
 
 	/*	
 		float xValue = 0.0f;
@@ -392,11 +338,9 @@ int main()
 			vec3(1.0f, 2.0f, 1.0f),
 			vec3(1.0f, 1.0f, 2.0f),
 		};
-*/
-		//MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.5f, 0.0f));
-		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
-		//ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
-		
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
+		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
+	*/
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -415,6 +359,105 @@ int main()
 
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
+		glUseProgram(shader);
+		//GLuint MatrixID2 = glGetUniformLocation(shader, "MVP");
+		glm::mat4 ModelMatrix2 = glm::mat4(1.0);
+		//ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(0.5, 2.0f, 0.0f));
+		glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
+
+		// Send our transformation to the currently bound shader
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
+
+
+		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {		
+			glUseProgram(shader);
+			GLuint MatrixID2 = glGetUniformLocation(shader, "MVP");
+			ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(0.5, 2.0f, 0.0f));
+			MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
+			glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP2[0][0]);
+
+			// 1st attribute buffer : vertices
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// 2nd attribute buffer : uvs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);
+
+			// Draw the triangles
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+		}
+
+		// 1st attribute buffer : vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : uvs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		// Draw the triangles
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+	
+		glm::mat4 ModelMatrix3 = glm::mat4(1.0);
+		ModelMatrix3 = glm::translate(ModelMatrix3, glm::vec3(1.5, 0.5f, 0.0f));
+		glm::mat4 MVP3 = ProjectionMatrix * ViewMatrix * ModelMatrix3;	
+
+		if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+	
+			translate(ModelMatrix3, glm::vec3(1.5, 0.5f, 0.0f));
+		
+		}
+		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {		
+
+			translate(ModelMatrix3, glm::vec3(0.5f, -2.0f, 0.0f));	
+		
+		}
+
+		// Send our transformation to the currently bound shader
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP3[0][0]);
+
+		// 1st attribute buffer : vertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : uvs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		// Draw the triangles
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
@@ -424,8 +467,6 @@ int main()
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(window) == 0);
 
-	free(listMatrix);
-	free(MVPlist);
 	// Cleanup VBO and shader
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &uvbuffer);
