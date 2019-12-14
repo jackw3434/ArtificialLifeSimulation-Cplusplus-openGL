@@ -56,9 +56,10 @@ public:
 	string name;
 	mat4 ModelMatrix;
 };
+float xValue = 1.0;
+float xValue1 = 1.0;
 
 std::vector<Matrixes> MatrixArray;
-
 
 void init(void) {
 
@@ -128,6 +129,98 @@ void getInput(void) {
 			myList.push_back(fileToLoad.c_str());
 		}
 	};
+}
+
+void movementControls(GLFWwindow* window, GLuint VertexArrayID, GLuint uvbuffer, vector<vec2> uvs, GLuint TextureID) {
+
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		// draw in wireframe
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+		// draw in wireframe
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		//Clear The Scene
+		glDeleteVertexArrays(1, &VertexArrayID);
+	}
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		//Reload the Scene
+		glGenVertexArrays(1, &VertexArrayID);
+		glBindVertexArray(VertexArrayID);
+	}
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
+		// Remove Texture Coords
+		glDeleteBuffers(1, &uvbuffer);
+	}
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
+		// Apply Texture Coords
+		GLuint uvbuffer;
+		glGenBuffers(1, &uvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+		// Removed Textures
+		glDeleteTextures(1, &TextureID);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+
+		unsigned int pngTexture;
+		glGenTextures(1, &pngTexture);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << std::endl;
+		}
+		stbi_image_free(data);
+
+	}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+
+		unsigned int pngTexture;
+		glGenTextures(1, &pngTexture);
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << std::endl;
+		}
+		stbi_image_free(data);
+	}
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
+	}
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+	}
 }
 
 int main()
@@ -216,131 +309,28 @@ int main()
 	}
 	stbi_image_free(data);
 
-	//glm::mat4 ModelMatrix = glm::mat4(1.0);
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-			// draw in wireframe
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-			// draw in wireframe
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
-			//Clear The Scene
-			glDeleteVertexArrays(1, &VertexArrayID);
-		}
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-			//Reload the Scene
-			glGenVertexArrays(1, &VertexArrayID);
-			glBindVertexArray(VertexArrayID);
-		}
-		if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
-			// Remove Texture Coords
-			glDeleteBuffers(1, &uvbuffer);
-		}
-		if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
-			// Apply Texture Coords
-			GLuint uvbuffer;
-			glGenBuffers(1, &uvbuffer);
-			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-			glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-		}
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-			// Removed Textures
-			glDeleteTextures(1, &TextureID);
-		}
+		movementControls(window, VertexArrayID, uvbuffer, uvs, TextureID);		
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-
-			unsigned int pngTexture;
-			glGenTextures(1, &pngTexture);
-			glBindTexture(GL_TEXTURE_2D, pngTexture);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			int width, height, nrChannels;
-			unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
-			else
-			{
-				std::cout << "Failed to load texture" << std::endl;
-			}
-			stbi_image_free(data);
-
-		}
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-
-			unsigned int pngTexture;
-			glGenTextures(1, &pngTexture);
-			glBindTexture(GL_TEXTURE_2D, pngTexture);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			int width, height, nrChannels;
-			unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
-			else
-			{
-				std::cout << "Failed to load texture" << std::endl;
-			}
-			stbi_image_free(data);
-		}
-		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
-		}
-		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-			MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
-		}
-
-		glm::mat4 ViewMatrix = getViewMatrix();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
+		mat4 ViewMatrix = getViewMatrix();
+		mat4 ProjectionMatrix = getProjectionMatrix();
 		mat4 MVP;
 
 		int size = myList.size();
 
-		for (int i = 0; i <= size -1; i++)
+		for (int i = 0; i < size -1; i++)
 		{
 			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
 
 			glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVP[0][0]);
-		}
-
-	/*	
-		float xValue = 0.0f;
-		vec3 objPositions[]
-		{
-			vec3(1.0f, 0.0f, 0.0f),
-			vec3(0.0f, 1.0f, 0.0f),
-			vec3(0.0f, 0.0f, 1.0f),
-			vec3(2.0f, 1.0f, 1.0f),
-			vec3(1.0f, 2.0f, 1.0f),
-			vec3(1.0f, 1.0f, 2.0f),
-		};
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(xValue, 0.0f, 0.0f));
-		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));		
-	*/
+		}		
+	
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -359,45 +349,21 @@ int main()
 
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+		////////////////////////////////////////////////////////////////////////////////////////////		
 
-		////////////////////////////////////////////////////////////////////////////////////////////
-		GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
-		glUseProgram(shader);
-		//GLuint MatrixID2 = glGetUniformLocation(shader, "MVP");
-		glm::mat4 ModelMatrix2 = glm::mat4(1.0);
-		//ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(0.5, 2.0f, 0.0f));
-		glm::mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
+		mat4 ModelMatrix2 = glm::mat4(1.0);	
+		ModelMatrix2 = translate(ModelMatrix2, vec3(xValue, 2.0f, 0.0f));
+		mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
 
 		// Send our transformation to the currently bound shader
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
 
-
+		// THE KEY TO ALL SUCCESS LIES BENEATH
 		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {		
-			glUseProgram(shader);
-			GLuint MatrixID2 = glGetUniformLocation(shader, "MVP");
-			ModelMatrix2 = glm::translate(ModelMatrix2, glm::vec3(0.5, 2.0f, 0.0f));
-			MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
-			glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP2[0][0]);
-
-			// 1st attribute buffer : vertices
-			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			// 2nd attribute buffer : uvs
-			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			// Bind our texture in Texture Unit 0
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, pngTexture);
-			// Set our "myTextureSampler" sampler to user Texture Unit 0
-			glUniform1i(TextureID, 0);
-
-			// Draw the triangles
-			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
+			xValue += 0.5;
+		}
+		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+			xValue -= 0.5;
 		}
 
 		// 1st attribute buffer : vertices
@@ -419,25 +385,23 @@ int main()
 		// Draw the triangles
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
-		//////////////////////////////////////////////////////////////////////////////////////////
-	
-		glm::mat4 ModelMatrix3 = glm::mat4(1.0);
-		ModelMatrix3 = glm::translate(ModelMatrix3, glm::vec3(1.5, 0.5f, 0.0f));
-		glm::mat4 MVP3 = ProjectionMatrix * ViewMatrix * ModelMatrix3;	
 
-		if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-	
-			translate(ModelMatrix3, glm::vec3(1.5, 0.5f, 0.0f));
-		
-		}
-		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {		
+		////////////////////////////////////////////////////////////////////////////////////////////		
 
-			translate(ModelMatrix3, glm::vec3(0.5f, -2.0f, 0.0f));	
-		
-		}
+		mat4 ModelMatrix3 = glm::mat4(1.0);
+		ModelMatrix3 = translate(ModelMatrix3, vec3(xValue1, 2.0f, 1.0f));
+		mat4 MVP3 = ProjectionMatrix * ViewMatrix * ModelMatrix3;
 
 		// Send our transformation to the currently bound shader
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP3[0][0]);
+
+		// THE KEY TO ALL SUCCESS LIES BENEATH
+		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+			xValue1 += 0.5;
+		}
+		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+			xValue1 -= 0.5;
+		}
 
 		// 1st attribute buffer : vertices
 		glEnableVertexAttribArray(0);
