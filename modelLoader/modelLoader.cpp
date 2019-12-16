@@ -62,27 +62,27 @@ float xValue = 1.0;
 float xValue1 = 1.0;
 float xValue2 = 1.0;
 
-vec3 herbivore1  = vec3(-10.0f, 0.0f,  9.0f);
-vec3 herbivore2  = vec3(-10.0f, 0.0f,  7.0f);
-vec3 herbivore3  = vec3(-10.0f, 0.0f,  5.0f);
-vec3 herbivore4  = vec3(-10.0f, 0.0f,  3.0f);
-vec3 herbivore5  = vec3(-10.0f, 0.0f,  1.0f);
-vec3 herbivore6  = vec3(-10.0f, 0.0f, -1.0f);
-vec3 herbivore7  = vec3(-10.0f, 0.0f, -3.0f);
-vec3 herbivore8  = vec3(-10.0f, 0.0f, -5.0f);
-vec3 herbivore9  = vec3(-10.0f, 0.0f, -7.0f);
-vec3 herbivore10 = vec3(-10.0f, 0.0f, -9.0f);
-
-vec3 carnivore1  = vec3(10.0f, 0.0f,  9.0f);
-vec3 carnivore2  = vec3(10.0f, 0.0f,  7.0f);
-vec3 carnivore3  = vec3(10.0f, 0.0f,  5.0f);
-vec3 carnivore4  = vec3(10.0f, 0.0f,  3.0f);
-vec3 carnivore5  = vec3(10.0f, 0.0f,  1.0f);
-vec3 carnivore6  = vec3(10.0f, 0.0f, -1.0f);
-vec3 carnivore7  = vec3(10.0f, 0.0f, -3.0f);
-vec3 carnivore8  = vec3(10.0f, 0.0f, -5.0f);
-vec3 carnivore9  = vec3(10.0f, 0.0f, -7.0f);
-vec3 carnivore10 = vec3(10.0f, 0.0f, -9.0f);
+//vec3 herbivore1  = vec3(-10.0f, 0.0f,  9.0f);
+//vec3 herbivore2  = vec3(-10.0f, 0.0f,  7.0f);
+//vec3 herbivore3  = vec3(-10.0f, 0.0f,  5.0f);
+//vec3 herbivore4  = vec3(-10.0f, 0.0f,  3.0f);
+//vec3 herbivore5  = vec3(-10.0f, 0.0f,  1.0f);
+//vec3 herbivore6  = vec3(-10.0f, 0.0f, -1.0f);
+//vec3 herbivore7  = vec3(-10.0f, 0.0f, -3.0f);
+//vec3 herbivore8  = vec3(-10.0f, 0.0f, -5.0f);
+//vec3 herbivore9  = vec3(-10.0f, 0.0f, -7.0f);
+//vec3 herbivore10 = vec3(-10.0f, 0.0f, -9.0f);
+//
+//vec3 carnivore1  = vec3(10.0f, 0.0f,  9.0f);
+//vec3 carnivore2  = vec3(10.0f, 0.0f,  7.0f);
+//vec3 carnivore3  = vec3(10.0f, 0.0f,  5.0f);
+//vec3 carnivore4  = vec3(10.0f, 0.0f,  3.0f);
+//vec3 carnivore5  = vec3(10.0f, 0.0f,  1.0f);
+//vec3 carnivore6  = vec3(10.0f, 0.0f, -1.0f);
+//vec3 carnivore7  = vec3(10.0f, 0.0f, -3.0f);
+//vec3 carnivore8  = vec3(10.0f, 0.0f, -5.0f);
+//vec3 carnivore9  = vec3(10.0f, 0.0f, -7.0f);
+//vec3 carnivore10 = vec3(10.0f, 0.0f, -9.0f);
 
 std::vector<Matrixes> MatrixArray;
 
@@ -156,7 +156,7 @@ void getInput(void) {
 	};
 }
 
-void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint uvbuffer, vector<vec2> uvs, GLuint TextureID) {
+void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint uvbuffer, vector<vec2> uvs, GLuint TextureID, GLuint MatrixID, vector<vec3> vertices, GLuint vertexbuffer) {
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		// draw in wireframe
@@ -240,53 +240,63 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint uvbuffer
 		}
 		stbi_image_free(data);
 	}
-	//if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-	//	MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
-	//}
-	//if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-	//	MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
-	//}
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+	
+		MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));
+		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.1f, 0.0f));
+
+	
+	}
+	/*if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+		mat4 ViewMatrix = getViewMatrix();
+		mat4 ProjectionMatrix = getProjectionMatrix();
+		glBindVertexArray(VertexArrayID);
+		MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+		mat4 MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);		
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	}*/
 }
 
-void draw(GLuint MatrixID, GLuint vertexbuffer, GLuint uvbuffer, unsigned int pngTexture,vector<vec3> vertices)
-{
-	mat4 ViewMatrix = getViewMatrix();
-	mat4 ProjectionMatrix = getProjectionMatrix();
-
-	mat4 ModelMatrix = mat4(1.0);
-	ModelMatrix = translate(ModelMatrix, vec3(xValue, 2.0f, 0.0f));
-	mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
-	// Send our transformation to the currently bound shader
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-	// THE KEY TO ALL SUCCESS LIES BENEATH
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-		xValue += 0.5;
-	}
-	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
-		xValue -= 0.5;
-	}
-
-	// 1st attribute buffer : vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	// 2nd attribute buffer : uvs
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, pngTexture);
-	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	glUniform1i(TextureID, 0);
-
-	// Draw the triangles
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-}
+//void draw(GLuint MatrixID, GLuint vertexbuffer, GLuint uvbuffer, unsigned int pngTexture,vector<vec3> vertices)
+//{
+//	mat4 ViewMatrix = getViewMatrix();
+//	mat4 ProjectionMatrix = getProjectionMatrix();
+//
+//	mat4 ModelMatrix = mat4(1.0);
+//	ModelMatrix = translate(ModelMatrix, vec3(xValue, 2.0f, 0.0f));
+//	mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+//
+//	// Send our transformation to the currently bound shader
+//	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+//
+//	// THE KEY TO ALL SUCCESS LIES BENEATH
+//	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+//		xValue += 0.5;
+//	}
+//	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+//		xValue -= 0.5;
+//	}
+//
+//	// 1st attribute buffer : vertices
+//	glEnableVertexAttribArray(0);
+//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+//
+//	// 2nd attribute buffer : uvs
+//	glEnableVertexAttribArray(1);
+//	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+//
+//	// Bind our texture in Texture Unit 0
+//	glActiveTexture(GL_TEXTURE0);
+//	glBindTexture(GL_TEXTURE_2D, pngTexture);
+//	// Set our "myTextureSampler" sampler to user Texture Unit 0
+//	glUniform1i(TextureID, 0);
+//
+//	// Draw the triangles
+//	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+//}
 
 int main()
 {
@@ -303,13 +313,9 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
-	std::vector< glm::vec3 > vertices[10];
-	std::vector< glm::vec2 > uvs[10];
+	std::vector< glm::vec3 > vertices;
+	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
-
-	//std::vector< glm::vec3 > vertices2;
-	//std::vector< glm::vec2 > uvs2;
-	//std::vector< glm::vec3 > normals2;
 
 	string fileValue;
 
@@ -317,105 +323,44 @@ int main()
 	int boatIndex = 0;
 	int index = 0;
 
-	//for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
-
-	//	std::cout << *i << ' ' << endl;;
-	//	fileValue = *i;
-
-	//	if (fileValue == "creeper.obj") {
-	//		loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
-	//		
-	//		Matrixes tempMatrix;
-	//		tempMatrix.name = fileValue;
-	//		tempMatrix.ModelMatrix = mat4(1.0);
-
-	//		MatrixArray.push_back(tempMatrix);
-	//		creeperIndex++;
-	//	}
-	//	if (fileValue == "boat.obj") {
-	//		loadOBJ(fileValue.c_str(), vertices, uvs, normals, boatPositions[boatIndex]);
-
-	//		Matrixes tempMatrix;
-	//		tempMatrix.name = fileValue;
-	//		tempMatrix.ModelMatrix = mat4(1.0);
-
-	//		MatrixArray.push_back(tempMatrix);
-	//		boatIndex++;
-	//	}
-
-	//	index++;
-	//};	
-
-	GLuint vertexbuffer[10];
-	GLuint uvbuffer[10];
-
-	//GLuint vertexbuffer2;
-	//GLuint uvbuffer2;
-
 	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
 		std::cout << *i << ' ' << endl;;
 		fileValue = *i;
 
 		if (fileValue == "creeper.obj") {
-			loadOBJ(fileValue.c_str(), vertices[creeperIndex], uvs[creeperIndex], normals, creeperPositions[creeperIndex]);
+			loadOBJ(fileValue.c_str(), vertices, uvs, normals, creeperPositions[creeperIndex]);
+			
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
 
-			/*GLuint vertexbuffer;*/
-			glGenBuffers(1, &vertexbuffer[creeperIndex]);
-			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer[creeperIndex]);
-			glBufferData(GL_ARRAY_BUFFER, vertices[creeperIndex].size() * sizeof(glm::vec3), &vertices[creeperIndex][0], GL_STATIC_DRAW);
-
-		/*	GLuint uvbuffer;*/
-			glGenBuffers(1, &uvbuffer[creeperIndex]);
-			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer[creeperIndex]);
-			glBufferData(GL_ARRAY_BUFFER, uvs[creeperIndex].size() * sizeof(glm::vec2), &uvs[creeperIndex][0], GL_STATIC_DRAW);
-
+			MatrixArray.push_back(tempMatrix);
 			creeperIndex++;
 		}
-		//if (fileValue == "boat.obj") {
-		//	double value = 100.0;
-		//	loadOBJ(fileValue.c_str(), vertices2, uvs2, normals2, boatPositions[boatIndex]);
+		if (fileValue == "boat.obj") {
+			loadOBJ(fileValue.c_str(), vertices, uvs, normals, boatPositions[boatIndex]);
 
-		///*	GLuint vertexbuffer2;*/
-		//	glGenBuffers(1, &vertexbuffer2);
-		//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer2);
-		//	glBufferData(GL_ARRAY_BUFFER, vertices2.size() * sizeof(glm::vec3), &vertices2[0], GL_STATIC_DRAW);
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
 
-		///*	GLuint uvbuffer2;*/
-		//	glGenBuffers(1, &uvbuffer2);
-		//	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer2);
-		//	glBufferData(GL_ARRAY_BUFFER, uvs2.size() * sizeof(glm::vec2), &uvs2[0], GL_STATIC_DRAW);
-
-		//	boatIndex++;
-		//}
+			MatrixArray.push_back(tempMatrix);
+			boatIndex++;
+		}
 
 		index++;
-	};
+	};	
 
-	//loadOBJ("creeper.obj", vertices, uvs, normals, creeperPositions[creeperIndex]);
+	GLuint vertexbuffer;
+	glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
-	//GLuint vertexbuffer;
-	//glGenBuffers(1, &vertexbuffer);
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-	//GLuint uvbuffer;
-	//glGenBuffers(1, &uvbuffer);
-	//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	//glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-
-	//double value = 100.0;
-	//loadOBJ("boat.obj", vertices2, uvs2, normals2, value);
-
-	//GLuint vertexbuffer2;
-	//glGenBuffers(1, &vertexbuffer2);
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer2);
-	//glBufferData(GL_ARRAY_BUFFER, vertices2.size() * sizeof(glm::vec3), &vertices2[0], GL_STATIC_DRAW);
-
-	//GLuint uvbuffer2;
-	//glGenBuffers(1, &uvbuffer2);
-	//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer2);
-	//glBufferData(GL_ARRAY_BUFFER, uvs2.size() * sizeof(glm::vec2), &uvs2[0], GL_STATIC_DRAW);
+	GLuint uvbuffer;
+	glGenBuffers(1, &uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
 
 	unsigned int pngTexture;
 	glGenTextures(1, &pngTexture);
@@ -442,32 +387,65 @@ int main()
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		computeMatricesFromInputs();
-
-		// To be moved to the bottom of the file/
-		// Every model matrix will be passesd into this function to perform translations
-		/*movementControls(window, VertexArrayID, uvbuffer, uvs, TextureID);		
-
-		draw(MatrixID, vertexbuffer, uvbuffer, pngTexture, vertices);*/
 
 		mat4 ViewMatrix = getViewMatrix();
 		mat4 ProjectionMatrix = getProjectionMatrix();
-		//mat4 MVP;
+		
+		movementControls(window, VertexArrayID, uvbuffer, uvs, TextureID, MatrixID, vertices, vertexbuffer);
 	
 		int size = myList.size();
 
 		for (int i = 0; i < size; i++)
 		{
-			//MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
-			//glUniformMatrix4fv(MatrixID, i, GL_FALSE, &MVP[0][0]);
+			// 1rst attribute buffer : vertices
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			movementControls(window, VertexArrayID, uvbuffer[i], uvs[i], TextureID);
-		
-			draw(MatrixID, vertexbuffer[i], uvbuffer[i], pngTexture, vertices[i]);
+			// 2nd attribute buffer : UVs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);
+
+			mat4 MVP;
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		}	
 
-		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
-			draw(MatrixID, vertexbuffer[3], uvbuffer[3], pngTexture, vertices[3]);
+		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {			
+			
+			glBindVertexArray(VertexArrayID);
+
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// 2nd attribute buffer : UVs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);
+
+			MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+
+			mat4 MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		}
 	
 		//// 1rst attribute buffer : vertices
@@ -488,6 +466,7 @@ int main()
 
 		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+		
 		//mat4 ViewMatrix = getViewMatrix();
 		//mat4 ProjectionMatrix = getProjectionMatrix();
 
@@ -529,77 +508,6 @@ int main()
 
 		////////////////////////////////////////////////////////////////////////////////////////////			
 
-		//mat4 ModelMatrix3 = glm::mat4(1.0);
-		//ModelMatrix3 = translate(ModelMatrix3, vec3(xValue1, 2.0f, 0.0f));
-		//mat4 MVP3 = ProjectionMatrix * ViewMatrix * ModelMatrix3;
-
-		//// Send our transformation to the currently bound shader
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP3[0][0]);
-
-		//// THE KEY TO ALL SUCCESS LIES BENEATH
-		//if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		//	xValue1 += 0.5;
-		//}
-		//if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		//	xValue1 -= 0.5;
-		//}
-
-		//// 1st attribute buffer : vertices
-		//glEnableVertexAttribArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// 2nd attribute buffer : uvs
-		//glEnableVertexAttribArray(1);
-		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// Bind our texture in Texture Unit 0
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, pngTexture);
-		//// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//glUniform1i(TextureID, 0);
-
-		//// Draw the triangles
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-
-		//////////////////////////////////////////////////////////////////////////////////////////////			
-
-		//mat4 ModelMatrix4 = glm::mat4(1.0);
-		//ModelMatrix4 = translate(ModelMatrix4, vec3(xValue2, 2.0f, 1.0f));
-		//mat4 MVP4 = ProjectionMatrix * ViewMatrix * ModelMatrix4;
-
-		//// Send our transformation to the currently bound shader
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP4[0][0]);
-
-		//// THE KEY TO ALL SUCCESS LIES BENEATH
-		//if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-		//	xValue2 += 0.5;
-		//}
-		//if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-		//	xValue2 -= 0.5;
-		//}
-
-		//// 1st attribute buffer : vertices
-		//glEnableVertexAttribArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer2);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// 2nd attribute buffer : uvs
-		//glEnableVertexAttribArray(1);
-		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer2);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// Bind our texture in Texture Unit 0
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, pngTexture);
-		//// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//glUniform1i(TextureID, 0);
-
-		//// Draw the triangles
-		//glDrawArrays(GL_TRIANGLES, 0, vertices2.size());
-
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
@@ -608,15 +516,10 @@ int main()
 
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(window) == 0);
-
-	for (int i = 0; i < 10; i++)
-	{
-		glDeleteBuffers(1, &vertexbuffer[i]);
-		glDeleteBuffers(1, &uvbuffer[i]);
-	}
+	
 	// Cleanup VBO and shader
-	//glDeleteBuffers(1, &vertexbuffer);
-	/*glDeleteBuffers(1, &uvbuffer);*/
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &uvbuffer);
 	glDeleteProgram(shader);
 	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
