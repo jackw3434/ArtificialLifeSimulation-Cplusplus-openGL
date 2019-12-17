@@ -10,7 +10,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "loadVBO.hpp"
 #include "shader.hpp"
 #include "controls.hpp"
 #include "objloader.hpp"
@@ -56,9 +55,32 @@ public:
 	string name;
 	mat4 ModelMatrix;
 };
-float xValue = 1.0;
-float xValue1 = 1.0;
-float xValue2 = 1.0;
+
+vec3 herbivoreArray[] = { 
+	vec3(-10.0f, 0.0f,  9.0f),
+	vec3(-10.0f, 0.0f,  7.0f),
+	vec3(-10.0f, 0.0f,  5.0f),
+	vec3(-10.0f, 0.0f,  3.0f),
+	vec3(-10.0f, 0.0f,  1.0f),
+	vec3(-10.0f, 0.0f, -1.0f),
+	vec3(-10.0f, 0.0f, -3.0f),
+	vec3(-10.0f, 0.0f, -5.0f),
+	vec3(-10.0f, 0.0f, -7.0f),
+	vec3(-10.0f, 0.0f, -9.0f)
+};
+
+vec3 carnivoreArray[] = {
+	vec3(10.0f, 0.0f,  9.0f),
+	vec3(10.0f, 0.0f,  7.0f),
+	vec3(10.0f, 0.0f,  5.0f),
+	vec3(10.0f, 0.0f,  3.0f),
+	vec3(10.0f, 0.0f,  1.0f),
+	vec3(10.0f, 0.0f, -1.0f),
+	vec3(10.0f, 0.0f, -3.0f),
+	vec3(10.0f, 0.0f, -5.0f),
+	vec3(10.0f, 0.0f, -7.0f),
+	vec3(10.0f, 0.0f, -9.0f)
+};
 
 //vec3 herbivore1  = vec3(-10.0f, 0.0f,  9.0f);
 //vec3 herbivore2  = vec3(-10.0f, 0.0f,  7.0f);
@@ -70,7 +92,7 @@ float xValue2 = 1.0;
 //vec3 herbivore8  = vec3(-10.0f, 0.0f, -5.0f);
 //vec3 herbivore9  = vec3(-10.0f, 0.0f, -7.0f);
 //vec3 herbivore10 = vec3(-10.0f, 0.0f, -9.0f);
-//
+
 //vec3 carnivore1  = vec3(10.0f, 0.0f,  9.0f);
 //vec3 carnivore2  = vec3(10.0f, 0.0f,  7.0f);
 //vec3 carnivore3  = vec3(10.0f, 0.0f,  5.0f);
@@ -137,9 +159,14 @@ void getInput(void) {
 	cin >> number;
 	cout << "You entered: " << number << " files to load." << endl;
 
+	if (number == 0 || number > 2) {	
+		cout << "Please load either 1 or 2 models model" << endl;
+		getInput();
+	}
+
 	for (int i = 0; i < number; i++)
 	{
-		cout << "Please enter the " << i << " valid .obj file name.\n>";
+		cout << "Please enter a valid .obj file name, either creeper.obj or boat.obj.\n>";
 		cin >> fileToLoad;
 		cout << "You entered: " << fileToLoad << i << endl;
 
@@ -154,9 +181,7 @@ void getInput(void) {
 	};
 }
 
-void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,
-						vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,
-						vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
+void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
 {
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		// draw in wireframe
@@ -254,82 +279,76 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	}
 }
 
-//void draw(GLuint MatrixID, GLuint vertexbuffer, GLuint uvbuffer, unsigned int pngTexture,vector<vec3> vertices)
-//{
-//	mat4 ViewMatrix = getViewMatrix();
-//	mat4 ProjectionMatrix = getProjectionMatrix();
-//
-//	int size = myList.size();
-//	int creeperIndex = 0;
-//	int boatIndex = 0;
-//	int index = 0;
-//
-//	string fileValue;
-//
-//	creeperIndex = 0;
-//	boatIndex = 0;
-//	index = 0;
-//
-//	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
-//
-//		fileValue = *i;
-//
-//		if (fileValue == "creeper.obj") {
-//
-//			// 1rst attribute buffer : creeperVertices
-//			glEnableVertexAttribArray(0);
-//			glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
-//			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-//
-//			// 2nd attribute buffer : UVs
-//			glEnableVertexAttribArray(1);
-//			glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-//			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-//
-//			// Bind our texture in Texture Unit 0
-//			glActiveTexture(GL_TEXTURE0);
-//			glBindTexture(GL_TEXTURE_2D, pngTexture);
-//			// Set our "myTextureSampler" sampler to user Texture Unit 0
-//			glUniform1i(TextureID, 0);
-//
-//			mat4 MVP;
-//			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[creeperIndex].ModelMatrix;
-//			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-//
-//			glDrawArrays(GL_TRIANGLES, 0, creeperVertices.size());
-//
-//			creeperIndex++;
-//		}
-//		if (fileValue == "boat.obj") {
-//
-//			// 1rst attribute buffer : boatVertices
-//			glEnableVertexAttribArray(0);
-//			glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
-//			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-//
-//			// 2nd attribute buffer : boatUVs
-//			glEnableVertexAttribArray(1);
-//			glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
-//			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-//
-//			// Bind our texture in Texture Unit 0
-//			glActiveTexture(GL_TEXTURE0);
-//			glBindTexture(GL_TEXTURE_2D, pngTexture);
-//			// Set our "myTextureSampler" sampler to user Texture Unit 0
-//			glUniform1i(TextureID, 0);
-//
-//			mat4 MVP;
-//			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
-//			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-//
-//			glDrawArrays(GL_TRIANGLES, 0, boatVertices.size());
-//
-//			boatIndex++;
-//		}
-//
-//		index++;
-//	};
-//}
+void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer,vector<vec3> creeperVertices, GLuint boatVertexbuffer, GLuint boatUvbuffer, vector<vec3> boatVertices, unsigned int pngTexture)
+{
+	mat4 ViewMatrix = getViewMatrix();
+	mat4 ProjectionMatrix = getProjectionMatrix();
+
+	int size = myList.size();
+	int creeperIndex = 0;
+	int boatIndex = 0;
+	int index = 0;
+
+	string fileValue;
+
+	index = 0;
+
+	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+
+		fileValue = *i;
+
+		if (fileValue == "creeper.obj") {
+
+			// 1rst attribute buffer : creeperVertices
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// 2nd attribute buffer : UVs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);
+
+			mat4 MVP;
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+			glDrawArrays(GL_TRIANGLES, 0, creeperVertices.size());
+		}
+		if (fileValue == "boat.obj") {
+
+			// 1rst attribute buffer : boatVertices
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// 2nd attribute buffer : boatUVs
+			glEnableVertexAttribArray(1);
+			glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			// Bind our texture in Texture Unit 0
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, pngTexture);
+			// Set our "myTextureSampler" sampler to user Texture Unit 0
+			glUniform1i(TextureID, 0);
+
+			mat4 MVP;			
+			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+			glDrawArrays(GL_TRIANGLES, 0, boatVertices.size());
+		}
+
+		index++;
+	};
+}
 
 int main()
 {
@@ -362,7 +381,7 @@ int main()
 
 	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
-		std::cout << *i << ' ' << endl;;
+		cout << *i << ' ' << endl;;
 		fileValue = *i;
 
 		if (fileValue == "creeper.obj") {
@@ -374,49 +393,60 @@ int main()
 			tempMatrix.name = fileValue;
 			tempMatrix.ModelMatrix = mat4(1.0);
 
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[creeperIndex]);
+
 			MatrixArray.push_back(tempMatrix);
 			creeperIndex++;
 		}
-		if (fileValue == "boat.obj") {
+		else if (fileValue == "boat.obj") {
 			if (boatIndex == 0) {
-				loadOBJ(fileValue.c_str(), boatVertices, boatUvs, boatNormals, boatPositions[boatIndex]);
+				loadOBJ("creeper.obj", boatVertices, boatUvs, boatNormals, boatPositions[boatIndex]);
 			}
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
 			tempMatrix.ModelMatrix = mat4(1.0);
 
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[boatIndex]);
+
 			MatrixArray.push_back(tempMatrix);
 			boatIndex++;
 		}
+		else{
+			cout << fileValue << " does not exist" << endl;
+		}
 
 		index++;
-	};	
+	};		
 
 	////////////////////////////////////////////////////////////////// CREEPER
 	GLuint creeperVertexbuffer;
 	glGenBuffers(1, &creeperVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, creeperVertices.size() * sizeof(glm::vec3), &creeperVertices[0], GL_STATIC_DRAW);
+	if (creeperVertices.size()) {
+		glBufferData(GL_ARRAY_BUFFER, creeperVertices.size() * sizeof(glm::vec3), &creeperVertices[0], GL_STATIC_DRAW);
+	}
 
 	GLuint creeperUvbuffer;
 	glGenBuffers(1, &creeperUvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, creeperUvs.size() * sizeof(glm::vec2), &creeperUvs[0], GL_STATIC_DRAW);
-
+	if (creeperUvs.size()) {
+		glBufferData(GL_ARRAY_BUFFER, creeperUvs.size() * sizeof(glm::vec2), &creeperUvs[0], GL_STATIC_DRAW);
+	}
 	////////////////////////////////////////////////////////////////// CREEPER
-
 
 	////////////////////////////////////////////////////////////////// BOAT
 	GLuint boatVertexbuffer;
 	glGenBuffers(1, &boatVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, boatVertices.size() * sizeof(glm::vec3), &boatVertices[0], GL_STATIC_DRAW);
-
+	if (boatVertices.size()) {
+		glBufferData(GL_ARRAY_BUFFER, boatVertices.size() * sizeof(glm::vec3), &boatVertices[0], GL_STATIC_DRAW);
+	}
 	GLuint boatUvbuffer;
 	glGenBuffers(1, &boatUvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, boatUvs.size() * sizeof(glm::vec2), &boatUvs[0], GL_STATIC_DRAW);
-
+	if (boatUvs.size()) {
+		glBufferData(GL_ARRAY_BUFFER, boatUvs.size() * sizeof(glm::vec2), &boatUvs[0], GL_STATIC_DRAW);
+	}
 	////////////////////////////////////////////////////////////////// BOAT
 
 	unsigned int pngTexture;
@@ -447,193 +477,7 @@ int main()
 
 		computeMatricesFromInputs();
 		movementControls(window, VertexArrayID, creeperUvbuffer, creeperUvs, creeperVertices, boatUvbuffer, boatUvs, boatVertices, TextureID, MatrixID);
-
-		mat4 ViewMatrix = getViewMatrix();
-		mat4 ProjectionMatrix = getProjectionMatrix();		
-	
-		int size = myList.size();
-		int creeperIndex = 0;
-		int boatIndex = 0;
-		int index = 0;
-
-		string fileValue;
-
-		creeperIndex = 0;
-		boatIndex = 0;
-		index = 0;
-
-		for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
-		
-			fileValue = *i;
-
-			if (fileValue == "creeper.obj") {
-
-				// 1rst attribute buffer : creeperVertices
-				glEnableVertexAttribArray(0);
-				glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-				// 2nd attribute buffer : UVs
-				glEnableVertexAttribArray(1);
-				glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-				// Bind our texture in Texture Unit 0
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, pngTexture);
-				// Set our "myTextureSampler" sampler to user Texture Unit 0
-				glUniform1i(TextureID, 0);
-
-				mat4 MVP;
-				MVP = ProjectionMatrix * ViewMatrix * MatrixArray[creeperIndex].ModelMatrix;
-				glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-				glDrawArrays(GL_TRIANGLES, 0, creeperVertices.size());
-
-				creeperIndex++;
-			}
-			if (fileValue == "boat.obj") {
-
-				// 1rst attribute buffer : boatVertices
-				glEnableVertexAttribArray(0);
-				glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-				// 2nd attribute buffer : boatUVs
-				glEnableVertexAttribArray(1);
-				glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-				// Bind our texture in Texture Unit 0
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, pngTexture);
-				// Set our "myTextureSampler" sampler to user Texture Unit 0
-				glUniform1i(TextureID, 0);
-
-				mat4 MVP;
-				MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
-				glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-				glDrawArrays(GL_TRIANGLES, 0, boatVertices.size());
-			
-				boatIndex++;
-			}
-
-			index++;
-		};
-
-		//for (int i = 0; i < size; i++)
-		//{
-		//	// 1rst attribute buffer : creeperVertices
-		//	glEnableVertexAttribArray(0);
-		//	glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
-		//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//	// 2nd attribute buffer : UVs
-		//	glEnableVertexAttribArray(1);
-		//	glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-		//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		//	
-
-		//	// Bind our texture in Texture Unit 0
-		//	glActiveTexture(GL_TEXTURE0);
-		//	glBindTexture(GL_TEXTURE_2D, pngTexture);
-		//	// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//	glUniform1i(TextureID, 0);
-
-		//	mat4 MVP;
-		//	MVP = ProjectionMatrix * ViewMatrix * MatrixArray[i].ModelMatrix;
-		//	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-		//	glDrawArrays(GL_TRIANGLES, 0, creeperVertices.size());		
-
-		//}	
-	
-		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {			
-			
-			//glBindVertexArray(VertexArrayID);
-
-			//glEnableVertexAttribArray(0);
-			//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-			//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			//// 2nd attribute buffer : UVs
-			//glEnableVertexAttribArray(1);
-			//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-			//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-			//// Bind our texture in Texture Unit 0
-			//glActiveTexture(GL_TEXTURE0);
-			//glBindTexture(GL_TEXTURE_2D, pngTexture);
-			//// Set our "myTextureSampler" sampler to user Texture Unit 0
-			//glUniform1i(TextureID, 0);
-
-	////		MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
-
-		/*	mat4 MVP = ProjectionMatrix * ViewMatrix * MatrixArray[2].ModelMatrix;
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-			glDrawArrays(GL_TRIANGLES, 0, vertices.size());*/
-		}
-	
-		//// 1rst attribute buffer : vertices
-		//glEnableVertexAttribArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// 2nd attribute buffer : UVs
-		//glEnableVertexAttribArray(1);
-		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// Bind our texture in Texture Unit 0
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, pngTexture);
-		//// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//glUniform1i(TextureID, 0);
-
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-		
-		//mat4 ViewMatrix = getViewMatrix();
-		//mat4 ProjectionMatrix = getProjectionMatrix();
-
-		////////////////////////////////////////////////////////////////////////////////////////////			
-
-		//mat4 ModelMatrix2 = glm::mat4(1.0);	
-		//ModelMatrix2 = translate(ModelMatrix2, vec3(2.0f, 2.0f, 0.0f));
-		//mat4 MVP2 = ProjectionMatrix * ViewMatrix * ModelMatrix2;
-
-		//// Send our transformation to the currently bound shader
-		//glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP2[0][0]);
-
-		// THE KEY TO ALL SUCCESS LIES BENEATH
-	/*	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {		
-			xValue += 0.5;
-		}
-		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
-			xValue -= 0.5;
-		}*/
-
-		// 1st attribute buffer : vertices
-		//glEnableVertexAttribArray(0);
-		//glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// 2nd attribute buffer : uvs
-		//glEnableVertexAttribArray(1);
-		//glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		//// Bind our texture in Texture Unit 0
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, pngTexture);
-		//// Set our "myTextureSampler" sampler to user Texture Unit 0
-		//glUniform1i(TextureID, 0);
-
-		//// Draw the triangles
-		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-		////////////////////////////////////////////////////////////////////////////////////////////			
+		draw(MatrixID, creeperVertexbuffer, creeperUvbuffer, creeperVertices, boatVertexbuffer, boatUvbuffer, boatVertices, pngTexture);					
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -647,6 +491,8 @@ int main()
 	// Cleanup VBO and shader
 	glDeleteBuffers(1, &creeperVertexbuffer);
 	glDeleteBuffers(1, &creeperUvbuffer);
+	glDeleteBuffers(1, &boatVertexbuffer);
+	glDeleteBuffers(1, &boatUvbuffer);
 	glDeleteProgram(shader);
 	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);

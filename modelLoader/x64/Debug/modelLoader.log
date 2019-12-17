@@ -1,5 +1,5 @@
 ﻿  modelLoader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(418,27): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(455,57): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(481,54): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(287,26): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(322,56): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(346,53): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

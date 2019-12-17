@@ -33,9 +33,6 @@
     <ClCompile Include="controls.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="loadVBO.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TransformVertexShader.vertexshader">
@@ -55,9 +52,6 @@
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="loadVBO.hpp">
-      <Filter>Source Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
