@@ -164,83 +164,75 @@ void getInput(void) {
 void wait(int seconds)
 {
 	clock_t endwait;
-	endwait = clock() + seconds * CLOCKS_PER_SEC;
+	endwait = clock() + 1 * CLOCKS_PER_SEC;
 	while (clock() < endwait) {}
 }
 
-void moveRandomly() {	
+void moveRandomly() {		
 	
 	srand(time(NULL));
+
 	for (int i = 0; i < MatrixArray.size(); i++)
-	{
-		
-		int randomAxisValue = rand() % 2;
-		//cout << randomAxisValue;
+	{		
+			int randomAxisValue = rand() % 2;		
 
-		if (randomAxisValue == 0) {
-			// X Value
+			if (randomAxisValue == 0) {
+				// X Value
+				int randomMovementvalue = rand() % 2;
+				//	cout << randomMovementvalue;		
 
-			int randomMovementvalue = rand() % 2;
-		//	cout << randomMovementvalue;		
-			
-			if (randomMovementvalue == 0) {
-				// +1 on the X value			
-				if (MatrixArray[i].ModelMatrix[3].x >= 10) {
-					cout << "x == 10 " << endl;
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
-				} else {
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+				if (randomMovementvalue == 0) {
+					// +1 on the X value			
+					if (MatrixArray[i].ModelMatrix[3].x >= 10) {
+						cout << "x == 10 " << endl;
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+					}
+					//	cout << "+1 on the X value" << endl;
 				}
-					
 
-				//	cout << "+1 on the X value" << endl;
-			}			
-		
-			if (randomMovementvalue == 1) {
-				// -1 on the X value
-				if (MatrixArray[i].ModelMatrix[3].x <= -10) {
-					cout << "x == -10 " << endl;
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+				if (randomMovementvalue == 1) {
+					// -1 on the X value
+					if (MatrixArray[i].ModelMatrix[3].x <= -10) {
+						cout << "x == -10 " << endl;
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
+					}
+					//	cout << "-1 on the X value" << endl;
 				}
-				else {
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
-				}
-				
-				//	cout << "-1 on the X value" << endl;
-			}						
-		}
-
-		if (randomAxisValue == 1) {
-			// Z Value
-
-			int randomMovementvalue = rand() % 2;
-		//	cout << randomMovementvalue;
-
-			if (randomMovementvalue == 0) {
-				// +1 on the Z value
-				if (MatrixArray[i].ModelMatrix[3].z >= 10) {
-					cout << "z == 10 " << endl;
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
-				} else {
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
-				}
-				
-		//		cout << "+1 on the Z value" << endl;
 			}
 
-			if (randomMovementvalue == 1) {
-				// -1 on the Z value
-				if (MatrixArray[i].ModelMatrix[3].z <= -10) {
-					cout << "z == -10 " << endl;
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
+			if (randomAxisValue == 1) {
+				// Z Value
+				int randomMovementvalue = rand() % 2;				
+
+				if (randomMovementvalue == 0) {
+					// +1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z >= 10) {
+						cout << "z == 10 " << endl;
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
+					}
 				}
-				else {
-					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
+
+				if (randomMovementvalue == 1) {
+					// -1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z <= -10) {
+						cout << "z == -10 " << endl;
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
+					}
+					//cout << "-1 on the Z value" << endl;
 				}
-				
-		//		cout << "-1 on the Z value" << endl;
-			}
-		}		
+			}		
 	}
 };
 
@@ -340,10 +332,8 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, glm::vec3(-0.6f, 0.1f, 0.0f));
 	}
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-	
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {	
 		moveRandomly();
-
 	}
 }
 
@@ -546,7 +536,7 @@ int main()
 		computeMatricesFromInputs();
 		movementControls(window, VertexArrayID, creeperUvbuffer, creeperUvs, creeperVertices, boatUvbuffer, boatUvs, boatVertices, TextureID, MatrixID);
 		draw(MatrixID, creeperVertexbuffer, creeperUvbuffer, creeperVertices, boatVertexbuffer, boatUvbuffer, boatVertices, pngTexture);					
-
+		//moveRandomly();
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glfwSwapBuffers(window);
