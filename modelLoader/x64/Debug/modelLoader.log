@@ -1,5 +1,8 @@
 ﻿  modelLoader.cpp
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(287,26): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(322,56): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(346,53): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\packages\nupengl.core.0.1.0.1\build\native\include\GLFW\glfw3.h(92): message :  see previous definition of 'APIENTRY'
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(174,12): warning C4244:  'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(356,26): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(391,56): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\jwilliams8\source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(415,53): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   modelLoader.vcxproj -> C:\Users\jwilliams8\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

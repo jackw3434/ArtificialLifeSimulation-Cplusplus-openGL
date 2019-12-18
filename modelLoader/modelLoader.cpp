@@ -14,6 +14,8 @@
 #include "controls.hpp"
 #include "objloader.hpp"
 #include <glm\gtc\type_ptr.hpp>
+#include <time.h>
+#include <windows.h>
 
 using namespace glm;
 using namespace std;
@@ -81,28 +83,6 @@ vec3 carnivoreArray[] = {
 	vec3(10.0f, 0.0f, -7.0f),
 	vec3(10.0f, 0.0f, -9.0f)
 };
-
-//vec3 herbivore1  = vec3(-10.0f, 0.0f,  9.0f);
-//vec3 herbivore2  = vec3(-10.0f, 0.0f,  7.0f);
-//vec3 herbivore3  = vec3(-10.0f, 0.0f,  5.0f);
-//vec3 herbivore4  = vec3(-10.0f, 0.0f,  3.0f);
-//vec3 herbivore5  = vec3(-10.0f, 0.0f,  1.0f);
-//vec3 herbivore6  = vec3(-10.0f, 0.0f, -1.0f);
-//vec3 herbivore7  = vec3(-10.0f, 0.0f, -3.0f);
-//vec3 herbivore8  = vec3(-10.0f, 0.0f, -5.0f);
-//vec3 herbivore9  = vec3(-10.0f, 0.0f, -7.0f);
-//vec3 herbivore10 = vec3(-10.0f, 0.0f, -9.0f);
-
-//vec3 carnivore1  = vec3(10.0f, 0.0f,  9.0f);
-//vec3 carnivore2  = vec3(10.0f, 0.0f,  7.0f);
-//vec3 carnivore3  = vec3(10.0f, 0.0f,  5.0f);
-//vec3 carnivore4  = vec3(10.0f, 0.0f,  3.0f);
-//vec3 carnivore5  = vec3(10.0f, 0.0f,  1.0f);
-//vec3 carnivore6  = vec3(10.0f, 0.0f, -1.0f);
-//vec3 carnivore7  = vec3(10.0f, 0.0f, -3.0f);
-//vec3 carnivore8  = vec3(10.0f, 0.0f, -5.0f);
-//vec3 carnivore9  = vec3(10.0f, 0.0f, -7.0f);
-//vec3 carnivore10 = vec3(10.0f, 0.0f, -9.0f);
 
 std::vector<Matrixes> MatrixArray;
 
@@ -180,6 +160,89 @@ void getInput(void) {
 		}
 	};
 }
+
+void wait(int seconds)
+{
+	clock_t endwait;
+	endwait = clock() + seconds * CLOCKS_PER_SEC;
+	while (clock() < endwait) {}
+}
+
+void moveRandomly() {	
+	
+	srand(time(NULL));
+	for (int i = 0; i < MatrixArray.size(); i++)
+	{
+		
+		int randomAxisValue = rand() % 2;
+		//cout << randomAxisValue;
+
+		if (randomAxisValue == 0) {
+			// X Value
+
+			int randomMovementvalue = rand() % 2;
+		//	cout << randomMovementvalue;		
+			
+			if (randomMovementvalue == 0) {
+				// +1 on the X value			
+				if (MatrixArray[i].ModelMatrix[3].x >= 10) {
+					cout << "x == 10 " << endl;
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
+				} else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+				}
+					
+
+				//	cout << "+1 on the X value" << endl;
+			}			
+		
+			if (randomMovementvalue == 1) {
+				// -1 on the X value
+				if (MatrixArray[i].ModelMatrix[3].x <= -10) {
+					cout << "x == -10 " << endl;
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.01f, 0.0f, 0.0f));
+				}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-0.01f, 0.0f, 0.0f));
+				}
+				
+				//	cout << "-1 on the X value" << endl;
+			}						
+		}
+
+		if (randomAxisValue == 1) {
+			// Z Value
+
+			int randomMovementvalue = rand() % 2;
+		//	cout << randomMovementvalue;
+
+			if (randomMovementvalue == 0) {
+				// +1 on the Z value
+				if (MatrixArray[i].ModelMatrix[3].z >= 10) {
+					cout << "z == 10 " << endl;
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
+				} else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
+				}
+				
+		//		cout << "+1 on the Z value" << endl;
+			}
+
+			if (randomMovementvalue == 1) {
+				// -1 on the Z value
+				if (MatrixArray[i].ModelMatrix[3].z <= -10) {
+					cout << "z == -10 " << endl;
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, 0.01f));
+				}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -0.01f));
+				}
+				
+		//		cout << "-1 on the Z value" << endl;
+			}
+		}		
+	}
+};
 
 void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
 {
@@ -276,6 +339,11 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, glm::vec3(-0.6f, 0.1f, 0.0f));
+	}
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+	
+		moveRandomly();
+
 	}
 }
 
@@ -387,7 +455,7 @@ int main()
 		if (fileValue == "creeper.obj") {
 
 			if (creeperIndex == 0) {
-				loadOBJ(fileValue.c_str(), creeperVertices, creeperUvs, creeperNormals, creeperPositions[creeperIndex]);
+				loadOBJ(fileValue.c_str(), creeperVertices, creeperUvs, creeperNormals);
 			}
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
@@ -400,13 +468,13 @@ int main()
 		}
 		else if (fileValue == "boat.obj") {
 			if (boatIndex == 0) {
-				loadOBJ("creeper.obj", boatVertices, boatUvs, boatNormals, boatPositions[boatIndex]);
+				loadOBJ("creeper.obj", boatVertices, boatUvs, boatNormals);
 			}
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);
+			tempMatrix.ModelMatrix = mat4(1.0);					
 
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[boatIndex]);
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[boatIndex]);
 
 			MatrixArray.push_back(tempMatrix);
 			boatIndex++;
