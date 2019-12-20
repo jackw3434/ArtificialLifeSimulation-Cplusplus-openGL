@@ -24,7 +24,7 @@ glm::mat4 getProjectionMatrix() {
 }
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3(0, 2,-5);
+glm::vec3 position = glm::vec3(0, 20,-50);
 // Initial horizontal angle : toward -Z
 float horizontalAngle = 0.0f;
 // Initial vertical angle : none
