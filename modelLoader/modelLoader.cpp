@@ -88,6 +88,7 @@ vec3 carnivoreArray[] = {
 };
 
 std::vector<Matrixes> MatrixArray;
+
 bool canMoveAt0 = true;
 bool canMoveAt1 = true;
 bool canMoveAt2 = true;
@@ -114,8 +115,12 @@ bool canMoveAt22 = true;
 bool canMoveAt23 = true;
 bool canMoveAt24 = true;
 
+bool dayFinished = false;
+
 int creeperCount = 5;
 int boatCount = 5;
+int days = 0;
+int currentDay = 0;
 
 void init(void) {
 
@@ -190,6 +195,10 @@ void getInput(void) {
 			myList.push_back(fileToLoad.c_str());
 		}
 	};
+
+	cout << "Please enter how many days you would like the simulation to run.\n>";
+	cin >> days;
+	cout << "You entered: " << days << " days." << endl;
 }
 
 void moveRandomly() {	
@@ -198,74 +207,63 @@ void moveRandomly() {
 	srand(time(NULL));
 
 	for (int i = 0; i < MatrixArray.size(); i++)
-	{
-		//for (int j = 0; j < MatrixArray.size(); j++)
-		//{
+	{	
 
-			//if (MatrixArray[i].ModelMatrix[3].x != MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z != MatrixArray[j].ModelMatrix[3].z) {
+		int randomAxisValue = rand() % 2;
 
+		if (randomAxisValue == 0) {
+			// X Value
+			int randomMovementvalue = rand() % 2;
 
-				int randomAxisValue = rand() % 2;
-
-				if (randomAxisValue == 0) {
-					// X Value
-					int randomMovementvalue = rand() % 2;
-
-					if (randomMovementvalue == 0) {
-						// +1 on the X value			
-						if (MatrixArray[i].ModelMatrix[3].x >= 5) {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
-						}
-						else {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
-						}
-					}
-
-					if (randomMovementvalue == 1) {
-						// -1 on the X value
-						if (MatrixArray[i].ModelMatrix[3].x <= -5) {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
-						}
-						else {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
-						}
-					}
+			if (randomMovementvalue == 0) {
+				// +1 on the X value			
+				if (MatrixArray[i].ModelMatrix[3].x >= 5) {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
 				}
-
-				if (randomAxisValue == 1) {
-					// Z Value
-					int randomMovementvalue = rand() % 2;
-
-					if (randomMovementvalue == 0) {
-						// +1 on the Z value
-						if (MatrixArray[i].ModelMatrix[3].z >= 5) {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
-						}
-						else {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
-						}
-					}
-
-					if (randomMovementvalue == 1) {
-						// -1 on the Z value
-						if (MatrixArray[i].ModelMatrix[3].z <= -5) {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
-						}
-						else {
-							MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
-						}
-					}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
 				}
+			}
 
-			//}
-		//}
+			if (randomMovementvalue == 1) {
+				// -1 on the X value
+				if (MatrixArray[i].ModelMatrix[3].x <= -5) {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
+				}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
+				}
+			}
+		}
 
+		if (randomAxisValue == 1) {
+			// Z Value
+			int randomMovementvalue = rand() % 2;
+
+			if (randomMovementvalue == 0) {
+				// +1 on the Z value
+				if (MatrixArray[i].ModelMatrix[3].z >= 5) {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
+				}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
+				}
+			}
+
+			if (randomMovementvalue == 1) {
+				// -1 on the Z value
+				if (MatrixArray[i].ModelMatrix[3].z <= -5) {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
+				}
+				else {
+					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
+				}
+			}
+		}
 
 	}
 	cout << "creeperCount" << creeperCount << endl;
 	cout << "boatCount" << boatCount << endl;
-	//cout << "MatrixArray[3].ModelMatrix[3].z" << MatrixArray[3].ModelMatrix[3].z << endl;
-	//cout << "MatrixArray[3].ModelMatrix[3].x" << MatrixArray[3].ModelMatrix[3].x << endl;
 };
 
 void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
@@ -363,11 +361,7 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, glm::vec3(-0.6f, 0.1f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {	
-		
-
-	}
+	}	
 }
 
 void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, vector<vec3> creeperVertices, GLuint boatVertexbuffer, GLuint boatUvbuffer, vector<vec3> boatVertices, unsigned int pngTextureCreeper, unsigned int pngTextureBoat)
@@ -442,120 +436,194 @@ void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, v
 }
 
 void moveEachSecond() {
+	
+		// glfwGetTime is called only once, the first time this function is called
+		static double lastTime = glfwGetTime();
+		// Compute time difference between current and last frame
+		double currentTime = glfwGetTime();
 
-	// glfwGetTime is called only once, the first time this function is called
-	static double lastTime = glfwGetTime();
-	// Compute time difference between current and last frame
-	double currentTime = glfwGetTime();
+		int deltaTime = float(currentTime - lastTime);
 
-	int deltaTime = float(currentTime - lastTime);
+		//cout << "lastTime: " << lastTime << endl;
+		//cout << "currentTime: " << currentTime << endl;
+		cout << "deltaTime: " << deltaTime << endl;
 
-	//cout << deltaTime << endl;
+		if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt1 = false;
+		}
+		if (floor(deltaTime) == 2 && canMoveAt2 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt2 = false;
+		}
+		if (floor(deltaTime) == 3 && canMoveAt3 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt3 = false;
+		}
+		if (floor(deltaTime) == 4 && canMoveAt4 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt4 = false;
+		}
+		if (floor(deltaTime) == 5 && canMoveAt5 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt5 = false;
+		}
+		if (floor(deltaTime) == 6 && canMoveAt6 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt6 = false;
+		}
+		if (floor(deltaTime) == 7 && canMoveAt7 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt7 = false;
+		}
+		if (floor(deltaTime) == 8 && canMoveAt8 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt8 = false;
+		}
+		if (floor(deltaTime) == 9 && canMoveAt9 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt9 = false;
+		}
+		if (floor(deltaTime) == 10 && canMoveAt10 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt10 = false;
+		}
+		if (floor(deltaTime) == 11 && canMoveAt11 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt11 = false;
+		}
+		if (floor(deltaTime) == 12 && canMoveAt12 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt12 = false;
+		}
+		if (floor(deltaTime) == 13 && canMoveAt13 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt13 = false;
+		}
+		if (floor(deltaTime) == 14 && canMoveAt14 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt14 = false;
+		}
+		if (floor(deltaTime) == 15 && canMoveAt15 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt15 = false;
+		}
+		if (floor(deltaTime) == 16 && canMoveAt16 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt16 = false;
+		}
+		if (floor(deltaTime) == 17 && canMoveAt17 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt17 = false;
+		}
+		if (floor(deltaTime) == 18 && canMoveAt18 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt18 = false;
+		}
+		if (floor(deltaTime) == 19 && canMoveAt19 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt19 = false;
+		}
+		if (floor(deltaTime) == 20 && canMoveAt20 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt20 = false;
+		}
+		if (floor(deltaTime) == 21 && canMoveAt21 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt21 = false;
+		}
+		if (floor(deltaTime) == 22 && canMoveAt22 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt22 = false;
+		}
+		if (floor(deltaTime) == 23 && canMoveAt23 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();
+			canMoveAt23 = false;
+		}
+		if (floor(deltaTime) == 24 && canMoveAt24 == true) {
+			cout << "deltaTime: " << deltaTime << endl;
+			moveRandomly();		
 
-	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
-		moveRandomly();
-		canMoveAt1 = false;
-	}
-	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
-		moveRandomly();
-		canMoveAt2 = false;
-	}
-	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
-		moveRandomly();
-		canMoveAt3 = false;
-	}
-	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
-		moveRandomly();
-		canMoveAt4 = false;
-	}
-	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
-		moveRandomly();
-		canMoveAt5 = false;
-	}
-	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
-		moveRandomly();
-		canMoveAt6 = false;
-	}
-	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
-		moveRandomly();
-		canMoveAt7 = false;
-	}
-	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
-		moveRandomly();
-		canMoveAt8 = false;
-	}
-	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
-		moveRandomly();
-		canMoveAt9 = false;
-	}
-	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
-		moveRandomly();
-		canMoveAt10 = false;
-	}
-	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
-		moveRandomly();
-		canMoveAt11 = false;
-	}
-	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
-		moveRandomly();
-		canMoveAt12 = false;
-	}
-	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
-		moveRandomly();
-		canMoveAt13 = false;
-	}
-	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
-		moveRandomly();
-		canMoveAt14 = false;
-	}
-	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
-		moveRandomly();
-		canMoveAt15 = false;
-	}
-	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
-		moveRandomly();
-		canMoveAt16 = false;
-	}
-	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
-		moveRandomly();
-		canMoveAt17 = false;
-	}
-	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
-		moveRandomly();
-		canMoveAt18 = false;
-	}
-	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
-		moveRandomly();
-		canMoveAt19 = false;
-	}
-	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
-		moveRandomly();
-		canMoveAt20 = false;
-	}
-	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
-		moveRandomly();
-		canMoveAt21 = false;
-	}
-	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
-		moveRandomly();
-		canMoveAt22 = false;
-	}
-	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
-		moveRandomly();
-		canMoveAt23 = false;
-	}
-	if (floor(deltaTime) == 24 && canMoveAt24 == true) {
-		moveRandomly();
-		canMoveAt24 = false;
-
-		// get list of remaining objects
-		// re draw with initial positions again
-		// continue		
-		
-	}
+			int creeperIndex = 0;
+			int boatindex = 0;
+			for (size_t i = 0; i < MatrixArray.size(); i++)
+			{
+				if (MatrixArray[i].name == "creeper.obj") {
+					MatrixArray[i].ModelMatrix[3].x = herbivoreArray[creeperIndex].x;
+					MatrixArray[i].ModelMatrix[3].z = herbivoreArray[creeperIndex].z;
+					creeperIndex++;
+				}
+				if (MatrixArray[i].name == "boat.obj") {
+					MatrixArray[i].ModelMatrix[3].x = carnivoreArray[boatindex].x;
+					MatrixArray[i].ModelMatrix[3].z = carnivoreArray[boatindex].z;
+					boatindex++;
+				}
+			}
+			canMoveAt0 = true;
+			canMoveAt1 = true;
+			canMoveAt2 = true;
+			canMoveAt3 = true;
+			canMoveAt4 = true;
+			canMoveAt5 = true;
+			canMoveAt6 = true;
+			canMoveAt7 = true;
+			canMoveAt8 = true;
+			canMoveAt9 = true;
+			canMoveAt10 = true;
+			canMoveAt11 = true;
+			canMoveAt12 = true;
+			canMoveAt13 = true;
+			canMoveAt14 = true;
+			canMoveAt15 = true;
+			canMoveAt16 = true;
+			canMoveAt17 = true;
+			canMoveAt18 = true;
+			canMoveAt19 = true;
+			canMoveAt20 = true;
+			canMoveAt21 = true;
+			canMoveAt22 = true;
+			canMoveAt23 = true;
+			canMoveAt24 = true;			
+			cout << "day finished " << currentDay << endl;	
+			cout << "deltaTime " << deltaTime << endl;		
+			glfwSetTime(0);
+			currentDay++;		
+		}	
 }
 
+void dayCycles() {
 
+	for (int i = 0; i < days; i++)
+	{
+		if (currentDay == i) {
+			cout << "Day: " << currentDay << endl;
+			moveEachSecond();
+		}
+	}			
+}
 
 int main()
 {
@@ -640,7 +708,6 @@ int main()
 		glBufferData(GL_ARRAY_BUFFER, creeperUvs.size() * sizeof(glm::vec2), &creeperUvs[0], GL_STATIC_DRAW);
 	}
 	////////////////////////////////////////////////////////////////// CREEPER
-
 	
 	unsigned int pngTextureCreeper;
 	glGenTextures(1, &pngTextureCreeper);
@@ -708,7 +775,8 @@ int main()
 		computeMatricesFromInputs();
 		movementControls(window, VertexArrayID, creeperUvbuffer, creeperUvs, creeperVertices, boatUvbuffer, boatUvs, boatVertices, TextureID, MatrixID);
 		draw(MatrixID, creeperVertexbuffer, creeperUvbuffer, creeperVertices, boatVertexbuffer, boatUvbuffer, boatVertices, pngTextureCreeper, pngTextureBoat);
-		moveEachSecond();
+	
+		dayCycles();	
 
 		for (size_t i = 0; i < MatrixArray.size(); i++)
 		{
