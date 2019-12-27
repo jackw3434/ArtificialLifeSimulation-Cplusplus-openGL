@@ -21,73 +21,20 @@
 using namespace glm;
 using namespace std;
 
-const int NUM_SECONDS = 1;
-
-GLFWwindow* window;
-GLuint TextureID;
-std::vector<std::string> myList;
-
-double creeperPositions[]
-{
-	0.0,
-	2.0,
-	4.0,
-	6.0,
-	8.0,
-	10.0,
-	12.0,
-	14.0,
-	16.0,
-	18.0,
-};
-
-double boatPositions[]
-{
-	100.0,
-	250.0,
-	400.0,
-	550.0,
-	700.0,
-	850.0,
-	1000.0,
-	1150.0,
-	1300.0,
-	1450.0,
-};
-
 class Matrixes {
 public:
 	string name;
 	mat4 ModelMatrix;
+	bool hasEaten = false;
 };
 
-vec3 herbivoreArray[] = { 
-	vec3(-5.0f, 0.0f,  9.0f),
-	vec3(-5.0f, 0.0f,  7.0f),
-	vec3(-5.0f, 0.0f,  5.0f),
-	vec3(-5.0f, 0.0f,  3.0f),
-	vec3(-5.0f, 0.0f,  1.0f),
-	vec3(-5.0f, 0.0f, -1.0f),
-	vec3(-5.0f, 0.0f, -3.0f),
-	vec3(-5.0f, 0.0f, -5.0f),
-	vec3(-5.0f, 0.0f, -7.0f),
-	vec3(-5.0f, 0.0f, -9.0f)
-};
+vector<string> myList;
+vector<vec3> herbivoreArray;
+vector<vec3> carnivoreArray;
+vector<Matrixes> MatrixArray;
 
-vec3 carnivoreArray[] = {
-	vec3(5.0f, 0.0f,  9.0f),
-	vec3(5.0f, 0.0f,  7.0f),
-	vec3(5.0f, 0.0f,  5.0f),
-	vec3(5.0f, 0.0f,  3.0f),
-	vec3(5.0f, 0.0f,  1.0f),
-	vec3(5.0f, 0.0f, -1.0f),
-	vec3(5.0f, 0.0f, -3.0f),
-	vec3(5.0f, 0.0f, -5.0f),
-	vec3(5.0f, 0.0f, -7.0f),
-	vec3(5.0f, 0.0f, -9.0f)
-};
-
-std::vector<Matrixes> MatrixArray;
+GLFWwindow* window;
+GLuint TextureID;
 
 bool canMoveAt0 = true;
 bool canMoveAt1 = true;
@@ -117,8 +64,8 @@ bool canMoveAt24 = true;
 
 bool dayFinished = false;
 
-int creeperCount = 5;
-int boatCount = 5;
+int creeperCount;
+int boatCount;
 int days = 0;
 int currentDay = 0;
 
@@ -202,7 +149,9 @@ void getInput(void) {
 }
 
 void moveRandomly() {	
-	
+
+	int edgeValue = MatrixArray.size() -1;
+
 	float moveSpeed = 1.0f;
 	srand(time(NULL));
 
@@ -242,7 +191,7 @@ void moveRandomly() {
 
 			if (randomMovementvalue == 0) {
 				// +1 on the Z value
-				if (MatrixArray[i].ModelMatrix[3].z >= 5) {
+				if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
 					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
 				}
 				else {
@@ -252,7 +201,7 @@ void moveRandomly() {
 
 			if (randomMovementvalue == 1) {
 				// -1 on the Z value
-				if (MatrixArray[i].ModelMatrix[3].z <= -5) {
+				if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
 					MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
 				}
 				else {
@@ -260,10 +209,7 @@ void moveRandomly() {
 				}
 			}
 		}
-
 	}
-	cout << "creeperCount" << creeperCount << endl;
-	cout << "boatCount" << boatCount << endl;
 };
 
 void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
@@ -369,7 +315,6 @@ void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, v
 	mat4 ViewMatrix = getViewMatrix();
 	mat4 ProjectionMatrix = getProjectionMatrix();
 
-	int size = myList.size();
 	int creeperIndex = 0;
 	int boatIndex = 0;
 	int index = 0;
@@ -563,14 +508,34 @@ void moveEachSecond() {
 			moveRandomly();
 			canMoveAt23 = false;
 		}
-		if (floor(deltaTime) == 24 && canMoveAt24 == true) {
+		if (floor(deltaTime) >= 2 && canMoveAt24 == true) {
 			cout << "deltaTime: " << deltaTime << endl;
 			moveRandomly();		
 
 			int creeperIndex = 0;
 			int boatindex = 0;
+			for (int i = MatrixArray.size(); i <= MatrixArray.size(); i--)
+			{
+
+				/*if (MatrixArray.size() == 0) {
+					cout << "here " << endl;
+				}*/
+				if (MatrixArray[i].hasEaten == false) {
+
+					//MatrixArray.erase(MatrixArray.begin() + i);
+					myList.erase(myList.begin() + i);
+					//i--;
+					//creeperCount -= 1;
+				}
+				if (MatrixArray[i].hasEaten == true) {
+
+					
+				}
+			}
+		
 			for (size_t i = 0; i < MatrixArray.size(); i++)
 			{
+							
 				if (MatrixArray[i].name == "creeper.obj") {
 					MatrixArray[i].ModelMatrix[3].x = herbivoreArray[creeperIndex].x;
 					MatrixArray[i].ModelMatrix[3].z = herbivoreArray[creeperIndex].z;
@@ -625,6 +590,10 @@ void dayCycles() {
 	}			
 }
 
+void collision() {
+
+}
+
 int main()
 {
 	getInput();
@@ -648,18 +617,26 @@ int main()
 	std::vector< glm::vec2 > boatUvs;
 	std::vector< glm::vec3 > boatNormals;
 
-	string fileValue;
-
 	int creeperIndex = 0;
 	int boatIndex = 0;
 	int index = 0;
 
+	int size = (myList.size() / 2) - 1;	
+
+	float herbPosition = -size;
+	float carnPosition = -size;
+	cout << herbPosition << endl;
+	cout << carnPosition << endl;
+
 	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
-		//cout << *i << ' ' << endl;;
-		fileValue = *i;
+		string fileValue = *i;
 
-		if (fileValue == "creeper.obj") {
+		if (fileValue == "creeper.obj") {	
+		
+			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
+			
+			creeperCount++;
 
 			if (creeperIndex == 0) {
 				loadOBJ(fileValue.c_str(), creeperVertices, creeperUvs, creeperNormals);
@@ -672,8 +649,15 @@ int main()
 
 			MatrixArray.push_back(tempMatrix);
 			creeperIndex++;
+			herbPosition += 2;
+			cout << herbPosition << endl;
 		}
 		else if (fileValue == "boat.obj") {
+
+			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
+
+			boatCount++;
+
 			if (boatIndex == 0) {
 				loadOBJ("creeper.obj", boatVertices, boatUvs, boatNormals);
 			}
@@ -685,6 +669,8 @@ int main()
 
 			MatrixArray.push_back(tempMatrix);
 			boatIndex++;
+			carnPosition += 2;
+			cout << carnPosition << endl;
 		}
 		else{
 			cout << fileValue << " does not exist" << endl;
@@ -693,7 +679,8 @@ int main()
 		index++;
 	};		
 
-	////////////////////////////////////////////////////////////////// CREEPER
+	////////////////////////////////////////////////////////////////// CREEPER	
+	
 	GLuint creeperVertexbuffer;
 	glGenBuffers(1, &creeperVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
@@ -778,6 +765,7 @@ int main()
 	
 		dayCycles();	
 
+		//collision
 		for (size_t i = 0; i < MatrixArray.size(); i++)
 		{
 
@@ -786,29 +774,32 @@ int main()
 				if (i != j) {
 					if (MatrixArray[i].ModelMatrix[3].x == MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z == MatrixArray[j].ModelMatrix[3].z) {
 						if (MatrixArray[i].name != MatrixArray[j].name) {
-						//	cout << myList.size() << endl;
-						//	cout << MatrixArray.size() << endl;
-							cout << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
-						//	cout << "collision" << endl;
-						//	cout << "Creeper hit boat" << endl;
-							MatrixArray.erase(MatrixArray.begin() + i);
-							myList.erase(myList.begin() + i);
-							creeperCount -= 1;						
-							
-							//cout << myList.size() << endl;
-							cout <<" MatrixArray.size() " << MatrixArray.size() << endl;
+					
+						//	cout << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
+						////	cout << "collision" << endl;
+						////	cout << "Creeper hit boat" << endl;
+						//	MatrixArray.erase(MatrixArray.begin() + i);
+						//	myList.erase(myList.begin() + i);
+						//	creeperCount -= 1;		
+				
+						//	cout <<" MatrixArray.size() " << MatrixArray.size() << endl;
 						}
-						//if (MatrixArray[i].name == "boat.obj" && MatrixArray[i].name == MatrixArray[j].name) {
-							/*string fileValue = "boat.obj";
+						/*if (MatrixArray[i].name == "boat.obj" && MatrixArray[i].name == MatrixArray[j].name) {
+							string fileValue = "boat.obj";
 							myList.push_back(fileValue);
 							Matrixes tempMatrix;
 							tempMatrix.name = fileValue;
 							tempMatrix.ModelMatrix = mat4(1.0);
 
-							tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[boatIndex + 5]);
+							carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
+						
+							tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[boatIndex]);
 
-							MatrixArray.push_back(tempMatrix);	*/					
-						//}
+							MatrixArray.push_back(tempMatrix);		
+
+							carnPosition += 2;
+							boatIndex++;
+						}*/
 						else {
 							
 							//cout << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
