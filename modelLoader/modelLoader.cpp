@@ -383,6 +383,12 @@ void moveEachSecond() {
 	int deltaTime = float(currentTime - lastTime);	
 
 	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+
+		for (int i = 0; i < MatrixArray.size(); i++)
+		{
+			MatrixArray[i].hasEaten = false;
+		}
+
 		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;		
 		moveRandomly();
 		canMoveAt1 = false;
@@ -638,7 +644,7 @@ void collision() {
 						tempMatrix.name = fileValue;
 						tempMatrix.ModelMatrix = mat4(1.0);
 
-						int carnoSize;
+						int carnoSize = 0;
 
 						for (size_t i = 0; i < MatrixArray.size(); i++)
 						{
