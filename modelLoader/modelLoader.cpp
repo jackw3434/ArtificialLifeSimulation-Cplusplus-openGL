@@ -25,7 +25,7 @@ class Matrixes {
 public:
 	string name;
 	mat4 ModelMatrix;
-	bool hasEaten = false;
+	bool hasEaten = false;	
 };
 
 vector<string> myList;
@@ -64,10 +64,10 @@ bool canMoveAt24 = true;
 
 bool dayFinished = false;
 
-int creeperCount;
-int boatCount;
-int days = 0;
-int currentDay = 0;
+int herbivoreCount;
+int carnivoreCount;
+int days;
+int currentDay;
 
 void init(void) {
 
@@ -114,6 +114,11 @@ void init(void) {
 
 void getInput(void) {
 
+	days = 0;
+	currentDay = 0;
+	herbivoreCount = 0;
+	carnivoreCount = 0;
+
 	int number;
 	string fileToLoad = "";
 	string numberofFilesToOpen = "";
@@ -129,7 +134,7 @@ void getInput(void) {
 
 	for (int i = 0; i < number; i++)
 	{
-		cout << "Please enter a valid .obj file name, either creeper.obj or boat.obj.\n>";
+		cout << "Please enter a valid .obj file name, either herbivore or carnivore.\n>";
 		cin >> fileToLoad;
 		cout << "You entered: " << fileToLoad << i << endl;
 
@@ -212,14 +217,13 @@ void moveRandomly() {
 	}
 };
 
-void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperUvbuffer, vector<vec2> creeperUvs,vector<vec3> creeperVertices, GLuint boatUvbuffer,vector<vec2> boatUvs,vector<vec3> boatVertices, GLuint TextureID, GLuint MatrixID)
+void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivoreUvbuffer, vector<vec2> herbivoreUvs,vector<vec3> herbivoreVertices, GLuint carnivoreUvbuffer,vector<vec2> carnivoreUvs,vector<vec3> carnivoreVertices, GLuint TextureID, GLuint MatrixID)
 {
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		// draw in wireframe
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {		
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		// draw in wireframe
+		// fill in wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
@@ -233,14 +237,13 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	}
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
 		// Remove Texture Coords
-		glDeleteBuffers(1, &creeperUvbuffer);
+		glDeleteBuffers(1, &herbivoreUvbuffer);
 	}
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
 		// Apply Texture Coords
-		//GLuint uvbuffer;
-		glGenBuffers(1, &creeperUvbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-		glBufferData(GL_ARRAY_BUFFER, creeperUvs.size() * sizeof(glm::vec2), &creeperUvs[0], GL_STATIC_DRAW);
+		glGenBuffers(1, &herbivoreUvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(glm::vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		// Removed Textures
@@ -270,7 +273,6 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 			std::cout << "Failed to load texture" << std::endl;
 		}
 		stbi_image_free(data);
-
 	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 
@@ -307,41 +309,35 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint creeperU
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, glm::vec3(-0.6f, 0.1f, 0.0f));
-	}	
+	}		
 }
 
-void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, vector<vec3> creeperVertices, GLuint boatVertexbuffer, GLuint boatUvbuffer, vector<vec3> boatVertices, unsigned int pngTextureCreeper, unsigned int pngTextureBoat)
+void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore)
 {
 	mat4 ViewMatrix = getViewMatrix();
 	mat4 ProjectionMatrix = getProjectionMatrix();
-
-	int creeperIndex = 0;
-	int boatIndex = 0;
-	int index = 0;
-
-	string fileValue;
-
-	index = 0;
+	
+	int index = 0;	
 
 	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
-		fileValue = *i;
+		string fileValue = *i;
 
-		if (fileValue == "creeper.obj") {
+		if (fileValue == "herbivore") {
 
-			// 1rst attribute buffer : creeperVertices
+			// 1rst attribute buffer : herbivoreVertices
 			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			// 2nd attribute buffer : UVs
 			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			// Bind our texture in Texture Unit 0
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, pngTextureCreeper);
+			glBindTexture(GL_TEXTURE_2D, pngTextureHerbivore);
 			// Set our "myTextureSampler" sampler to user Texture Unit 0
 			glUniform1i(TextureID, 0);
 
@@ -349,23 +345,23 @@ void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, v
 			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-			glDrawArrays(GL_TRIANGLES, 0, creeperVertices.size());
+			glDrawArrays(GL_TRIANGLES, 0, herbivoreVertices.size());
 		}
-		if (fileValue == "boat.obj") {
+		if (fileValue == "carnivore") {
 
-			// 1rst attribute buffer : boatVertices
+			// 1rst attribute buffer : carnivoreVertices
 			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-			// 2nd attribute buffer : boatUVs
+			// 2nd attribute buffer : carnivoreUVs
 			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 			// Bind our texture in Texture Unit 0
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, pngTextureBoat);
+			glBindTexture(GL_TEXTURE_2D, pngTextureCarnivore);
 			// Set our "myTextureSampler" sampler to user Texture Unit 0
 			glUniform1i(TextureID, 0);
 
@@ -373,7 +369,7 @@ void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, v
 			MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-			glDrawArrays(GL_TRIANGLES, 0, boatVertices.size());
+			glDrawArrays(GL_TRIANGLES, 0, carnivoreVertices.size());
 		}
 
 		index++;
@@ -381,217 +377,286 @@ void draw(GLuint MatrixID, GLuint creeperVertexbuffer, GLuint creeperUvbuffer, v
 }
 
 void moveEachSecond() {
-	
-		// glfwGetTime is called only once, the first time this function is called
-		static double lastTime = glfwGetTime();
-		// Compute time difference between current and last frame
-		double currentTime = glfwGetTime();
+	// Compute time difference between current and last frame
+	static double lastTime = glfwGetTime();		
+	double currentTime = glfwGetTime();
+	int deltaTime = float(currentTime - lastTime);	
 
-		int deltaTime = float(currentTime - lastTime);
+	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;		
+		moveRandomly();
+		canMoveAt1 = false;
+	}
+	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt2 = false;
+	}
+	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt3 = false;
+	}
+	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt4 = false;
+	}
+	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt5 = false;
+	}
+	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt6 = false;
+	}
+	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt7 = false;
+	}
+	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt8 = false;
+	}
+	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt9 = false;
+	}
+	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt10 = false;
+	}
+	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt11 = false;
+	}
+	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt12 = false;
+	}
+	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt13 = false;
+	}
+	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt14 = false;
+	}
+	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt15 = false;
+	}
+	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt16 = false;
+	}
+	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt17 = false;
+	}
+	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt18 = false;
+	}
+	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt19 = false;
+	}
+	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt20 = false;
+	}
+	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt21 = false;
+	}
+	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt22 = false;
+	}
+	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt23 = false;
+	}
+	if (floor(deltaTime) >= 24 && canMoveAt24 == true) {
+		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();		
 
-		//cout << "lastTime: " << lastTime << endl;
-		//cout << "currentTime: " << currentTime << endl;
-		cout << "deltaTime: " << deltaTime << endl;
+		int herbivoreIndex = 0;
+		int carnivoreIndex = 0;
 
-		if (floor(deltaTime) == 1 && canMoveAt1 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt1 = false;
-		}
-		if (floor(deltaTime) == 2 && canMoveAt2 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt2 = false;
-		}
-		if (floor(deltaTime) == 3 && canMoveAt3 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt3 = false;
-		}
-		if (floor(deltaTime) == 4 && canMoveAt4 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt4 = false;
-		}
-		if (floor(deltaTime) == 5 && canMoveAt5 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt5 = false;
-		}
-		if (floor(deltaTime) == 6 && canMoveAt6 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt6 = false;
-		}
-		if (floor(deltaTime) == 7 && canMoveAt7 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt7 = false;
-		}
-		if (floor(deltaTime) == 8 && canMoveAt8 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt8 = false;
-		}
-		if (floor(deltaTime) == 9 && canMoveAt9 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt9 = false;
-		}
-		if (floor(deltaTime) == 10 && canMoveAt10 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt10 = false;
-		}
-		if (floor(deltaTime) == 11 && canMoveAt11 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt11 = false;
-		}
-		if (floor(deltaTime) == 12 && canMoveAt12 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt12 = false;
-		}
-		if (floor(deltaTime) == 13 && canMoveAt13 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt13 = false;
-		}
-		if (floor(deltaTime) == 14 && canMoveAt14 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt14 = false;
-		}
-		if (floor(deltaTime) == 15 && canMoveAt15 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt15 = false;
-		}
-		if (floor(deltaTime) == 16 && canMoveAt16 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt16 = false;
-		}
-		if (floor(deltaTime) == 17 && canMoveAt17 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt17 = false;
-		}
-		if (floor(deltaTime) == 18 && canMoveAt18 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt18 = false;
-		}
-		if (floor(deltaTime) == 19 && canMoveAt19 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt19 = false;
-		}
-		if (floor(deltaTime) == 20 && canMoveAt20 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt20 = false;
-		}
-		if (floor(deltaTime) == 21 && canMoveAt21 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt21 = false;
-		}
-		if (floor(deltaTime) == 22 && canMoveAt22 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt22 = false;
-		}
-		if (floor(deltaTime) == 23 && canMoveAt23 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();
-			canMoveAt23 = false;
-		}
-		if (floor(deltaTime) >= 2 && canMoveAt24 == true) {
-			cout << "deltaTime: " << deltaTime << endl;
-			moveRandomly();		
-
-			int creeperIndex = 0;
-			int boatindex = 0;
-			for (int i = MatrixArray.size(); i <= MatrixArray.size(); i--)
+		if (MatrixArray.size() > 0) {
+			for (int i = 0; i < MatrixArray.size();)
 			{
+				if (MatrixArray.size() > 0 && MatrixArray[i].hasEaten == false) {
 
-				/*if (MatrixArray.size() == 0) {
-					cout << "here " << endl;
-				}*/
-				if (MatrixArray[i].hasEaten == false) {
-
-					//MatrixArray.erase(MatrixArray.begin() + i);
+					if (MatrixArray[i].name == "herbivore") {
+						herbivoreCount--;
+					}
+					if (MatrixArray[i].name == "carnivore") {
+						carnivoreCount--;
+					}
+					MatrixArray.erase(MatrixArray.begin() + i);
 					myList.erase(myList.begin() + i);
-					//i--;
-					//creeperCount -= 1;
 				}
-				if (MatrixArray[i].hasEaten == true) {
+				else if (MatrixArray[i].hasEaten == true) {
 
-					
+					if (MatrixArray[i].name == "herbivore") {
+						MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
+						herbivoreIndex++;
+					}
+					if (MatrixArray[i].name == "carnivore") {
+						MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
+						carnivoreIndex++;
+					}
+					i++;
 				}
 			}
-		
-			for (size_t i = 0; i < MatrixArray.size(); i++)
-			{
-							
-				if (MatrixArray[i].name == "creeper.obj") {
-					MatrixArray[i].ModelMatrix[3].x = herbivoreArray[creeperIndex].x;
-					MatrixArray[i].ModelMatrix[3].z = herbivoreArray[creeperIndex].z;
-					creeperIndex++;
-				}
-				if (MatrixArray[i].name == "boat.obj") {
-					MatrixArray[i].ModelMatrix[3].x = carnivoreArray[boatindex].x;
-					MatrixArray[i].ModelMatrix[3].z = carnivoreArray[boatindex].z;
-					boatindex++;
-				}
-			}
-			canMoveAt0 = true;
-			canMoveAt1 = true;
-			canMoveAt2 = true;
-			canMoveAt3 = true;
-			canMoveAt4 = true;
-			canMoveAt5 = true;
-			canMoveAt6 = true;
-			canMoveAt7 = true;
-			canMoveAt8 = true;
-			canMoveAt9 = true;
-			canMoveAt10 = true;
-			canMoveAt11 = true;
-			canMoveAt12 = true;
-			canMoveAt13 = true;
-			canMoveAt14 = true;
-			canMoveAt15 = true;
-			canMoveAt16 = true;
-			canMoveAt17 = true;
-			canMoveAt18 = true;
-			canMoveAt19 = true;
-			canMoveAt20 = true;
-			canMoveAt21 = true;
-			canMoveAt22 = true;
-			canMoveAt23 = true;
-			canMoveAt24 = true;			
-			cout << "day finished " << currentDay << endl;	
-			cout << "deltaTime " << deltaTime << endl;		
-			glfwSetTime(0);
-			currentDay++;		
-		}	
+		}
+		else {
+			return;
+		}
+		canMoveAt0 = true;
+		canMoveAt1 = true;
+		canMoveAt2 = true;
+		canMoveAt3 = true;
+		canMoveAt4 = true;
+		canMoveAt5 = true;
+		canMoveAt6 = true;
+		canMoveAt7 = true;
+		canMoveAt8 = true;
+		canMoveAt9 = true;
+		canMoveAt10 = true;
+		canMoveAt11 = true;
+		canMoveAt12 = true;
+		canMoveAt13 = true;
+		canMoveAt14 = true;
+		canMoveAt15 = true;
+		canMoveAt16 = true;
+		canMoveAt17 = true;
+		canMoveAt18 = true;
+		canMoveAt19 = true;
+		canMoveAt20 = true;
+		canMoveAt21 = true;
+		canMoveAt22 = true;
+		canMoveAt23 = true;
+		canMoveAt24 = true;	
+
+		cout << "day finished " << currentDay << endl;		
+		cout << "herbivore count  " << herbivoreCount << endl;
+		cout << "carnivore count  " << carnivoreCount << endl;
+		glfwSetTime(0);
+		currentDay++;		
+	}	
 }
 
 void dayCycles() {
 
 	for (int i = 0; i < days; i++)
 	{
-		if (currentDay == i) {
-			cout << "Day: " << currentDay << endl;
+		if (currentDay == i) {			
 			moveEachSecond();
 		}
 	}			
 }
 
 void collision() {
+	
+	for (size_t i = 0; i < MatrixArray.size(); i++)
+	{
 
+		for (size_t j = 0; j < MatrixArray.size(); j++)
+		{
+			if (i != j) {
+				if (MatrixArray[i].ModelMatrix[3].x == MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z == MatrixArray[j].ModelMatrix[3].z) {				
+					if (MatrixArray[i].name == "carnivore" && MatrixArray[i].name != MatrixArray[j].name) {
+
+						// Has eaten will survive to the next day.
+						cout << "i != j name == carnivore, carnivore hitting herbivore " << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
+
+						MatrixArray.erase(MatrixArray.begin() + j);
+						myList.erase(myList.begin() + j);
+						herbivoreCount--;
+
+						cout << "herbivore count  " << herbivoreCount << endl;
+						cout << "carnivore count  " << carnivoreCount << endl;
+
+						MatrixArray[i].hasEaten = true;
+				
+					}
+					if (MatrixArray[i].name == "herbivore" && MatrixArray[i].name != MatrixArray[j].name) {
+
+						// Has eaten will survive to the next day.
+						cout << "i != j name == herbivore, herbivore hitting carnivore " << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
+
+						MatrixArray.erase(MatrixArray.begin() + i);
+						myList.erase(myList.begin() + i);
+						herbivoreCount--;
+
+						cout << "herbivore count  " << herbivoreCount << endl;
+						cout << "carnivore count  " << carnivoreCount << endl;
+
+						MatrixArray[j].hasEaten = true;
+
+
+
+						/// Reproducing
+
+						int size = (myList.size() / 2) - 1;
+
+						float herbPosition = -size;
+						float carnPosition = -size;
+						carnPosition += 2;						
+
+						carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));						
+
+						string fileValue = "carnivore";
+						myList.push_back(fileValue);
+
+						Matrixes tempMatrix;
+						tempMatrix.name = fileValue;
+						tempMatrix.ModelMatrix = mat4(1.0);
+
+						int carnoSize;
+
+						for (size_t i = 0; i < MatrixArray.size(); i++)
+						{
+							if (MatrixArray[i].name == "carnivore") {
+								carnoSize++;
+							}
+						}
+
+						tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnoSize]);
+
+						MatrixArray.push_back(tempMatrix);
+						
+						carnivoreCount++;						
+					}
+				}
+			}
+		}
+	}
 }
 
 int main()
@@ -609,96 +674,87 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
-	std::vector< glm::vec3 > creeperVertices;
-	std::vector< glm::vec2 > creeperUvs;
-	std::vector< glm::vec3 > creeperNormals;
+	std::vector< glm::vec3 > herbivoreVertices;
+	std::vector< glm::vec2 > herbivoreUvs;
+	std::vector< glm::vec3 > herbivoreNormals;
 
-	std::vector< glm::vec3 > boatVertices;
-	std::vector< glm::vec2 > boatUvs;
-	std::vector< glm::vec3 > boatNormals;
+	std::vector< glm::vec3 > carnivoreVertices;
+	std::vector< glm::vec2 > carnivoreUvs;
+	std::vector< glm::vec3 > carnivoreNormals;
 
-	int creeperIndex = 0;
-	int boatIndex = 0;
-	int index = 0;
+	int herbivoreIndex = 0;
+	int carnivoreIndex = 0;
 
 	int size = (myList.size() / 2) - 1;	
 
 	float herbPosition = -size;
-	float carnPosition = -size;
-	cout << herbPosition << endl;
-	cout << carnPosition << endl;
+	float carnPosition = -size;	
 
 	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
 		string fileValue = *i;
 
-		if (fileValue == "creeper.obj") {	
-		
-			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
-			
-			creeperCount++;
+		if (fileValue == "herbivore") {				
 
-			if (creeperIndex == 0) {
-				loadOBJ(fileValue.c_str(), creeperVertices, creeperUvs, creeperNormals);
+			if (herbivoreIndex == 0) {
+				loadOBJ("creeper.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
 			}
+
+			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
+			herbPosition += 2;
+
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
 			tempMatrix.ModelMatrix = mat4(1.0);
-
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[creeperIndex]);
-
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[herbivoreIndex]);
 			MatrixArray.push_back(tempMatrix);
-			creeperIndex++;
-			herbPosition += 2;
-			cout << herbPosition << endl;
+			
+			herbivoreIndex++;
+			herbivoreCount++;
 		}
-		else if (fileValue == "boat.obj") {
+		else if (fileValue == "carnivore") {
+
+			if (carnivoreIndex == 0) {
+				loadOBJ("creeper.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
+			}
 
 			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
-
-			boatCount++;
-
-			if (boatIndex == 0) {
-				loadOBJ("creeper.obj", boatVertices, boatUvs, boatNormals);
-			}
+			carnPosition += 2;
+			
 			Matrixes tempMatrix;
 			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);					
-
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[boatIndex]);
-
+			tempMatrix.ModelMatrix = mat4(1.0);	
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnivoreIndex]);
 			MatrixArray.push_back(tempMatrix);
-			boatIndex++;
-			carnPosition += 2;
-			cout << carnPosition << endl;
+
+			carnivoreIndex++;
+			carnivoreCount++;
 		}
 		else{
 			cout << fileValue << " does not exist" << endl;
 		}
-
-		index++;
 	};		
 
 	////////////////////////////////////////////////////////////////// CREEPER	
 	
-	GLuint creeperVertexbuffer;
-	glGenBuffers(1, &creeperVertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, creeperVertexbuffer);
-	if (creeperVertices.size()) {
-		glBufferData(GL_ARRAY_BUFFER, creeperVertices.size() * sizeof(glm::vec3), &creeperVertices[0], GL_STATIC_DRAW);
+	GLuint herbivoreVertexbuffer;
+	glGenBuffers(1, &herbivoreVertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
+	if (herbivoreVertices.size()) {
+		glBufferData(GL_ARRAY_BUFFER, herbivoreVertices.size() * sizeof(glm::vec3), &herbivoreVertices[0], GL_STATIC_DRAW);
 	}
 
-	GLuint creeperUvbuffer;
-	glGenBuffers(1, &creeperUvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, creeperUvbuffer);
-	if (creeperUvs.size()) {
-		glBufferData(GL_ARRAY_BUFFER, creeperUvs.size() * sizeof(glm::vec2), &creeperUvs[0], GL_STATIC_DRAW);
+	GLuint herbivoreUvbuffer;
+	glGenBuffers(1, &herbivoreUvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+	if (herbivoreUvs.size()) {
+		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(glm::vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
 	}
 	////////////////////////////////////////////////////////////////// CREEPER
 	
-	unsigned int pngTextureCreeper;
-	glGenTextures(1, &pngTextureCreeper);
-	glBindTexture(GL_TEXTURE_2D, pngTextureCreeper);
+	unsigned int pngTextureHerbivore;
+	glGenTextures(1, &pngTextureHerbivore);
+	glBindTexture(GL_TEXTURE_2D, pngTextureHerbivore);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -719,23 +775,24 @@ int main()
 	stbi_image_free(dataCreeper);
 
 	////////////////////////////////////////////////////////////////// BOAT
-	GLuint boatVertexbuffer;
-	glGenBuffers(1, &boatVertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, boatVertexbuffer);
-	if (boatVertices.size()) {
-		glBufferData(GL_ARRAY_BUFFER, boatVertices.size() * sizeof(glm::vec3), &boatVertices[0], GL_STATIC_DRAW);
+
+	GLuint carnivoreVertexbuffer;
+	glGenBuffers(1, &carnivoreVertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
+	if (carnivoreVertices.size()) {
+		glBufferData(GL_ARRAY_BUFFER, carnivoreVertices.size() * sizeof(glm::vec3), &carnivoreVertices[0], GL_STATIC_DRAW);
 	}
-	GLuint boatUvbuffer;
-	glGenBuffers(1, &boatUvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, boatUvbuffer);
-	if (boatUvs.size()) {
-		glBufferData(GL_ARRAY_BUFFER, boatUvs.size() * sizeof(glm::vec2), &boatUvs[0], GL_STATIC_DRAW);
+	GLuint carnivoreUvbuffer;
+	glGenBuffers(1, &carnivoreUvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
+	if (carnivoreUvs.size()) {
+		glBufferData(GL_ARRAY_BUFFER, carnivoreUvs.size() * sizeof(glm::vec2), &carnivoreUvs[0], GL_STATIC_DRAW);
 	}
 	////////////////////////////////////////////////////////////////// BOAT
 
-	unsigned int pngTextureBoat;
-	glGenTextures(1, &pngTextureBoat);
-	glBindTexture(GL_TEXTURE_2D, pngTextureBoat);
+	unsigned int pngTextureCarnivore;
+	glGenTextures(1, &pngTextureCarnivore);
+	glBindTexture(GL_TEXTURE_2D, pngTextureCarnivore);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -760,53 +817,46 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		computeMatricesFromInputs();
-		movementControls(window, VertexArrayID, creeperUvbuffer, creeperUvs, creeperVertices, boatUvbuffer, boatUvs, boatVertices, TextureID, MatrixID);
-		draw(MatrixID, creeperVertexbuffer, creeperUvbuffer, creeperVertices, boatVertexbuffer, boatUvbuffer, boatVertices, pngTextureCreeper, pngTextureBoat);
+		movementControls(window, VertexArrayID, herbivoreUvbuffer, herbivoreUvs, herbivoreVertices, carnivoreUvbuffer, carnivoreUvs, carnivoreVertices, TextureID, MatrixID);
+
+		collision();
+
+		draw(MatrixID, herbivoreVertexbuffer, herbivoreUvbuffer, herbivoreVertices, carnivoreVertexbuffer, carnivoreUvbuffer, carnivoreVertices, pngTextureHerbivore, pngTextureCarnivore);
 	
 		dayCycles();	
+			
+		
+		// END
+		if (MatrixArray.size() == 0) {
 
-		//collision
-		for (size_t i = 0; i < MatrixArray.size(); i++)
-		{
+			herbivoreArray.clear();
+			carnivoreArray.clear();
 
-			for (size_t j = 0; j < MatrixArray.size(); j++)
-			{
-				if (i != j) {
-					if (MatrixArray[i].ModelMatrix[3].x == MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z == MatrixArray[j].ModelMatrix[3].z) {
-						if (MatrixArray[i].name != MatrixArray[j].name) {
-					
-						//	cout << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
-						////	cout << "collision" << endl;
-						////	cout << "Creeper hit boat" << endl;
-						//	MatrixArray.erase(MatrixArray.begin() + i);
-						//	myList.erase(myList.begin() + i);
-						//	creeperCount -= 1;		
-				
-						//	cout <<" MatrixArray.size() " << MatrixArray.size() << endl;
-						}
-						/*if (MatrixArray[i].name == "boat.obj" && MatrixArray[i].name == MatrixArray[j].name) {
-							string fileValue = "boat.obj";
-							myList.push_back(fileValue);
-							Matrixes tempMatrix;
-							tempMatrix.name = fileValue;
-							tempMatrix.ModelMatrix = mat4(1.0);
+			MatrixArray.clear();
+			myList.clear();
 
-							carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
-						
-							tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[boatIndex]);
+			glfwWindowShouldClose(window);
+			glDeleteBuffers(1, &herbivoreVertexbuffer);
+			glDeleteBuffers(1, &herbivoreUvbuffer);
+			glDeleteBuffers(1, &carnivoreVertexbuffer);
+			glDeleteBuffers(1, &carnivoreUvbuffer);
+			glDeleteProgram(shader);
+			glDeleteTextures(1, &TextureID);
+			glDeleteVertexArrays(1, &VertexArrayID);
+			glfwTerminate();
 
-							MatrixArray.push_back(tempMatrix);		
+			cout << "All Dino's have been eaten or starved!" << endl;
+			
+			string answer;
+			cout << "Would you Like to start again?( Y or N )\n>";
+			cin >> answer;
 
-							carnPosition += 2;
-							boatIndex++;
-						}*/
-						else {
-							
-							//cout << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
-						}
-					}
-				}
-			}			
+			if (answer == "Y" || answer == "y") {				
+				main();
+			}
+			else {				
+				return 0;
+			}
 		}
 
 		glDisableVertexAttribArray(0);
@@ -819,10 +869,10 @@ int main()
 		glfwWindowShouldClose(window) == 0);	
 	
 	// Cleanup VBO and shader
-	glDeleteBuffers(1, &creeperVertexbuffer);
-	glDeleteBuffers(1, &creeperUvbuffer);
-	glDeleteBuffers(1, &boatVertexbuffer);
-	glDeleteBuffers(1, &boatUvbuffer);
+	glDeleteBuffers(1, &herbivoreVertexbuffer);
+	glDeleteBuffers(1, &herbivoreUvbuffer);
+	glDeleteBuffers(1, &carnivoreVertexbuffer);
+	glDeleteBuffers(1, &carnivoreUvbuffer);
 	glDeleteProgram(shader);
 	glDeleteTextures(1, &TextureID);
 	glDeleteVertexArrays(1, &VertexArrayID);
