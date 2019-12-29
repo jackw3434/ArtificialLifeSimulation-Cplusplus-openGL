@@ -760,7 +760,7 @@ int main()
 				loadOBJ("creeper.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
 			}
 
-			herbivoreArray.push_back(vec3(-1.0f, 0.0f, herbPosition));
+			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
 			herbPosition += 2;
 
 			Matrixes tempMatrix;
@@ -778,7 +778,7 @@ int main()
 				loadOBJ("creeper.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
 			}
 
-			carnivoreArray.push_back(vec3(1.0f, 0.0f, carnPosition));
+			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
 			carnPosition += 2;
 			
 			Matrixes tempMatrix;
