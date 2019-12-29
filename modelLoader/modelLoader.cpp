@@ -560,61 +560,47 @@ void moveEachSecond() {
 		if (MatrixArray.size() > 0) {
 			for (int i = 0; i < MatrixArray.size();)
 			{			
-				if (MatrixArray[i].name == "grass") {
-					MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
-					MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
-					grassIndex++;
-				}
-
-				if (MatrixArray[i].hasEaten == false) {					
-
-					if (MatrixArray[i].name == "herbivore") {
-						herbivoreCount--;
+				if (MatrixArray.size() > 0) {
+					if (MatrixArray[i].name == "grass") {
+						MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
+						grassIndex++;
 					}
 
-					if (MatrixArray[i].name == "carnivore") {
-						carnivoreCount--;
+					if (MatrixArray[i].hasEaten == false) {
+
+						if (MatrixArray[i].name == "herbivore") {
+							herbivoreCount--;
+						}
+
+						if (MatrixArray[i].name == "carnivore") {
+							carnivoreCount--;
+						}
+
+						MatrixArray.erase(MatrixArray.begin() + i);
+						myList.erase(myList.begin() + i);
+						i--;
 					}
+					else if (MatrixArray[i].hasEaten == true) {
 
-					MatrixArray.erase(MatrixArray.begin() + i);
-					myList.erase(myList.begin() + i);
-					i--;
-				}
-				else if (MatrixArray[i].hasEaten == true) {
+						if (MatrixArray[i].name == "herbivore") {
+							MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
+							MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
+							herbivoreIndex++;
+						}
+						if (MatrixArray[i].name == "carnivore") {
 
-					if (MatrixArray[i].name == "herbivore") {
-						MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
-						MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
-						herbivoreIndex++;
-						myList.push_back("herbivore");
-						herbivoreCount++;
+							// move carno's that have eaten back to start and add their children
+							MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
+							MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
+							carnivoreIndex++;
+
+							//add children
+							//myList.push_back("carnivore");
+						}						
 					}
-					if (MatrixArray[i].name == "carnivore") {
-																	
-						// move carno's that have eaten back to start and add their children
-						MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
-						MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;						
-						carnivoreIndex++;
-
-						//add children
-						myList.push_back("carnivore");
-						//int size = (myList.size() / 2) + 2;
-
-						//float carnPosition = -size;
-
-					/*	carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
-
-						Matrixes tempMatrix;
-						tempMatrix.name = "carnivore";
-						tempMatrix.hasEaten = false;
-						tempMatrix.ModelMatrix = mat4(1.0);
-						tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, vec3(5.0f, 0.0f, carnPosition));
-						MatrixArray.push_back(tempMatrix);
-						carnivoreCount++;*/
-						//i--;
-					}					
 					i++;
-				}
+				}				
 			}
 		/*	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
@@ -956,11 +942,9 @@ int main()
 		computeMatricesFromInputs();
 		movementControls(window, VertexArrayID, herbivoreUvbuffer, herbivoreUvs, herbivoreVertices, carnivoreUvbuffer, carnivoreUvs, carnivoreVertices, TextureID, MatrixID);
 		collision();
-		draw(MatrixID, herbivoreVertexbuffer, herbivoreUvbuffer, herbivoreVertices, grassVertexbuffer, grassUvbuffer, grassVertices, carnivoreVertexbuffer, carnivoreUvbuffer, carnivoreVertices, pngTextureHerbivore, pngTextureCarnivore, pngTextureGrass);
 		dayCycles();
-		
-		
-		
+		draw(MatrixID, herbivoreVertexbuffer, herbivoreUvbuffer, herbivoreVertices, grassVertexbuffer, grassUvbuffer, grassVertices, carnivoreVertexbuffer, carnivoreUvbuffer, carnivoreVertices, pngTextureHerbivore, pngTextureCarnivore, pngTextureGrass);
+	
 		// END
 		// If End Of Simulation
 		if (currentDay == days) {			
