@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/jwilliams8/source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm
+# Install script for directory: C:/Users/Jack/Source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/jwilliams8/Source/Repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/Jack/Source/Repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/jwilliams8/source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Jack/Source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

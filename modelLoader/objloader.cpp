@@ -47,7 +47,7 @@ bool LoadMaterials(const char* materialFilename) {
 		return false;
 	}
 	else {
-		printf("Opened the material file! \n");
+		//printf("Opened the material file! \n");
 	}
 
 	while (true)
@@ -279,7 +279,7 @@ bool loadOBJ(
 		out_normals.push_back(normal);
 
 	}
-	printf("Loaded OBJ");
+	//printf("Loaded OBJ");
 	return true;
 }
 

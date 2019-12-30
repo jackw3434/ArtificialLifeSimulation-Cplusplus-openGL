@@ -187,20 +187,20 @@ void moveRandomly() {
 				if (randomMovementvalue == 0) {
 					// +1 on the X value			
 					if (MatrixArray[i].ModelMatrix[3].x >= 5) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
 					}
 					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
 					}
 				}
 
 				if (randomMovementvalue == 1) {
 					// -1 on the X value
 					if (MatrixArray[i].ModelMatrix[3].x <= -5) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(moveSpeed, 0.0f, 0.0f));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
 					}
 					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(-moveSpeed, 0.0f, 0.0f));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
 					}
 				}
 			}
@@ -212,20 +212,20 @@ void moveRandomly() {
 				if (randomMovementvalue == 0) {
 					// +1 on the Z value
 					if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
 					}
 					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
 					}
 				}
 
 				if (randomMovementvalue == 1) {
 					// -1 on the Z value
 					if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, moveSpeed));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
 					}
 					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, glm::vec3(0.0f, 0.0f, -moveSpeed));
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
 					}
 				}
 			}
@@ -259,7 +259,7 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 		// Apply Texture Coords
 		glGenBuffers(1, &herbivoreUvbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
-		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(glm::vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		// Removed Textures
@@ -286,7 +286,7 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			cout << "Failed to load texture" << endl;
 		}
 		stbi_image_free(data);
 	}
@@ -310,22 +310,22 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			cout << "Failed to load texture" << endl;
 		}
 		stbi_image_free(data);
 	}
-	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {	
-		MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, glm::vec3(0.5f, 0.0f, 0.0f));		
+	/*if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {	
+		MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, vec3(0.5f, 0.0f, 0.0f));		
 	}	
 	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, glm::vec3(0.5f, 0.1f, 0.0f));
+		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, vec3(0.5f, 0.1f, 0.0f));
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-		MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, glm::vec3(-0.5f, 0.0f, 0.0f));
+		MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, vec3(-0.5f, 0.0f, 0.0f));
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, glm::vec3(-0.6f, 0.1f, 0.0f));
-	}		
+		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, vec3(-0.6f, 0.1f, 0.0f));
+	}*/		
 }
 
 void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint grassVertexbuffer, GLuint grassUvbuffer, vector<vec3> grassVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore, unsigned int pngTextureGrass)
@@ -335,7 +335,7 @@ void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffe
 	
 	int index = 0;	
 
-	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+	for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
 		string fileValue = *i;
 
@@ -418,191 +418,61 @@ void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffe
 	};
 }
 
-void moveEachSecond() {
-	// Compute time difference between current and last frame
-	static double lastTime = glfwGetTime();		
-	double currentTime = glfwGetTime();
-	int deltaTime = float(currentTime - lastTime);	
+void restartDay() {
+	int herbivoreIndex = 0;
+	int carnivoreIndex = 0;
+	int grassIndex = 0;
 
-	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+	if (currentDay == days) {
+		return;
+	}
 
-		for (int i = 0; i < MatrixArray.size(); i++)
+	if (MatrixArray.size() > 0) {
+		for (int i = 0; i < MatrixArray.size();)
 		{
-			MatrixArray[i].hasEaten = false;
-		}
+			if (MatrixArray.size() > 0) {
+				if (MatrixArray[i].name == "grass") {
+					MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
+					MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
+					grassIndex++;
+				}
 
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;		
-		moveRandomly();
-		canMoveAt1 = false;
-	}
-	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt2 = false;
-	}
-	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt3 = false;
-	}
-	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt4 = false;
-	}
-	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt5 = false;
-	}
-	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt6 = false;
-	}
-	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt7 = false;
-	}
-	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt8 = false;
-	}
-	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt9 = false;
-	}
-	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt10 = false;
-	}
-	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt11 = false;
-	}
-	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt12 = false;
-	}
-	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt13 = false;
-	}
-	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt14 = false;
-	}
-	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt15 = false;
-	}
-	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt16 = false;
-	}
-	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt17 = false;
-	}
-	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt18 = false;
-	}
-	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt19 = false;
-	}
-	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt20 = false;
-	}
-	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt21 = false;
-	}
-	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt22 = false;
-	}
-	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();
-		canMoveAt23 = false;
-	}
-	if (floor(deltaTime) >= 24 && canMoveAt24 == true) {
-		cout << "Day: " << currentDay << " Time: " << deltaTime << " O'clock" << endl;
-		moveRandomly();		
+				if (MatrixArray[i].hasEaten == false) {
 
-		int herbivoreIndex = 0;
-		int carnivoreIndex = 0;
-		int grassIndex = 0;
-
-		if(currentDay == days){
-			return;
-		}
-
-		if (MatrixArray.size() > 0) {
-			for (int i = 0; i < MatrixArray.size();)
-			{			
-				if (MatrixArray.size() > 0) {
-					if (MatrixArray[i].name == "grass") {
-						MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
-						MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
-						grassIndex++;
+					if (MatrixArray[i].name == "herbivore") {
+						herbivoreCount--;
 					}
 
-					if (MatrixArray[i].hasEaten == false) {
-
-						if (MatrixArray[i].name == "herbivore") {
-							herbivoreCount--;
-						}
-
-						if (MatrixArray[i].name == "carnivore") {
-							carnivoreCount--;
-						}
-
-						MatrixArray.erase(MatrixArray.begin() + i);
-						myList.erase(myList.begin() + i);
-						i--;
+					if (MatrixArray[i].name == "carnivore") {
+						carnivoreCount--;
 					}
-					else if (MatrixArray[i].hasEaten == true) {
 
-						if (MatrixArray[i].name == "herbivore") {
-							MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
-							MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
-							herbivoreIndex++;
-						}
-						if (MatrixArray[i].name == "carnivore") {
+					MatrixArray.erase(MatrixArray.begin() + i);
+					myList.erase(myList.begin() + i);
+					i--;
+				}
+				else if (MatrixArray[i].hasEaten == true) {
 
-							// move carno's that have eaten back to start and add their children
-							MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
-							MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
-							carnivoreIndex++;
-
-							//add children
-							//myList.push_back("carnivore");
-						}						
+					if (MatrixArray[i].name == "herbivore") {
+						MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
+						herbivoreIndex++;
 					}
-					i++;
-				}				
+					if (MatrixArray[i].name == "carnivore") {
+
+						// move carno's that have eaten back to start and add their children
+						MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
+						carnivoreIndex++;
+
+						//add children
+						//myList.push_back("carnivore");
+					}
+				}
+				i++;
 			}
-		/*	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+		}
+		/*	for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
 				string fileValue = *i;
 
@@ -620,44 +490,176 @@ void moveEachSecond() {
 					tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, vec3(5.0f, 0.0f, carnPosition));
 					MatrixArray.push_back(tempMatrix);
 				}
-			}*/			
-		}
-		else {
-			cout << "Nothing" << endl;
-			return;
-		}
-		canMoveAt0 = true;
-		canMoveAt1 = true;
-		canMoveAt2 = true;
-		canMoveAt3 = true;
-		canMoveAt4 = true;
-		canMoveAt5 = true;
-		canMoveAt6 = true;
-		canMoveAt7 = true;
-		canMoveAt8 = true;
-		canMoveAt9 = true;
-		canMoveAt10 = true;
-		canMoveAt11 = true;
-		canMoveAt12 = true;
-		canMoveAt13 = true;
-		canMoveAt14 = true;
-		canMoveAt15 = true;
-		canMoveAt16 = true;
-		canMoveAt17 = true;
-		canMoveAt18 = true;
-		canMoveAt19 = true;
-		canMoveAt20 = true;
-		canMoveAt21 = true;
-		canMoveAt22 = true;
-		canMoveAt23 = true;
-		canMoveAt24 = true;	
+			}*/
+	}
+	else {
+		return;
+	}
+	canMoveAt0 = true;
+	canMoveAt1 = true;
+	canMoveAt2 = true;
+	canMoveAt3 = true;
+	canMoveAt4 = true;
+	canMoveAt5 = true;
+	canMoveAt6 = true;
+	canMoveAt7 = true;
+	canMoveAt8 = true;
+	canMoveAt9 = true;
+	canMoveAt10 = true;
+	canMoveAt11 = true;
+	canMoveAt12 = true;
+	canMoveAt13 = true;
+	canMoveAt14 = true;
+	canMoveAt15 = true;
+	canMoveAt16 = true;
+	canMoveAt17 = true;
+	canMoveAt18 = true;
+	canMoveAt19 = true;
+	canMoveAt20 = true;
+	canMoveAt21 = true;
+	canMoveAt22 = true;
+	canMoveAt23 = true;
+	canMoveAt24 = true;
 
-		cout << "day finished " << currentDay + 1 << endl;		
-		cout << "herbivore count  " << herbivoreCount << endl;
-		cout << "carnivore count  " << carnivoreCount << endl;
-		cout << "grass count  " << grassCount << endl;
-		glfwSetTime(0);
-		currentDay++;		
+	cout << "day finished " << currentDay + 1 << endl;
+	cout << "herbivore count  " << herbivoreCount << endl;
+	cout << "carnivore count  " << carnivoreCount << endl;
+	cout << "grass count  " << grassCount << endl;
+	glfwSetTime(0);
+	currentDay++;
+}
+
+void moveEachSecond() {
+	// Compute time difference between current and last frame
+	static double lastTime = glfwGetTime();		
+	double currentTime = glfwGetTime();
+	int deltaTime = float(currentTime - lastTime);	
+
+	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+
+		for (int i = 0; i < MatrixArray.size(); i++)
+		{
+			MatrixArray[i].hasEaten = false;
+		}
+
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;		
+		moveRandomly();
+		canMoveAt1 = false;
+	}
+	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt2 = false;
+	}
+	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt3 = false;
+	}
+	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt4 = false;
+	}
+	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt5 = false;
+	}
+	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt6 = false;
+	}
+	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt7 = false;
+	}
+	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt8 = false;
+	}
+	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt9 = false;
+	}
+	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt10 = false;
+	}
+	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt11 = false;
+	}
+	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt12 = false;
+	}
+	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt13 = false;
+	}
+	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt14 = false;
+	}
+	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt15 = false;
+	}
+	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt16 = false;
+	}
+	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt17 = false;
+	}
+	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt18 = false;
+	}
+	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt19 = false;
+	}
+	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt20 = false;
+	}
+	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt21 = false;
+	}
+	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt22 = false;
+	}
+	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();
+		canMoveAt23 = false;
+	}
+	if (floor(deltaTime) >= 24 && canMoveAt24 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		moveRandomly();	
+		restartDay();
 	}	
 }
 
@@ -683,29 +685,30 @@ void collision() {
 
 					if (MatrixArray[i].name == "carnivore" && MatrixArray[j].name == "herbivore") {
 
-						// Has eaten will survive to the next day.
-						cout << "carnivore hitting herbivore " << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
+						// Has eaten will survive to the next day. carnivore hitting herbivore 		
+
 						MatrixArray[i].hasEaten = true;
 
 						MatrixArray.erase(MatrixArray.begin() + j);
 						myList.erase(myList.begin() + j);
+
 						herbivoreCount--;
+						cout << "herbivore count:  " << herbivoreCount << endl;
+
 						i--;
-						j--;
-						cout << "herbivore count  " << herbivoreCount << endl;
-						cout << "carnivore count  " << carnivoreCount << endl;						
+						j--;										
 					}		
 					if (MatrixArray[i].name == "herbivore" && MatrixArray[j].name == "grass") {
 
-						// Has eaten will survive to the next day.
-						cout << "herbivore hitting grass " << MatrixArray[i].name + " hit " + MatrixArray[j].name << endl;
+						// Has eaten will survive to the next day. herbivore hitting grass
+					
 						MatrixArray[i].hasEaten = true;
 
 						MatrixArray.erase(MatrixArray.begin() + j);
-						myList.erase(myList.begin() + j);
-						grassCount--;
+						myList.erase(myList.begin() + j);	
 
-						cout << "grass count  " << grassCount << endl;		
+						grassCount--;
+						cout << "grass count:  " << grassCount << endl;
 					}
 				}
 			}
@@ -728,17 +731,17 @@ int main()
 	GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 	GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
-	std::vector< glm::vec3 > herbivoreVertices;
-	std::vector< glm::vec2 > herbivoreUvs;
-	std::vector< glm::vec3 > herbivoreNormals;
+	vector< vec3 > herbivoreVertices;
+	vector< vec2 > herbivoreUvs;
+	vector< vec3 > herbivoreNormals;
 
-	std::vector< glm::vec3 > carnivoreVertices;
-	std::vector< glm::vec2 > carnivoreUvs;
-	std::vector< glm::vec3 > carnivoreNormals;
+	vector< vec3 > carnivoreVertices;
+	vector< vec2 > carnivoreUvs;
+	vector< vec3 > carnivoreNormals;
 
-	std::vector< glm::vec3 > grassVertices;
-	std::vector< glm::vec2 > grassUvs;
-	std::vector< glm::vec3 > grassNormals;
+	vector< vec3 > grassVertices;
+	vector< vec2 > grassUvs;
+	vector< vec3 > grassNormals;
 
 	int herbivoreIndex = 0;
 	int carnivoreIndex = 0;
@@ -750,7 +753,7 @@ int main()
 	float carnPosition = -size;	
 	float grassPosition = -size;
 
-	for (std::vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+	for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
 		string fileValue = *i;
 
@@ -798,7 +801,6 @@ int main()
 
 			float randomXGrassPosition = rand() % 11 + (-5);
 
-			cout << "randomXGrassPosition " << randomXGrassPosition << endl;
 			// Radnom generate positions
 			grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
 			grassPosition += 2;
@@ -823,14 +825,14 @@ int main()
 	glGenBuffers(1, &herbivoreVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
 	if (herbivoreVertices.size()) {
-		glBufferData(GL_ARRAY_BUFFER, herbivoreVertices.size() * sizeof(glm::vec3), &herbivoreVertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, herbivoreVertices.size() * sizeof(vec3), &herbivoreVertices[0], GL_STATIC_DRAW);
 	}
 
 	GLuint herbivoreUvbuffer;
 	glGenBuffers(1, &herbivoreUvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
 	if (herbivoreUvs.size()) {
-		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(glm::vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
 	}	
 	
 	unsigned int pngTextureHerbivore;
@@ -851,7 +853,7 @@ int main()
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		cout << "Failed to load texture" << endl;
 	}
 	stbi_image_free(dataHerbivore);
 
@@ -863,14 +865,14 @@ int main()
 	glGenBuffers(1, &grassVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, grassVertexbuffer);
 	if (grassVertices.size()) {
-		glBufferData(GL_ARRAY_BUFFER, grassVertices.size() * sizeof(glm::vec3), &grassVertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, grassVertices.size() * sizeof(vec3), &grassVertices[0], GL_STATIC_DRAW);
 	}
 
 	GLuint grassUvbuffer;
 	glGenBuffers(1, &grassUvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, grassUvbuffer);
 	if (grassUvs.size()) {
-		glBufferData(GL_ARRAY_BUFFER, grassUvs.size() * sizeof(glm::vec2), &grassUvs[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, grassUvs.size() * sizeof(vec2), &grassUvs[0], GL_STATIC_DRAW);
 	}
 
 	unsigned int pngTextureGrass;
@@ -891,7 +893,7 @@ int main()
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		cout << "Failed to load texture" << endl;
 	}
 	stbi_image_free(dataGrass);
 
@@ -903,13 +905,13 @@ int main()
 	glGenBuffers(1, &carnivoreVertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
 	if (carnivoreVertices.size()) {
-		glBufferData(GL_ARRAY_BUFFER, carnivoreVertices.size() * sizeof(glm::vec3), &carnivoreVertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, carnivoreVertices.size() * sizeof(vec3), &carnivoreVertices[0], GL_STATIC_DRAW);
 	}
 	GLuint carnivoreUvbuffer;
 	glGenBuffers(1, &carnivoreUvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
 	if (carnivoreUvs.size()) {
-		glBufferData(GL_ARRAY_BUFFER, carnivoreUvs.size() * sizeof(glm::vec2), &carnivoreUvs[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, carnivoreUvs.size() * sizeof(vec2), &carnivoreUvs[0], GL_STATIC_DRAW);
 	}	
 
 	unsigned int pngTextureCarnivore;
@@ -930,7 +932,7 @@ int main()
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		cout << "Failed to load texture" << endl;
 	}
 	stbi_image_free(dataCarnivore);
 

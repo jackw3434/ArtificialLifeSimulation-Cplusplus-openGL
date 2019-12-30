@@ -27,8 +27,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/jwilliams8/source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/build/x64-Debug",
-		"source" : "C:/Users/jwilliams8/source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm"
+		"build" : "C:/Users/Jack/Source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm/out/build/x64-Debug",
+		"source" : "C:/Users/Jack/Source/repos/jackw3434/modelLoaderr/packages/glm.0.9.9.600/build/native/include/glm"
 	},
 	"version" : 
 	{
