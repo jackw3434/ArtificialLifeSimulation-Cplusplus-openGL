@@ -38,20 +38,57 @@ glew will be missing from nupengl packages, you will be required to uninstall an
 To run the application, press F5.
 A terminal will open, explaining how the game works and the rules.
 ```c++
-	Welcome to the dinosaur life simulation game.
-	
-	To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
-	Then enter how many of each model you want and how many days you want the simulation to run for.
-	
-	Gameplay:
-	Dinosaurs must eat to survive until the next day.
-	Carnivors eat herbivores and herbivore eat grass.
-	Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
-	If 2 dinosaurs of the same species have eaten and meet,
-	they will produce offspring that spawn at the start of each day, increasing the population.
-	Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
+Welcome to the dinosaur life simulation game.
+
+To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
+Then enter how many of each model you want and how many days you want the simulation to run for.
+
+Gameplay:
+Dinosaurs must eat to survive until the next day.
+Carnivors eat herbivores and herbivore eat grass.
+Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
+If 2 dinosaurs of the same species have eaten and meet,
+they will produce offspring that spawn at the start of each day, increasing the population.
+Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
 ```
-	
+The user will then be prompted to input the parameters of the simulation, upon completion the simulation will run until the end.
+Here is an example of what one simulation would look like.
+
+```console
+Welcome to the dinosaur life simulation game.
+>To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
+>Then enter how many of each model you want and how many days you want the simulation to run for.
+>Gameplay:
+>Dinosaurs must eat to survive until the next day.
+>Carnivors eat herbivores and herbivore eat grass.
+>Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
+>If 2 dinosaurs of the same species have eaten and meet,
+>they will produce offspring that spawn at the start of each day, increasing the population.
+>Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
+>Please enter how many different .obj files you wish to load, either 1, 2 or 3.
+>3
+You entered: 3 files to load.
+Please enter a valid .obj file name, either herbivore, carnivore or grass.
+>herbivore
+You entered: herbivore
+Please enter how many herbivore's you wish to open.
+>50
+You entered: 50
+Please enter a valid .obj file name, either herbivore, carnivore or grass.
+>carnivore
+You entered: carnivore
+Please enter how many carnivore's you wish to open.
+>30
+You entered: 30
+Please enter a valid .obj file name, either herbivore, carnivore or grass.
+>grass
+You entered: grass
+Please enter how many grass's you wish to open.
+>60
+You entered: 60
+Please enter how many days you would like the simulation to run.
+>5
+```
 
 ## Controls
 
