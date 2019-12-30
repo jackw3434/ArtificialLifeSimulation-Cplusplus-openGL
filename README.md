@@ -37,7 +37,7 @@ glew will be missing from nupengl packages, you will be required to uninstall an
 
 To run the application, press F5.
 A terminal will open, explaining how the game works and the rules.
-```c++
+```
 Welcome to the dinosaur life simulation game.
 
 To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
