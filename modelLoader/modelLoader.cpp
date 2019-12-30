@@ -88,7 +88,7 @@ void init(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 	
 
-	window = glfwCreateWindow(1024, 768, "Model Loader", NULL, NULL);
+	window = glfwCreateWindow(1024, 768, "Artificial Life Simulation Game", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -760,7 +760,7 @@ int main()
 		if (fileValue == "herbivore") {				
 
 			if (herbivoreIndex == 0) {
-				loadOBJ("creeper.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
+				loadOBJ("cube.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
 			}
 
 			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
@@ -778,7 +778,7 @@ int main()
 		else if (fileValue == "carnivore") {
 
 			if (carnivoreIndex == 0) {
-				loadOBJ("creeper.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
+				loadOBJ("cube.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
 			}
 
 			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
@@ -845,10 +845,10 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int widthHerbivore, heightHerbivore, nrChannelsHerbivore;
-	unsigned char* dataHerbivore = stbi_load("Texture.png", &widthHerbivore, &heightHerbivore, &nrChannelsHerbivore, 0);
+	unsigned char* dataHerbivore = stbi_load("green.png", &widthHerbivore, &heightHerbivore, &nrChannelsHerbivore, 0);
 	if (dataHerbivore)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthHerbivore, heightHerbivore, 0, GL_RGBA, GL_UNSIGNED_BYTE, dataHerbivore);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthHerbivore, heightHerbivore, 0, GL_RGB, GL_UNSIGNED_BYTE, dataHerbivore);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -885,7 +885,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int widthGrass, heightGrass, nrChannelsGrass;
-	unsigned char* dataGrass = stbi_load("Texture.png", &widthGrass, &heightGrass, &nrChannelsGrass, 0);
+	unsigned char* dataGrass = stbi_load("grassTexture.png", &widthGrass, &heightGrass, &nrChannelsGrass, 0);
 	if (dataGrass)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthGrass, heightGrass, 0, GL_RGBA, GL_UNSIGNED_BYTE, dataGrass);
@@ -924,7 +924,7 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int widthCarnivore, heightCarnivore, nrChannelsCarnivore;
-	unsigned char* dataCarnivore = stbi_load("whitePaper.png", &widthCarnivore, &heightCarnivore, &nrChannelsCarnivore, 0);
+	unsigned char* dataCarnivore = stbi_load("red.png", &widthCarnivore, &heightCarnivore, &nrChannelsCarnivore, 0);
 	if (dataCarnivore)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCarnivore, heightCarnivore, 0, GL_RGB, GL_UNSIGNED_BYTE, dataCarnivore);
@@ -949,6 +949,7 @@ int main()
 	
 		// END
 		// If End Of Simulation
+		int remainder = MatrixArray.size() - grassCount;
 		if (currentDay == days) {			
 
 			herbivoreArray.clear();
@@ -980,10 +981,9 @@ int main()
 			else {
 				return 0;
 			}
-		}
-
-		// If All dino's are dead/ no models
-		else if (MatrixArray.size() == 0) {
+		}	
+		// If All dino's are dead
+		else if (remainder == 0) {
 
 			herbivoreArray.clear();
 			carnivoreArray.clear();

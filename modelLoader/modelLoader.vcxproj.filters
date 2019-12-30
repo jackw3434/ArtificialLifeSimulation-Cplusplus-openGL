@@ -58,8 +58,5 @@
     <Object Include="cube.obj">
       <Filter>Resource Files</Filter>
     </Object>
-    <Object Include="carno.obj">
-      <Filter>Resource Files</Filter>
-    </Object>
   </ItemGroup>
 </Project>

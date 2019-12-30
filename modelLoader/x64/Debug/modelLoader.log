@@ -12,4 +12,5 @@ C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(75
 C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(753,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(754,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(802,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(952,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   modelLoader.vcxproj -> C:\Users\Jack\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe
