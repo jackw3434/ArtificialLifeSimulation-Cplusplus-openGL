@@ -135,8 +135,9 @@ void getInput(void) {
 	cout << "Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.\n>";
 	cout << "If 2 dinosaurs of the same species have eaten and meet, \n>";
 	cout << "they will produce offspring that spawn at the start of each day, increasing the population.\n>";
+	cout << "Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.\n>";
 
-	cout << "Please enter how many different .obj files you wish to load.\n>";
+	cout << "Please enter how many different .obj files you wish to load, either 1, 2 or 3.\n>";
 	cin >> number;
 	cout << "You entered: " << number << " files to load." << endl;
 
@@ -302,10 +303,10 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load("green.png", &width, &height, &nrChannels, 0);
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else
@@ -313,19 +314,7 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 			cout << "Failed to load texture" << endl;
 		}
 		stbi_image_free(data);
-	}
-	/*if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {	
-		MatrixArray[0].ModelMatrix = translate(MatrixArray[0].ModelMatrix, vec3(0.5f, 0.0f, 0.0f));		
-	}	
-	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-		MatrixArray[1].ModelMatrix = translate(MatrixArray[1].ModelMatrix, vec3(0.5f, 0.1f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-		MatrixArray[2].ModelMatrix = translate(MatrixArray[2].ModelMatrix, vec3(-0.5f, 0.0f, 0.0f));
-	}
-	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-		MatrixArray[3].ModelMatrix = translate(MatrixArray[3].ModelMatrix, vec3(-0.6f, 0.1f, 0.0f));
-	}*/		
+	}		
 }
 
 void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint grassVertexbuffer, GLuint grassUvbuffer, vector<vec3> grassVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore, unsigned int pngTextureGrass)
@@ -800,8 +789,7 @@ int main()
 			}
 
 			float randomXGrassPosition = rand() % 11 + (-5);
-
-			// Radnom generate positions
+		
 			grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
 			grassPosition += 2;
 

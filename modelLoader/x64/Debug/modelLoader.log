@@ -1,16 +1,16 @@
 ﻿  modelLoader.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\packages\nupengl.core.0.1.0.1\build\native\include\GLFW\glfw3.h(92): message : see previous definition of 'APIENTRY'
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(171,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(174,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(364,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(388,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(414,54): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(536,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(750,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(752,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(753,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(754,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(802,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(952,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(172,39): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(175,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(353,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(377,58): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(403,54): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(525,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(739,36): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(741,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(742,21): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(743,22): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(791,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jack\Source\repos\jackw3434\modelLoaderr\modelLoader\modelLoader.cpp(940,50): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   modelLoader.vcxproj -> C:\Users\Jack\Source\Repos\jackw3434\modelLoaderr\x64\Debug\modelLoader.exe

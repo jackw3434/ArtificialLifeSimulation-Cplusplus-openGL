@@ -1,0 +1,2 @@
+﻿x64\Release\shader.obj : warning LNK4042: object specified more than once; extras ignored
+cube.obj : fatal error LNK1107: invalid or corrupt file: cannot read at 0x4DC
