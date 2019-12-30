@@ -28,6 +28,17 @@ OpenGL 3.3
 #include <windows.h>
 #include <ctime>
 ```
+## Game
+This is an artificial life simulation game.
+The user selects how many herbivores, carnivores and grass they want, as well as how many days to run it for.
+
+Dinosaurs must eat everyday in order to survive until the next day.
+Carnivores eat herbivores and herbivores eat grass.
+Each second, all dinosaurs will move in a random direction within the area, each second is counted as an hour in the simulation and each day ending after 24 seconds.
+
+All dinosaurs that have eaten will return to the starting positions at the beginning of each day.
+The simulation will run until all dinosaurs have either been eaten or starved, which will then prompt the user again if
+they wish to restart the game and enter different parameters.
 
 ## Setup
 
@@ -52,7 +63,7 @@ they will produce offspring that spawn at the start of each day, increasing the 
 Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
 ```
 The user will then be prompted to input the parameters of the simulation, upon completion the simulation will run until the end.
-Here is an example of what one simulation would look like.
+Here is an example of what one simulation setup would look like.
 
 ```console
 Welcome to the dinosaur life simulation game.
@@ -89,8 +100,12 @@ You entered: 60
 Please enter how many days you would like the simulation to run.
 >5
 ```
+The user can enter any number of models they like, providing the user's computer can handle it.
+After entering how many days the simulation runs for, the simulation will start.
 
 ## Controls
+
+These movement controls were only utilised during the formative assessment and are not required for the game, but the user will still have access to these controls, strictly for demo purposes.
 
 You can use the arrow keys and mouse to move the camera.
 
@@ -204,9 +219,34 @@ The Application can render 2 different models, both textured.
 
 The first thing the code will do is to prompt the user for file name inputs:
 ```c++
-cout << "Please enter the first valid .obj file.\n>";
-getline(cin, fileToLoad);
-cout << "You entered: " << fileToLoad1 << endl << endl;
+cout << "Please enter how many different .obj files you wish to load, either 1, 2 or 3.\n>";
+	cin >> number;
+	cout << "You entered: " << number << " files to load." << endl;
+
+	if (number == 0 || number > 3) {	
+		cout << "Please load either 1, 2 or 3 models" << endl;
+		getInput();
+	}
+
+	for (int i = 0; i < number; i++)
+	{
+		cout << "Please enter a valid .obj file name, either herbivore, carnivore or grass.\n>";
+		cin >> fileToLoad;
+		cout << "You entered: " << fileToLoad << endl;
+
+		cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
+		cin >> numberofFilesToOpen;
+		cout << "You entered: " << numberofFilesToOpen << endl;
+
+		for (int n = 0; n < stoi(numberofFilesToOpen); n++)
+		{
+			myList.push_back(fileToLoad.c_str());
+		}
+	};
+
+	cout << "Please enter how many days you would like the simulation to run.\n>";
+	cin >> days;
+	cout << "You entered: " << days << " days." << endl;
 ```
 If correct file names have been entered, we will initialize the dependancies and create a window to draw in.
 ```c++
@@ -251,106 +291,600 @@ GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 
 ### Start Reading the object.
 ```c++
-std::vector< glm::vec3 > vertices;
-std::vector< glm::vec2 > uvs;
-std::vector< glm::vec3 > normals;
+vector< vec3 > herbivoreVertices;
+	vector< vec2 > herbivoreUvs;
+	vector< vec3 > herbivoreNormals;
 
-bool res = loadOBJ(fileToLoad1.c_str(), vertices, uvs, normals);
-bool res2 = loadOBJ(fileToLoad2.c_str(), vertices, uvs, normals);
-indexVBO(vertices, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
+	vector< vec3 > carnivoreVertices;
+	vector< vec2 > carnivoreUvs;
+	vector< vec3 > carnivoreNormals;
+
+	vector< vec3 > grassVertices;
+	vector< vec2 > grassUvs;
+	vector< vec3 > grassNormals;
+
+	int herbivoreIndex = 0;
+	int carnivoreIndex = 0;
+	int grassIndex = 0;
+
+	int size = (myList.size() / 3) - 1;	
+
+	float herbPosition = -size;
+	float carnPosition = -size;	
+	float grassPosition = -size;
+
+	for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+
+		string fileValue = *i;
+
+		if (fileValue == "herbivore") {				
+
+			if (herbivoreIndex == 0) {
+				loadOBJ("cube.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
+			}
+
+			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
+			herbPosition += 2;
+
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[herbivoreIndex]);
+			MatrixArray.push_back(tempMatrix);
+			
+			herbivoreIndex++;
+			herbivoreCount++;
+		}
+		else if (fileValue == "carnivore") {
+
+			if (carnivoreIndex == 0) {
+				loadOBJ("cube.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
+			}
+
+			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
+			carnPosition += 2;
+			
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);	
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnivoreIndex]);
+			MatrixArray.push_back(tempMatrix);
+
+			carnivoreIndex++;
+			carnivoreCount++;
+		}
+		else if (fileValue == "grass") {
+
+			if (grassIndex == 0) {
+				loadOBJ("grass.obj", grassVertices, grassUvs, grassNormals);
+			}
+
+			float randomXGrassPosition = rand() % 11 + (-5);
+		
+			grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
+			grassPosition += 2;
+
+			Matrixes tempMatrix;
+			tempMatrix.name = fileValue;
+			tempMatrix.ModelMatrix = mat4(1.0);
+			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, grassArray[grassIndex]);
+			MatrixArray.push_back(tempMatrix);
+
+			grassIndex++;
+			grassCount++;
+		}
+		else{
+			cout << fileValue << " does not exist" << endl;
+		}
+	};	
 ```
 
 ### Generate and Bind Buffers
 ```c++
-GLuint vertexbuffer;
-glGenBuffers(1, &vertexbuffer);
-glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+GLuint herbivoreVertexbuffer;
+glGenBuffers(1, &herbivoreVertexbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
+if (herbivoreVertices.size()) {
+	glBufferData(GL_ARRAY_BUFFER, herbivoreVertices.size() * sizeof(vec3), &herbivoreVertices[0], GL_STATIC_DRAW);
+}
 
-GLuint uvbuffer;
-glGenBuffers(1, &uvbuffer);
-glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+GLuint herbivoreUvbuffer;
+glGenBuffers(1, &herbivoreUvbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+if (herbivoreUvs.size()) {
+	glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
+}	
 
-GLuint elementbuffer;
-glGenBuffers(1, &elementbuffer);
-glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
+GLuint grassVertexbuffer;
+glGenBuffers(1, &grassVertexbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, grassVertexbuffer);
+if (grassVertices.size()) {
+	glBufferData(GL_ARRAY_BUFFER, grassVertices.size() * sizeof(vec3), &grassVertices[0], GL_STATIC_DRAW);
+}
+
+GLuint grassUvbuffer;
+glGenBuffers(1, &grassUvbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, grassUvbuffer);
+if (grassUvs.size()) {
+	glBufferData(GL_ARRAY_BUFFER, grassUvs.size() * sizeof(vec2), &grassUvs[0], GL_STATIC_DRAW);
+}
+
+GLuint carnivoreVertexbuffer;
+glGenBuffers(1, &carnivoreVertexbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
+if (carnivoreVertices.size()) {
+	glBufferData(GL_ARRAY_BUFFER, carnivoreVertices.size() * sizeof(vec3), &carnivoreVertices[0], GL_STATIC_DRAW);
+}
+GLuint carnivoreUvbuffer;
+glGenBuffers(1, &carnivoreUvbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
+if (carnivoreUvs.size()) {
+	glBufferData(GL_ARRAY_BUFFER, carnivoreUvs.size() * sizeof(vec2), &carnivoreUvs[0], GL_STATIC_DRAW);
+}
 ```
 
-### Generate PNG textures
+### Generate PNG textures for each model.
 ```c++
-int width, height, nrChannels;
-unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
-if (data)
+unsigned int pngTextureHerbivore;
+glGenTextures(1, &pngTextureHerbivore);
+glBindTexture(GL_TEXTURE_2D, pngTextureHerbivore);
+
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+int widthHerbivore, heightHerbivore, nrChannelsHerbivore;
+unsigned char* dataHerbivore = stbi_load("green.png", &widthHerbivore, &heightHerbivore, &nrChannelsHerbivore, 0);
+if (dataHerbivore)
 {
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthHerbivore, heightHerbivore, 0, GL_RGB, GL_UNSIGNED_BYTE, dataHerbivore);
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 else
 {
-	std::cout << "Failed to load texture" << std::endl;
+	cout << "Failed to load texture" << endl;
 }
-stbi_image_free(data);	
-```
+stbi_image_free(dataHerbivore);
 
-### Set up the Model, View and Projection and send the transformation to the currently bound shader.
+unsigned int pngTextureGrass;
+glGenTextures(1, &pngTextureGrass);
+glBindTexture(GL_TEXTURE_2D, pngTextureGrass);
+
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+int widthGrass, heightGrass, nrChannelsGrass;
+unsigned char* dataGrass = stbi_load("grassTexture.png", &widthGrass, &heightGrass, &nrChannelsGrass, 0);
+if (dataGrass)
+{
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthGrass, heightGrass, 0, GL_RGBA, GL_UNSIGNED_BYTE, dataGrass);
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+else
+{
+	cout << "Failed to load texture" << endl;
+}
+stbi_image_free(dataGrass);
+
+unsigned int pngTextureCarnivore;
+glGenTextures(1, &pngTextureCarnivore);
+glBindTexture(GL_TEXTURE_2D, pngTextureCarnivore);
+
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+int widthCarnivore, heightCarnivore, nrChannelsCarnivore;
+unsigned char* dataCarnivore = stbi_load("red.png", &widthCarnivore, &heightCarnivore, &nrChannelsCarnivore, 0);
+if (dataCarnivore)
+{
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthCarnivore, heightCarnivore, 0, GL_RGB, GL_UNSIGNED_BYTE, dataCarnivore);
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+else
+{
+	cout << "Failed to load texture" << endl;
+}
+stbi_image_free(dataCarnivore);
+```
+### Create a ModelMatrix for each of the objects to be transformed independantly
 ```c++
-glm::mat4 ModelMatrix = glm::mat4(1.0);
-glm::mat4 ViewMatrix = getViewMatrix();
-glm::mat4 ProjectionMatrix = getProjectionMatrix();		
-ModelMatrix = glm::translate(ModelMatrix, glm::vec3(distanceValue, 0.0f, 0.0f));
+for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
-glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);	
+	string fileValue = *i;
+
+	if (fileValue == "herbivore") {				
+
+		if (herbivoreIndex == 0) {
+			loadOBJ("cube.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
+		}
+
+		herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
+		herbPosition += 2;
+
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[herbivoreIndex]);
+		MatrixArray.push_back(tempMatrix);
+
+		herbivoreIndex++;
+		herbivoreCount++;
+	}
+	else if (fileValue == "carnivore") {
+
+		if (carnivoreIndex == 0) {
+			loadOBJ("cube.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
+		}
+
+		carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
+		carnPosition += 2;
+
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);	
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnivoreIndex]);
+		MatrixArray.push_back(tempMatrix);
+
+		carnivoreIndex++;
+		carnivoreCount++;
+	}
+	else if (fileValue == "grass") {
+
+		if (grassIndex == 0) {
+			loadOBJ("grass.obj", grassVertices, grassUvs, grassNormals);
+		}
+
+		float randomXGrassPosition = rand() % 11 + (-5);
+
+		grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
+		grassPosition += 2;
+
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, grassArray[grassIndex]);
+		MatrixArray.push_back(tempMatrix);
+
+		grassIndex++;
+		grassCount++;
+	}
+	else{
+		cout << fileValue << " does not exist" << endl;
+	}
+};
 ```
 
-### Enable the Buffers:
+### Set up the Model, View and Projection and send the transformation to the currently bound shader for each of the objects that have been input by the user, which is handle with my draw() function which will also enable the buffers, activate textures and draw.
 ```c++
-glEnableVertexAttribArray(0);
-glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-glVertexAttribPointer(
-	0,                  // attribute
-	3,                  // size
-	GL_FLOAT,           // type
-	GL_FALSE,           // normalized?
-	0,                  // stride
-	(void*)0            // array buffer offset
-);		
+void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint grassVertexbuffer, GLuint grassUvbuffer, vector<vec3> grassVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore, unsigned int pngTextureGrass)
+{
+mat4 ViewMatrix = getViewMatrix();
+mat4 ProjectionMatrix = getProjectionMatrix();
 
-glEnableVertexAttribArray(1);
-glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-glVertexAttribPointer(
-	1,                                // attribute
-	2,                                // size
-	GL_FLOAT,                         // type
-	GL_FALSE,                         // normalized?
-	0,                                // stride
-	(void*)0                          // array buffer offset
-);
+int index = 0;	
 
-glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+    for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+
+	string fileValue = *i;
+
+	if (fileValue == "herbivore") {
+
+		// 1rst attribute buffer : herbivoreVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureHerbivore);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, herbivoreVertices.size());
+	}
+	if (fileValue == "carnivore") {
+
+		// 1rst attribute buffer : carnivoreVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : carnivoreUVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureCarnivore);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, carnivoreVertices.size());
+	}
+
+	if (fileValue == "grass") {
+
+		// 1rst attribute buffer : grassVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, grassVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : grassUVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, grassUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureGrass);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		MatrixArray[index].hasEaten = true;
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, grassVertices.size());
+	}
+
+		index++;
+    };
+}	
 ```
 
-### Activate textures
+After this setup process is complete, the game will start to run and process the data calling into other functions.
+One of the functions that gets kicked off at the begining is the `c++ dayCycles()` function. 
+
 ```c++
-glActiveTexture(GL_TEXTURE0);
-glBindTexture(GL_TEXTURE_2D, pngTexture);
+void dayCycles() {
 
-glUniform1i(TextureID, 0);
+	for (int i = 0; i < days; i++)
+	{
+		if (currentDay == i) {			
+			moveEachSecond();
+		}
+	}		
+}
 ```
 
-### Draw
+This function will loop for the number of days entered by the user, calling into another function that runs every second.
+Trying to accomplish specific movement executions each second was a challange, but i found a solution that has worked, if i had more time this would be an area for improvement as the code is bulky and could be condensed.
+
+The function calculates deltaTime to get the value of seconds.
+
+At the start of the day we set the hunger values for `c++ hasEaten` to be `c++ false`.
+At each second I call into another function, `c++ moveRandomly()`. The problem I encountered is that this would be true for each frame and would therefor moveRandomly more than once, my not-so-nice solution for this was to add boolean values to disable the ability as soon as it has run once, which is what i wanted to achieve in the first place.
+
+At the end of the last hour of the day I restart the day by calling into my `c++ restartDay()` method.
+
+## moveEachSecond()
 ```c++
-glDrawArrays(GL_TRIANGLES, 0, indices.size());
+void moveEachSecond() {
+	// Compute time difference between current and last frame
+	static double lastTime = glfwGetTime();		
+	double currentTime = glfwGetTime();
+	int deltaTime = float(currentTime - lastTime);	
 
-glDrawElements(
-	GL_TRIANGLES,		//mode
-	indices.size(),		//count
-	GL_UNSIGNED_INT,	//type
-	(void*)0			//element array buffer offset
-);	
+	if (floor(deltaTime) == 1 && canMoveAt1 == true) {
+
+		for (int i = 0; i < MatrixArray.size(); i++)
+		{
+			MatrixArray[i].hasEaten = false;
+		}
+
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt1 = false;
+	}
+	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt2 = false;
+	}
+	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt3 = false;
+	}
+	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt4 = false;
+	}
+	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt5 = false;
+	}
+	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt6 = false;
+	}
+	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt7 = false;
+	}
+	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt8 = false;
+	}
+	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt9 = false;
+	}
+	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt10 = false;
+	}
+	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt11 = false;
+	}
+	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt12 = false;
+	}
+	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt13 = false;
+	}
+	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt14 = false;
+	}
+	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt15 = false;
+	}
+	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt16 = false;
+	}
+	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt17 = false;
+	}
+	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt18 = false;
+	}
+	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt19 = false;
+	}
+	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt20 = false;
+	}
+	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt21 = false;
+	}
+	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt22 = false;
+	}
+	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();
+		canMoveAt23 = false;
+	}
+	if (floor(deltaTime) >= 24 && canMoveAt24 == true) {
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
+		moveRandomly();	
+		restartDay();
+	}	
+}
 ```
+## moveRandomly()
+```c++ 
+void moveRandomly() {	
+
+	int edgeValue = MatrixArray.size() -1;
+
+	float moveSpeed = 1.0f;
+	srand(time(NULL));
+
+	for (int i = 0; i < MatrixArray.size(); i++)
+	{	
+
+		if(MatrixArray[i].name != "grass"){
+
+			int randomAxisValue = rand() % 2;
+
+			if (randomAxisValue == 0) {
+				// X Value
+				int randomMovementvalue = rand() % 2;
+
+				if (randomMovementvalue == 0) {
+					// +1 on the X value			
+					if (MatrixArray[i].ModelMatrix[3].x >= 5) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
+					}
+				}
+
+				if (randomMovementvalue == 1) {
+					// -1 on the X value
+					if (MatrixArray[i].ModelMatrix[3].x <= -5) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
+					}
+				}
+			}
+
+			if (randomAxisValue == 1) {
+				// Z Value
+				int randomMovementvalue = rand() % 2;
+
+				if (randomMovementvalue == 0) {
+					// +1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+					}
+				}
+
+				if (randomMovementvalue == 1) {
+					// -1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+					}
+				}
+			}
+		}		
+	}
+};
+
+```
+
+
 
 ### Termination/ VBO and Shader Clean up:
 ```c++
