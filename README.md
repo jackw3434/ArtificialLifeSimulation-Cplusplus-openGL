@@ -1,4 +1,4 @@
-# model loader and artificial life simulation ReadMe.md and report.
+# Model loader and Artificial life simulation ReadMe.md and Report.
 
 ## Project Aim
 To be able to create an obj loader for an artificial life simulation game.
@@ -578,7 +578,7 @@ for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) 
 };
 ```
 
-#Main game loop
+### Main game loop
 The logic of the game has been refactored into 3 methods that are called each frame, collision(), dayCycles() and draw();
 Most of the game logic happens within dayCycles(), everything to do with movements, textures and models happens within draw().
 ```c++
@@ -1156,7 +1156,7 @@ glfwTerminate();
 return 0;
 ```
 
-# OBJ Paser
+# OBJ Parser
 The paser reads each line of the obj file and stores the values of v, vt, vn and f:
 ```c++
 if (strcmp(lineHeader, "v") == 0) {
@@ -1224,5 +1224,18 @@ if (strcmp(lineHeader, "f") == 0) {
 	}	
 ```
 
-#Report
+# Report
 
+## How does the user interact with your executable? 
+
+
+## How do you open and control the software you wrote (exe file)?
+
+
+## How does the program code work? 
+
+
+## How do the classes and functions fit together and who does what?
+
+
+## What makes your program special and how does it compare to similar things? (Where did you get the idea from? What did you start with? How did you make yours unique? Did you start with a given project?)
