@@ -521,10 +521,10 @@ void restartDay() {
 	canMoveAt23 = true;
 	canMoveAt24 = true;
 
-	cout << "day finished " << currentDay + 1 << endl;
-	cout << "herbivore count  " << herbivoreCount << endl;
-	cout << "carnivore count  " << carnivoreCount << endl;
-	cout << "grass count  " << grassCount << endl;
+	cout << "Day " << currentDay + 1 << " finished." << endl;
+	cout << "Herbivore count: " << herbivoreCount << endl;
+	cout << "Carnivore count: " << carnivoreCount << endl;
+	cout << "Grass count: " << grassCount << endl;
 	glfwSetTime(0);
 	currentDay++;
 }
@@ -542,122 +542,122 @@ void moveEachSecond() {
 			MatrixArray[i].hasEaten = false;
 		}
 
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;		
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt1 = false;
 	}
 	if (floor(deltaTime) == 2 && canMoveAt2 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt2 = false;
 	}
 	if (floor(deltaTime) == 3 && canMoveAt3 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt3 = false;
 	}
 	if (floor(deltaTime) == 4 && canMoveAt4 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt4 = false;
 	}
 	if (floor(deltaTime) == 5 && canMoveAt5 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt5 = false;
 	}
 	if (floor(deltaTime) == 6 && canMoveAt6 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt6 = false;
 	}
 	if (floor(deltaTime) == 7 && canMoveAt7 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt7 = false;
 	}
 	if (floor(deltaTime) == 8 && canMoveAt8 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt8 = false;
 	}
 	if (floor(deltaTime) == 9 && canMoveAt9 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt9 = false;
 	}
 	if (floor(deltaTime) == 10 && canMoveAt10 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt10 = false;
 	}
 	if (floor(deltaTime) == 11 && canMoveAt11 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt11 = false;
 	}
 	if (floor(deltaTime) == 12 && canMoveAt12 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt12 = false;
 	}
 	if (floor(deltaTime) == 13 && canMoveAt13 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt13 = false;
 	}
 	if (floor(deltaTime) == 14 && canMoveAt14 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt14 = false;
 	}
 	if (floor(deltaTime) == 15 && canMoveAt15 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt15 = false;
 	}
 	if (floor(deltaTime) == 16 && canMoveAt16 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt16 = false;
 	}
 	if (floor(deltaTime) == 17 && canMoveAt17 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt17 = false;
 	}
 	if (floor(deltaTime) == 18 && canMoveAt18 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt18 = false;
 	}
 	if (floor(deltaTime) == 19 && canMoveAt19 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt19 = false;
 	}
 	if (floor(deltaTime) == 20 && canMoveAt20 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt20 = false;
 	}
 	if (floor(deltaTime) == 21 && canMoveAt21 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt21 = false;
 	}
 	if (floor(deltaTime) == 22 && canMoveAt22 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt22 = false;
 	}
 	if (floor(deltaTime) == 23 && canMoveAt23 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();
 		canMoveAt23 = false;
 	}
 	if (floor(deltaTime) >= 24 && canMoveAt24 == true) {
-		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << " O'clock" << endl;
+		cout << "Day: " << currentDay + 1 << " Time: " << deltaTime << ":00" << endl;
 		moveRandomly();	
 		restartDay();
 	}	
@@ -686,14 +686,14 @@ void collision() {
 					if (MatrixArray[i].name == "carnivore" && MatrixArray[j].name == "herbivore") {
 
 						// Has eaten will survive to the next day. carnivore hitting herbivore 		
-
+						cout << "A carnivore has eaten a herbivore." << endl;
 						MatrixArray[i].hasEaten = true;
 
 						MatrixArray.erase(MatrixArray.begin() + j);
 						myList.erase(myList.begin() + j);
 
 						herbivoreCount--;
-						cout << "herbivore count:  " << herbivoreCount << endl;
+						cout << "herbivore count: " << herbivoreCount << endl;
 
 						i--;
 						j--;										
@@ -701,14 +701,14 @@ void collision() {
 					if (MatrixArray[i].name == "herbivore" && MatrixArray[j].name == "grass") {
 
 						// Has eaten will survive to the next day. herbivore hitting grass
-					
+						cout << "A herbivore has eaten a grass." << endl;
 						MatrixArray[i].hasEaten = true;
 
 						MatrixArray.erase(MatrixArray.begin() + j);
 						myList.erase(myList.begin() + j);	
 
 						grassCount--;
-						cout << "grass count:  " << grassCount << endl;
+						cout << "grass count: " << grassCount << endl;
 					}
 				}
 			}
