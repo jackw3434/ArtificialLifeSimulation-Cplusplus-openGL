@@ -215,7 +215,7 @@ void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivor
 
 ## Code
 
-The Application can render 2 different models, both textured.
+The Application can render 3 different textured models.
 
 The first thing the code will do is to prompt the user for file name inputs:
 ```c++
@@ -511,7 +511,7 @@ else
 }
 stbi_image_free(dataCarnivore);
 ```
-### Create a ModelMatrix for each of the objects to be transformed independantly
+## Create a ModelMatrix for each of the objects to be transformed independantly
 ```c++
 for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
@@ -577,6 +577,17 @@ for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) 
 		cout << fileValue << " does not exist" << endl;
 	}
 };
+```
+
+#Main game loop
+The logic of the game has been refactored into 3 methods that are called each frame, collision(), dayCycles() and draw();
+Most of the game logic happens within dayCycles(), everything to do with movements, textures and models happens within draw().
+```c++
+do {	
+	collision();
+	dayCycles();
+	draw(MatrixID, herbivoreVertexbuffer, herbivoreUvbuffer, herbivoreVertices, grassVertexbuffer, grassUvbuffer, grassVertices,           carnivoreVertexbuffer, carnivoreUvbuffer, carnivoreVertices, pngTextureHerbivore, pngTextureCarnivore, pngTextureGrass);
+}
 ```
 
 ### Set up the Model, View and Projection and send the transformation to the currently bound shader for each of the objects that have been input by the user, which is handle with my draw() function which will also enable the buffers, activate textures and draw.
@@ -834,6 +845,9 @@ void moveEachSecond() {
 }
 ```
 ## moveRandomly()
+In this method I use a random number generater to select either 0 or 1 to choose to either translate on the X axis of the Z axis.
+Once chosen I use the random number generater again to move the model by either +1 or -1, checking it position too keep it in bounds.
+This is called for all of the dinosaurs each second.
 ```c++ 
 void moveRandomly() {	
 
@@ -902,6 +916,233 @@ if(MatrixArray[i].name != "grass"){
 }
 };
 
+```
+
+After 24 seconds, dinosaurs have had the whole day to roam around to find food to ensure their survivel before the day restarts.
+Keeping count of how many models are around and tracking how many days the simulation runs for.
+
+The function will keep all grass in their origional places, an improvement on this feature if i had more time would be to make the reminaing grass spread out by 1 at the end of each day to increase food for the herbivores.
+
+Any dinosaurs that havnt eaten are removed and any that have eaten return to the start position. If i had more time I could implement a feature where if 2 dinosaurs of the same species who have both eaten meet within the same day then there could be a chance for reproducing and would therefor add another dinosaur of that species to the start of the next day, increasing the population.
+
+## restartDay()
+```c++
+void restartDay() {
+	int herbivoreIndex = 0;
+	int carnivoreIndex = 0;
+	int grassIndex = 0;
+
+	if (currentDay == days) {
+		return;
+	}
+
+	if (MatrixArray.size() > 0) {
+		for (int i = 0; i < MatrixArray.size();)
+		{
+			if (MatrixArray.size() > 0) {
+				if (MatrixArray[i].name == "grass") {
+					MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
+					MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
+					grassIndex++;
+				}
+
+				if (MatrixArray[i].hasEaten == false) {
+
+					if (MatrixArray[i].name == "herbivore") {
+						herbivoreCount--;
+					}
+
+					if (MatrixArray[i].name == "carnivore") {
+						carnivoreCount--;
+					}
+
+					MatrixArray.erase(MatrixArray.begin() + i);
+					myList.erase(myList.begin() + i);
+					i--;
+				}
+				else if (MatrixArray[i].hasEaten == true) {
+
+					if (MatrixArray[i].name == "herbivore") {
+						MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
+						herbivoreIndex++;
+						
+						//add children
+					}
+					if (MatrixArray[i].name == "carnivore") {
+
+						// move carno's that have eaten back to start and add their children
+						MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
+						carnivoreIndex++;
+
+						//add children						
+					}
+				}
+				i++;
+			}
+		}		
+	}
+	else {
+		return;
+	}
+	canMoveAt0 = true;
+	canMoveAt1 = true;
+	canMoveAt2 = true;
+	canMoveAt3 = true;
+	canMoveAt4 = true;
+	canMoveAt5 = true;
+	canMoveAt6 = true;
+	canMoveAt7 = true;
+	canMoveAt8 = true;
+	canMoveAt9 = true;
+	canMoveAt10 = true;
+	canMoveAt11 = true;
+	canMoveAt12 = true;
+	canMoveAt13 = true;
+	canMoveAt14 = true;
+	canMoveAt15 = true;
+	canMoveAt16 = true;
+	canMoveAt17 = true;
+	canMoveAt18 = true;
+	canMoveAt19 = true;
+	canMoveAt20 = true;
+	canMoveAt21 = true;
+	canMoveAt22 = true;
+	canMoveAt23 = true;
+	canMoveAt24 = true;
+
+	cout << "Day " << currentDay + 1 << " finished." << endl;
+	cout << "Herbivore count: " << herbivoreCount << endl;
+	cout << "Carnivore count: " << carnivoreCount << endl;
+	cout << "Grass count: " << grassCount << endl;
+	glfwSetTime(0);
+	currentDay++;
+}
+```
+At the end of the day the user is presented with the results of that day.
+
+## Collision()
+With lots of models moving around it is required to know when certain modles need to interact with each other.
+Keeping track if any carnivores eat any herbivores and if any herbivores eat any grass.
+```c++
+
+void collision() {
+	
+	for (size_t i = 0; i < MatrixArray.size(); i++)
+	{
+
+		for (size_t j = 0; j < MatrixArray.size(); j++)
+		{
+			if (i != j) {
+				if (MatrixArray[i].ModelMatrix[3].x == MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z == MatrixArray[j].ModelMatrix[3].z) {	
+
+					if (MatrixArray[i].name == "carnivore" && MatrixArray[j].name == "herbivore") {
+
+						// Has eaten will survive to the next day. carnivore hitting herbivore 		
+						cout << "A carnivore has eaten a herbivore." << endl;
+						MatrixArray[i].hasEaten = true;
+
+						MatrixArray.erase(MatrixArray.begin() + j);
+						myList.erase(myList.begin() + j);
+
+						herbivoreCount--;
+						cout << "herbivore count: " << herbivoreCount << endl;
+
+						i--;
+						j--;										
+					}		
+					if (MatrixArray[i].name == "herbivore" && MatrixArray[j].name == "grass") {
+
+						// Has eaten will survive to the next day. herbivore hitting grass
+						cout << "A herbivore has eaten a grass." << endl;
+						MatrixArray[i].hasEaten = true;
+
+						MatrixArray.erase(MatrixArray.begin() + j);
+						myList.erase(myList.begin() + j);	
+
+						grassCount--;
+						cout << "grass count: " << grassCount << endl;
+					}
+				}
+			}
+		}
+	}
+}
+```
+
+## End
+If there are no more dinosaurs alive or the simulation has run its course the game will end, asking the user to play again or not.
+
+```c++
+// END
+// If End Of Simulation
+int remainder = MatrixArray.size() - grassCount;
+if (currentDay == days) {			
+
+	herbivoreArray.clear();
+	carnivoreArray.clear();
+	grassArray.clear();
+
+	MatrixArray.clear();
+	myList.clear();
+
+	glfwWindowShouldClose(window);
+	glDeleteBuffers(1, &herbivoreVertexbuffer);
+	glDeleteBuffers(1, &herbivoreUvbuffer);
+	glDeleteBuffers(1, &carnivoreVertexbuffer);
+	glDeleteBuffers(1, &carnivoreUvbuffer);
+	glDeleteProgram(shader);
+	glDeleteTextures(1, &TextureID);
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glfwTerminate();
+
+	cout << "The Simulation has ended" << endl;
+
+	string answer;
+	cout << "Would you Like to start again?( Y or N )\n>";
+	cin >> answer;
+
+	if (answer == "Y" || answer == "y") {
+		main();
+	}
+	else {
+		return 0;
+	}
+}	
+// If All dino's are dead
+else if (remainder == 0) {
+
+	herbivoreArray.clear();
+	carnivoreArray.clear();
+	grassArray.clear();
+
+	MatrixArray.clear();
+	myList.clear();
+
+	glfwWindowShouldClose(window);
+	glDeleteBuffers(1, &herbivoreVertexbuffer);
+	glDeleteBuffers(1, &herbivoreUvbuffer);
+	glDeleteBuffers(1, &carnivoreVertexbuffer);
+	glDeleteBuffers(1, &carnivoreUvbuffer);
+	glDeleteProgram(shader);
+	glDeleteTextures(1, &TextureID);
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glfwTerminate();
+
+	cout << "All Dino's have been eaten or starved!" << endl;
+
+	string answer;
+	cout << "Would you Like to start again?( Y or N )\n>";
+	cin >> answer;
+
+	if (answer == "Y" || answer == "y") {				
+		main();
+	}
+	else {				
+		return 0;
+	}
+}
 ```
 
 
