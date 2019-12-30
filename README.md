@@ -220,37 +220,39 @@ The Application can render 2 different models, both textured.
 The first thing the code will do is to prompt the user for file name inputs:
 ```c++
 cout << "Please enter how many different .obj files you wish to load, either 1, 2 or 3.\n>";
-	cin >> number;
-	cout << "You entered: " << number << " files to load." << endl;
+cin >> number;
+cout << "You entered: " << number << " files to load." << endl;
 
-	if (number == 0 || number > 3) {	
-		cout << "Please load either 1, 2 or 3 models" << endl;
-		getInput();
-	}
+if (number == 0 || number > 3) {	
+	cout << "Please load either 1, 2 or 3 models" << endl;
+	getInput();
+}
 
-	for (int i = 0; i < number; i++)
+for (int i = 0; i < number; i++)
+{
+	cout << "Please enter a valid .obj file name, either herbivore, carnivore or grass.\n>";
+	cin >> fileToLoad;
+	cout << "You entered: " << fileToLoad << endl;
+
+	cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
+	cin >> numberofFilesToOpen;
+	cout << "You entered: " << numberofFilesToOpen << endl;
+
+	for (int n = 0; n < stoi(numberofFilesToOpen); n++)
 	{
-		cout << "Please enter a valid .obj file name, either herbivore, carnivore or grass.\n>";
-		cin >> fileToLoad;
-		cout << "You entered: " << fileToLoad << endl;
+		myList.push_back(fileToLoad.c_str());
+	}
+};
 
-		cout << "Please enter how many " << fileToLoad << "'s you wish to open.\n>";
-		cin >> numberofFilesToOpen;
-		cout << "You entered: " << numberofFilesToOpen << endl;
-
-		for (int n = 0; n < stoi(numberofFilesToOpen); n++)
-		{
-			myList.push_back(fileToLoad.c_str());
-		}
-	};
-
-	cout << "Please enter how many days you would like the simulation to run.\n>";
-	cin >> days;
-	cout << "You entered: " << days << " days." << endl;
+cout << "Please enter how many days you would like the simulation to run.\n>";
+cin >> days;
+cout << "You entered: " << days << " days." << endl;
 ```
 If correct file names have been entered, we will initialize the dependancies and create a window to draw in.
 ```c++
-if (!glfwInit())
+void init(void) {
+
+	if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return;
@@ -260,18 +262,36 @@ if (!glfwInit())
 	}
 
 	glewExperimental = GL_TRUE;
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 	
 
-	window = glfwCreateWindow(1024, 768, "Model Loader", NULL, NULL);
-	glfwMakeContextCurrent(window);		
+	window = glfwCreateWindow(1024, 768, "Artificial Life Simulation Game", NULL, NULL);
+	glfwMakeContextCurrent(window);
 
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); //Dark Blue Background
+
+	glfwPollEvents(); // Set mouse to centre of screen
+	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	// Initialize GLEW
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		return;
 	}
+
+	if (window == NULL) {
+		fprintf(stderr, "Failed to open GLFW window.\n");
+		glfwTerminate();
+		return;
+	}
+};
 ```
 
 ### The next step is to generate and bind the VAO:
@@ -292,91 +312,91 @@ GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 ### Start Reading the object.
 ```c++
 vector< vec3 > herbivoreVertices;
-	vector< vec2 > herbivoreUvs;
-	vector< vec3 > herbivoreNormals;
+vector< vec2 > herbivoreUvs;
+vector< vec3 > herbivoreNormals;
 
-	vector< vec3 > carnivoreVertices;
-	vector< vec2 > carnivoreUvs;
-	vector< vec3 > carnivoreNormals;
+vector< vec3 > carnivoreVertices;
+vector< vec2 > carnivoreUvs;
+vector< vec3 > carnivoreNormals;
 
-	vector< vec3 > grassVertices;
-	vector< vec2 > grassUvs;
-	vector< vec3 > grassNormals;
+vector< vec3 > grassVertices;
+vector< vec2 > grassUvs;
+vector< vec3 > grassNormals;
 
-	int herbivoreIndex = 0;
-	int carnivoreIndex = 0;
-	int grassIndex = 0;
+int herbivoreIndex = 0;
+int carnivoreIndex = 0;
+int grassIndex = 0;
 
-	int size = (myList.size() / 3) - 1;	
+int size = (myList.size() / 3) - 1;	
 
-	float herbPosition = -size;
-	float carnPosition = -size;	
-	float grassPosition = -size;
+float herbPosition = -size;
+float carnPosition = -size;	
+float grassPosition = -size;
 
-	for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
 
-		string fileValue = *i;
+	string fileValue = *i;
 
-		if (fileValue == "herbivore") {				
+	if (fileValue == "herbivore") {				
 
-			if (herbivoreIndex == 0) {
-				loadOBJ("cube.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
-			}
-
-			herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
-			herbPosition += 2;
-
-			Matrixes tempMatrix;
-			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[herbivoreIndex]);
-			MatrixArray.push_back(tempMatrix);
-			
-			herbivoreIndex++;
-			herbivoreCount++;
+		if (herbivoreIndex == 0) {
+			loadOBJ("cube.obj", herbivoreVertices, herbivoreUvs, herbivoreNormals);
 		}
-		else if (fileValue == "carnivore") {
 
-			if (carnivoreIndex == 0) {
-				loadOBJ("cube.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
-			}
+		herbivoreArray.push_back(vec3(-5.0f, 0.0f, herbPosition));
+		herbPosition += 2;
 
-			carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
-			carnPosition += 2;
-			
-			Matrixes tempMatrix;
-			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);	
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnivoreIndex]);
-			MatrixArray.push_back(tempMatrix);
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, herbivoreArray[herbivoreIndex]);
+		MatrixArray.push_back(tempMatrix);
 
-			carnivoreIndex++;
-			carnivoreCount++;
+		herbivoreIndex++;
+		herbivoreCount++;
+	}
+	else if (fileValue == "carnivore") {
+
+		if (carnivoreIndex == 0) {
+			loadOBJ("cube.obj", carnivoreVertices, carnivoreUvs, carnivoreNormals);
 		}
-		else if (fileValue == "grass") {
 
-			if (grassIndex == 0) {
-				loadOBJ("grass.obj", grassVertices, grassUvs, grassNormals);
-			}
+		carnivoreArray.push_back(vec3(5.0f, 0.0f, carnPosition));
+		carnPosition += 2;
 
-			float randomXGrassPosition = rand() % 11 + (-5);
-		
-			grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
-			grassPosition += 2;
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);	
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, carnivoreArray[carnivoreIndex]);
+		MatrixArray.push_back(tempMatrix);
 
-			Matrixes tempMatrix;
-			tempMatrix.name = fileValue;
-			tempMatrix.ModelMatrix = mat4(1.0);
-			tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, grassArray[grassIndex]);
-			MatrixArray.push_back(tempMatrix);
+		carnivoreIndex++;
+		carnivoreCount++;
+	}
+	else if (fileValue == "grass") {
 
-			grassIndex++;
-			grassCount++;
+		if (grassIndex == 0) {
+			loadOBJ("grass.obj", grassVertices, grassUvs, grassNormals);
 		}
-		else{
-			cout << fileValue << " does not exist" << endl;
-		}
-	};	
+
+		float randomXGrassPosition = rand() % 11 + (-5);
+
+		grassArray.push_back(vec3(randomXGrassPosition, -1, grassPosition));
+		grassPosition += 2;
+
+		Matrixes tempMatrix;
+		tempMatrix.name = fileValue;
+		tempMatrix.ModelMatrix = mat4(1.0);
+		tempMatrix.ModelMatrix = translate(tempMatrix.ModelMatrix, grassArray[grassIndex]);
+		MatrixArray.push_back(tempMatrix);
+
+		grassIndex++;
+		grassCount++;
+	}
+	else{
+		cout << fileValue << " does not exist" << endl;
+	}
+};	
 ```
 
 ### Generate and Bind Buffers
@@ -653,7 +673,7 @@ int index = 0;
 ```
 
 After this setup process is complete, the game will start to run and process the data calling into other functions.
-One of the functions that gets kicked off at the begining is the `c++ dayCycles()` function. 
+One of the functions that gets kicked off at the begining is the `dayCycles()` function. 
 
 ```c++
 void dayCycles() {
@@ -672,10 +692,10 @@ Trying to accomplish specific movement executions each second was a challange, b
 
 The function calculates deltaTime to get the value of seconds.
 
-At the start of the day we set the hunger values for `c++ hasEaten` to be `c++ false`.
-At each second I call into another function, `c++ moveRandomly()`. The problem I encountered is that this would be true for each frame and would therefor moveRandomly more than once, my not-so-nice solution for this was to add boolean values to disable the ability as soon as it has run once, which is what i wanted to achieve in the first place.
+At the start of the day we set the hunger values for `hasEaten` to be `false`.
+At each second I call into another function, `moveRandomly()`. The problem I encountered is that this would be true for each frame and would therefor moveRandomly more than once, my not-so-nice solution for this was to add boolean values to disable the ability as soon as it has run once, which is what i wanted to achieve in the first place.
 
-At the end of the last hour of the day I restart the day by calling into my `c++ restartDay()` method.
+At the end of the last hour of the day I restart the day by calling into my `restartDay()` method.
 
 ## moveEachSecond()
 ```c++
@@ -817,73 +837,72 @@ void moveEachSecond() {
 ```c++ 
 void moveRandomly() {	
 
-	int edgeValue = MatrixArray.size() -1;
+int edgeValue = MatrixArray.size() -1;
 
-	float moveSpeed = 1.0f;
-	srand(time(NULL));
+float moveSpeed = 1.0f;
+srand(time(NULL));
 
-	for (int i = 0; i < MatrixArray.size(); i++)
-	{	
+for (int i = 0; i < MatrixArray.size(); i++)
+{	
 
-		if(MatrixArray[i].name != "grass"){
+if(MatrixArray[i].name != "grass"){
 
-			int randomAxisValue = rand() % 2;
+	int randomAxisValue = rand() % 2;
 
-			if (randomAxisValue == 0) {
-				// X Value
-				int randomMovementvalue = rand() % 2;
+	if (randomAxisValue == 0) {
+		// X Value
+		int randomMovementvalue = rand() % 2;
 
-				if (randomMovementvalue == 0) {
-					// +1 on the X value			
-					if (MatrixArray[i].ModelMatrix[3].x >= 5) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
-					}
-					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
-					}
-				}
-
-				if (randomMovementvalue == 1) {
-					// -1 on the X value
-					if (MatrixArray[i].ModelMatrix[3].x <= -5) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
-					}
-					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
-					}
-				}
+		if (randomMovementvalue == 0) {
+			// +1 on the X value			
+			if (MatrixArray[i].ModelMatrix[3].x >= 5) {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
 			}
-
-			if (randomAxisValue == 1) {
-				// Z Value
-				int randomMovementvalue = rand() % 2;
-
-				if (randomMovementvalue == 0) {
-					// +1 on the Z value
-					if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
-					}
-					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
-					}
-				}
-
-				if (randomMovementvalue == 1) {
-					// -1 on the Z value
-					if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
-					}
-					else {
-						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
-					}
-				}
+			else {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
 			}
-		}		
+		}
+
+		if (randomMovementvalue == 1) {
+			// -1 on the X value
+			if (MatrixArray[i].ModelMatrix[3].x <= -5) {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
+			}
+			else {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
+			}
+		}
 	}
+
+	if (randomAxisValue == 1) {
+		// Z Value
+		int randomMovementvalue = rand() % 2;
+
+		if (randomMovementvalue == 0) {
+			// +1 on the Z value
+			if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+			}
+			else {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+			}
+		}
+
+		if (randomMovementvalue == 1) {
+			// -1 on the Z value
+			if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+			}
+			else {
+				MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+			}
+		}
+	}
+}		
+}
 };
 
 ```
-
 
 
 ### Termination/ VBO and Shader Clean up:
