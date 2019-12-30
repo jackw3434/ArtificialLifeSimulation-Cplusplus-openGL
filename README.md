@@ -20,6 +20,13 @@ OpenGL 3.3
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "shader.hpp"
+#include "controls.hpp"
+#include "objloader.hpp"
+#include <glm\gtc\type_ptr.hpp>
+#include <time.h>
+#include <windows.h>
+#include <ctime>
 ```
 
 ## Setup
@@ -29,7 +36,22 @@ To run this application you will need to clone this repo and build the dependanc
 glew will be missing from nupengl packages, you will be required to uninstall and reinstall nupengl.core to build and run the application.
 
 To run the application, press F5.
-You will be prompted to type in the name of 2 different .obj files, either type "creeper.obj" or "boat.obj".
+A terminal will open, explaining how the game works and the rules.
+```c++
+	Welcome to the dinosaur life simulation game.
+	
+	To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
+	Then enter how many of each model you want and how many days you want the simulation to run for.
+	
+	Gameplay:
+	Dinosaurs must eat to survive until the next day.
+	Carnivors eat herbivores and herbivore eat grass.
+	Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
+	If 2 dinosaurs of the same species have eaten and meet,
+	they will produce offspring that spawn at the start of each day, increasing the population.
+	Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
+```
+	
 
 ## Controls
 
@@ -43,55 +65,61 @@ C : Will clear the scene of models.
 
 R : Will reload the objects back into the scene.
 
-U : Will delete the UV Buffere and remove the Texture coordinates.
+U : Will delete the herbivore UV Buffer and remove the Texture coordinates.
 
-I ; Will Re-apply the texture coordinates.
+I ; Will Generate and re-apply and bind the herbivore texture coordinates.
 
 Q : Will remove the textures.
 
 W : Will generate and bind a texture of "whitePaper.png" to loaded models.
 
-E : Will generate and bind the creeper texture to loaded models.
+E : Will generate and bind a green texture to loaded models.
 
 
 ```c++
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		// draw in wireframe
+void movementControls(GLFWwindow* window, GLuint &VertexArrayID, GLuint herbivoreUvbuffer, vector<vec2> herbivoreUvs,vector<vec3> herbivoreVertices, GLuint carnivoreUvbuffer,vector<vec2> carnivoreUvs,vector<vec3> carnivoreVertices, GLuint TextureID, GLuint MatrixID)
+{
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {		
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		// draw in wireframe
+		// fill in wireframe
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {		
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
 		//Clear The Scene
 		glDeleteVertexArrays(1, &VertexArrayID);
-	}	
+	}
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 		//Reload the Scene
 		glGenVertexArrays(1, &VertexArrayID);
 		glBindVertexArray(VertexArrayID);
 	}
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {			
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS) {
 		// Remove Texture Coords
-		glDeleteBuffers(1, &uvbuffer);
+		glDeleteBuffers(1, &herbivoreUvbuffer);
 	}
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) {
 		// Apply Texture Coords
-		GLuint uvbuffer;
-		glGenBuffers(1, &uvbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+		glGenBuffers(1, &herbivoreUvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, herbivoreUvs.size() * sizeof(vec2), &herbivoreUvs[0], GL_STATIC_DRAW);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		// Removed Textures
 		glDeleteTextures(1, &TextureID);
 	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {			
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 
 		unsigned int pngTexture;
 		glGenTextures(1, &pngTexture);
-		glBindTexture(GL_TEXTURE_2D, pngTexture);	
+		glBindTexture(GL_TEXTURE_2D, pngTexture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		int width, height, nrChannels;
 		unsigned char* data = stbi_load("whitePaper.png", &width, &height, &nrChannels, 0);
@@ -102,30 +130,35 @@ E : Will generate and bind the creeper texture to loaded models.
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			cout << "Failed to load texture" << endl;
 		}
-		stbi_image_free(data);			
-
-		}
+		stbi_image_free(data);
+	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 
 		unsigned int pngTexture;
 		glGenTextures(1, &pngTexture);
 		glBindTexture(GL_TEXTURE_2D, pngTexture);
 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load("Texture.png", &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load("green.png", &width, &height, &nrChannels, 0);
 		if (data)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		else
 		{
-			std::cout << "Failed to load texture" << std::endl;
+			cout << "Failed to load texture" << endl;
 		}
 		stbi_image_free(data);
-	}
+	}		
+}
 ```
 
 ## Code
