@@ -308,7 +308,7 @@ GLuint MatrixID = glGetUniformLocation(shader, "MVP");
 GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
 ```
 
-### Start Reading the object.
+### Start Reading the object and create an array of model matrices.
 ```c++
 vector< vec3 > herbivoreVertices;
 vector< vec2 > herbivoreUvs;
@@ -1233,9 +1233,20 @@ if (strcmp(lineHeader, "f") == 0) {
 
 
 ## How does the program code work? 
+The program code works by values entered by the user, initializes the program's GLFW dependancy, creates a window to draw in, setting the background colour to dark blue and centering the mouse. Next is generating and binding the VAO, passing a
 
+
+The program will dynamically create and draw models in an area defined by the amount of models entered by the user. It generates and binds a VAO Each object has  
 
 ## How do the classes and functions fit together and who does what?
 
 
 ## What makes your program special and how does it compare to similar things? (Where did you get the idea from? What did you start with? How did you make yours unique? Did you start with a given project?)
+
+
+GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
+glUseProgram(shader);
+
+GLuint MatrixID = glGetUniformLocation(shader, "MVP");
+GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
+```
