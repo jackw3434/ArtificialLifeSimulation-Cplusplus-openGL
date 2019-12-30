@@ -127,17 +127,17 @@ void getInput(void) {
 	string numberofFilesToOpen = "";
 
 	cout << "Welcome to the dinosaur life simulation game.\n>";
-	cout << "To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.\n>";
-	cout << "Then enter how many of each model you want and how many days you want the simulation to run for.\n>";
+	cout << "To Play, simply enter the number of how many different models you want, options are herbivore, carnivore and grass.\n>";
+	cout << "For each different model, enter its name and how many you want.\n>";
+	cout << "Then, enter how many days you want the simulation to run for.\n>";
+
 	cout << "Gameplay:\n>";
 	cout << "Dinosaurs must eat to survive until the next day.\n>";
 	cout << "Carnivors eat herbivores and herbivore eat grass.\n>";
 	cout << "Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.\n>";
-	cout << "If 2 dinosaurs of the same species have eaten and meet, \n>";
-	cout << "they will produce offspring that spawn at the start of each day, increasing the population.\n>";
 	cout << "Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.\n>";
 
-	cout << "Please enter how many different .obj files you wish to load, either 1, 2 or 3.\n>";
+	cout << "Please enter how many different models you wish to load, either 1, 2 or 3.\n>";
 	cin >> number;
 	cout << "You entered: " << number << " files to load." << endl;
 
@@ -148,7 +148,7 @@ void getInput(void) {
 
 	for (int i = 0; i < number; i++)
 	{
-		cout << "Please enter a valid .obj file name, either herbivore, carnivore or grass.\n>";
+		cout << "Please enter a valid name, either herbivore, carnivore or grass.\n>";
 		cin >> fileToLoad;
 		cout << "You entered: " << fileToLoad << endl;
 

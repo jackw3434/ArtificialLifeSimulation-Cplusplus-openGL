@@ -136,7 +136,7 @@ bool loadOBJ(
 		{		
 			fscanf(file, "%s", MaterialFilename);	
 			//cout << "MaterialFilename " << MaterialFilename << endl;
-			LoadMaterials(MaterialFilename);
+			//LoadMaterials(MaterialFilename);
 		} 
 		else if (strcmp(lineHeader, "usemtl") == 0) {				
 
