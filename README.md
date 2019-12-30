@@ -1,4 +1,4 @@
-# modelLoader
+# model loader and artificial life simulation ReadMe.md and report.
 
 ## Project Aim
 To be able to create an obj loader for an artificial life simulation game.
@@ -52,14 +52,13 @@ A terminal will open, explaining how the game works and the rules.
 Welcome to the dinosaur life simulation game.
 
 To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
-Then enter how many of each model you want and how many days you want the simulation to run for.
+For each different model, enter its name and how many you want.
+Then, enter how many days you want the simulation to run for.
 
 Gameplay:
 Dinosaurs must eat to survive until the next day.
 Carnivors eat herbivores and herbivore eat grass.
 Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
-If 2 dinosaurs of the same species have eaten and meet,
-they will produce offspring that spawn at the start of each day, increasing the population.
 Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
 ```
 The user will then be prompted to input the parameters of the simulation, upon completion the simulation will run until the end.
@@ -67,38 +66,38 @@ Here is an example of what one simulation setup would look like.
 
 ```console
 Welcome to the dinosaur life simulation game.
->To Play, simply enter how many different models you want, options are herbivore, carnivore and grass.
->Then enter how many of each model you want and how many days you want the simulation to run for.
+>To Play, simply enter the number of how many different models you want, options are herbivore, carnivore and grass.
+>For each different model, enter its name and how many you want.
+>Then, enter how many days you want the simulation to run for.
 >Gameplay:
 >Dinosaurs must eat to survive until the next day.
 >Carnivors eat herbivores and herbivore eat grass.
 >Any Dinosaur that hasn't eaten at the end of each day wont have the energy to carry on and will starve.
->If 2 dinosaurs of the same species have eaten and meet,
->they will produce offspring that spawn at the start of each day, increasing the population.
 >Carnivores are the red cubes, herbivores are the green cubes and grass is represented as green squares.
->Please enter how many different .obj files you wish to load, either 1, 2 or 3.
+>Please enter how many different models you wish to load, either 1, 2 or 3.
 >3
 You entered: 3 files to load.
-Please enter a valid .obj file name, either herbivore, carnivore or grass.
+Please enter a valid name, either herbivore, carnivore or grass.
 >herbivore
 You entered: herbivore
 Please enter how many herbivore's you wish to open.
->50
-You entered: 50
-Please enter a valid .obj file name, either herbivore, carnivore or grass.
+>300
+You entered: 300
+Please enter a valid name, either herbivore, carnivore or grass.
 >carnivore
 You entered: carnivore
 Please enter how many carnivore's you wish to open.
->30
-You entered: 30
-Please enter a valid .obj file name, either herbivore, carnivore or grass.
+>100
+You entered: 100
+Please enter a valid name, either herbivore, carnivore or grass.
 >grass
 You entered: grass
 Please enter how many grass's you wish to open.
->60
-You entered: 60
+>200
+You entered: 200
 Please enter how many days you would like the simulation to run.
 >5
+You entered: 5 days.
 ```
 The user can enter any number of models they like, providing the user's computer can handle it.
 After entering how many days the simulation runs for, the simulation will start.
@@ -1225,4 +1224,5 @@ if (strcmp(lineHeader, "f") == 0) {
 	}	
 ```
 
+#Report
 
