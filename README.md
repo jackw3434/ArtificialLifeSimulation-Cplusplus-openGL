@@ -1643,4 +1643,6 @@ I got the idea for my prototype from a mixture of seeing these far more advanced
 
 My starting point for this project was from the formative part of the assignment. I had previously created a model loader that could parse .obj files, store the values and draw in a window. I also had the capabilities of camaera controls with the mouse and keyboard, i could control textures and the scene with a key press, i.e change textures, clear and reload the scene, activate and deactivate polygon mode. 
 
+### The prototype has been published to itch.io
+https://jackw3434.itch.io/artificial-life-simulation-game
 
