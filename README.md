@@ -1233,25 +1233,27 @@ This will open a console for the user to read the rules and controls of the game
 
 The exectutable file requires other dependancies and assets to be located in the same directory as the executable.
 
- - obj files
+ ### obj files
   - cube.obj
   - grass.obj
  
- - png files
+ ### png files
   - grassTexture.png
   - red.png
   - green.png
   
- - dependacnies
+ ### dependacnies
   - freeglut.dll
   - glew32.dll
   - glfw3.dll
   
- - additional files
+ ### additional files
   - TextureFragmentShader.fragmentshader
   - TransformVertexShader.vertexshader
   
-The User will need to enter how many different models they want, ideally 3,
+The User will need to enter how many different models they want, ideally 3, then, for example, they would enter herbivore and the number they would want. this would be repeated for carnivore and grass, and finally the user is asked how many days the simualtion would run for. A small scenario would be 10 herbivore 5 carnivore and 8 grass for 2 days. A large scenario would be 500 herbivores 350 grass and 200 carnivores, running for 7 days.
+
+After inputing the parameters the simulation will run, outputting relevant data, informing the user of the output and reporting the final results at the end where they can choose to restart the game or not.
 
 ## How do you open and control the software you wrote (exe file)?
 
