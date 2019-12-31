@@ -1227,6 +1227,10 @@ if (strcmp(lineHeader, "f") == 0) {
 
 # Report
 
+## Link to video report
+
+https://drive.google.com/open?id=1CHWxqSImOUPJ1Bfcx1-SBFrlig9z7qmf
+
 ## How does the user interact with your executable? 
 The user will interact with the executable by clicking on the modelLoader.exe file.
 This will open a console for the user to read the rules and controls of the game and input the simulation parameters.
