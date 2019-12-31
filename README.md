@@ -1232,7 +1232,7 @@ if (strcmp(lineHeader, "f") == 0) {
 https://drive.google.com/open?id=1CHWxqSImOUPJ1Bfcx1-SBFrlig9z7qmf
 
 ## How does the user interact with your executable? 
-The user will interact with the executable by clicking on the modelLoader.exe file.
+The user will interact with the executable by clicking on the modelLoader.exe file or .sln file.
 This will open a console for the user to read the rules and controls of the game and input the simulation parameters.
 
 The exectutable file requires other dependancies and assets to be located in the same directory as the executable.
