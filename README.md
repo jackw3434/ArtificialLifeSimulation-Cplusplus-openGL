@@ -581,6 +581,7 @@ for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) 
 ### Main game loop
 The logic of the game has been refactored into 3 methods that are called each frame, collision(), dayCycles() and draw();
 Most of the game logic happens within dayCycles(), everything to do with movements, textures and models happens within draw().
+Collision tracks who touches who.
 ```c++
 do {	
 	collision();
@@ -589,7 +590,7 @@ do {
 }
 ```
 
-### Set up the Model, View and Projection and send the transformation to the currently bound shader for each of the objects that have been input by the user, which is handle with my draw() function which will also enable the buffers, activate textures and draw.
+### Set up the Model, View, Projection and send the transformation to the currently bound shader for each of the objects that have been input by the user, which is handle with the draw() function which will also enable the buffers, activate textures and draw.
 ```c++
 void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint grassVertexbuffer, GLuint grassUvbuffer, vector<vec3> grassVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore, unsigned int pngTextureGrass)
 {
@@ -1233,20 +1234,376 @@ if (strcmp(lineHeader, "f") == 0) {
 
 
 ## How does the program code work? 
-The program code works by values entered by the user, initializes the program's GLFW dependancy, creates a window to draw in, setting the background colour to dark blue and centering the mouse. Next is generating and binding the VAO, passing a
 
+The program code works by values entered by the user, initializes the program's GLFW dependancy, creates a window to draw in, setting the background colour to dark blue and centering the mouse. Next is generating and binding the VAO and then we install the program object shader as part of current rendering state. 
 
-The program will dynamically create and draw models in an area defined by the amount of models entered by the user. It generates and binds a VAO Each object has  
+Then the program code will start reading the object file into the objects respective vertices, UV's and normals. Once the file has been read and stored, the program starts creating an array of model matrices and positions for each of the models entered by the user.
+
+After the files and been read and stored, the program code starts to generate and bind the vertex and uv buffers for each of the different models, as well as generating textures and binding them.
+
+After this process is complete, the game will start drawing the models in the windows at their specified positions. Each second the program code loops through the array of model matrices and performs translate functions on each of the models to move them in a random direction, keeping them within the bounds until the end of the simulation day.
+
+The code checks if any herbivores touch any grass, resulting in that grass model being eaten and that herbivore changing its hasEaten attribute to true, and checking if any carnivores touch an herbivores which also results in that herbivore model being eaten and the carnivore's hasEaten attribute become true. any model with a hasEaten value of false at the end of the day will have their model matrix remove from the array and will no longer be drawn, representing a death in the game. models who's hasEaten value is true will survive that day and continue into the next.
+
+Each time there is a change in numbers the user is informed with the count of their models in the terminal window, giving them the results of their simulation.
+
+The simulation continues to run until the end of the final day the user specified, or until there are no more herbivores and carnivores remaining, stating that they have all either starved or been eaten. Once the game ends the user will be prompted with an option to restart the game and enter in some different parameters to acquire some different results. 
 
 ## How do the classes and functions fit together and who does what?
 
+### Class Matrixes
+
+The Matrixes class stores the relevant information for each of the models. 
+```c++
+class Matrixes {
+public:
+	string name;
+	mat4 ModelMatrix;
+	bool hasEaten = false;	
+};
+```
+It helps to identify if a carnivore has collided with a herbivore, or if a herbivore has collided with grass. This can been seen within the collision() function.
+
+### collision() function
+
+Using the MatrixArray defined by the `Matrixes` class, the code can check the name and position of each model, and see who has collided with what, updating the counter as it goes.
+
+```c++
+void collision() {
+	
+	for (size_t i = 0; i < MatrixArray.size(); i++)
+	{
+
+		for (size_t j = 0; j < MatrixArray.size(); j++)
+		{
+			if (i != j) {
+				if (MatrixArray[i].ModelMatrix[3].x == MatrixArray[j].ModelMatrix[3].x && MatrixArray[i].ModelMatrix[3].z == MatrixArray[j].ModelMatrix[3].z) {	
+
+					if (MatrixArray[i].name == "carnivore" && MatrixArray[j].name == "herbivore") {
+
+						// Has eaten will survive to the next day. carnivore hitting herbivore 		
+						cout << "A carnivore has eaten a herbivore." << endl;
+						MatrixArray[i].hasEaten = true;
+
+						MatrixArray.erase(MatrixArray.begin() + j);
+						myList.erase(myList.begin() + j);
+
+						herbivoreCount--;
+						cout << "herbivore count: " << herbivoreCount << endl;
+
+						i--;
+						j--;										
+					}		
+					if (MatrixArray[i].name == "herbivore" && MatrixArray[j].name == "grass") {
+
+						// Has eaten will survive to the next day. herbivore hitting grass
+						cout << "A herbivore has eaten a grass." << endl;
+						MatrixArray[i].hasEaten = true;
+
+						MatrixArray.erase(MatrixArray.begin() + j);
+						myList.erase(myList.begin() + j);	
+
+						grassCount--;
+						cout << "grass count: " << grassCount << endl;
+					}
+				}
+			}
+		}
+	}
+}
+```
+
+### dayCycles() function
+
+The dayCycles() function calls into the moveEachSecond() function, for the number of days defined by the user.
+
+```c++ 
+void dayCycles() {
+
+	for (int i = 0; i < days; i++)
+	{
+		if (currentDay == i) {			
+			moveEachSecond();
+		}
+	}		
+}
+```
+
+### moveEachSecond() function
+
+The moveEachSecond() function will calculate the seconds based off deltaTime, set the hasEaten atttribute for all models to be false and for each second in a 24 second simulation day, it will call into the moveRandomly() function. At the end of each day it will call into the restartDay() function.
+
+### moveRandomly() function
+
+The moveRandomly() function randomly picks a value to either transform on the X or Z axis, and then again to either transform that axis by +1 or -1. This process is done for each of the models by looping over the modelMatrices array, each second.
+It also checks to see if the model is about to go out of bounds and keeps them inside the simulation area, but does not perform and translation on the grass models as grass does not move.
+
+```c++
+void moveRandomly() {	
+
+	int edgeValue = MatrixArray.size() -1;
+
+	float moveSpeed = 1.0f;
+	srand(time(NULL));
+
+	for (int i = 0; i < MatrixArray.size(); i++)
+	{	
+
+		if(MatrixArray[i].name != "grass"){
+
+			int randomAxisValue = rand() % 2;
+
+			if (randomAxisValue == 0) {
+				// X Value
+				int randomMovementvalue = rand() % 2;
+
+				if (randomMovementvalue == 0) {
+					// +1 on the X value			
+					if (MatrixArray[i].ModelMatrix[3].x >= 5) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
+					}
+				}
+
+				if (randomMovementvalue == 1) {
+					// -1 on the X value
+					if (MatrixArray[i].ModelMatrix[3].x <= -5) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(moveSpeed, 0.0f, 0.0f));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(-moveSpeed, 0.0f, 0.0f));
+					}
+				}
+			}
+
+			if (randomAxisValue == 1) {
+				// Z Value
+				int randomMovementvalue = rand() % 2;
+
+				if (randomMovementvalue == 0) {
+					// +1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z >= MatrixArray[edgeValue].ModelMatrix[3].z) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+					}
+				}
+
+				if (randomMovementvalue == 1) {
+					// -1 on the Z value
+					if (MatrixArray[i].ModelMatrix[3].z <= MatrixArray[0].ModelMatrix[3].z) {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, moveSpeed));
+					}
+					else {
+						MatrixArray[i].ModelMatrix = translate(MatrixArray[i].ModelMatrix, vec3(0.0f, 0.0f, -moveSpeed));
+					}
+				}
+			}
+		}		
+	}
+};
+```
+### restartDay() function
+
+At the end of each day, the program loops over the MatrixArray to check the values of each of the models.
+If any herbivores or carnivores have not eaten then they are removed from the list, and their modelMatrix is also removed from the matrixArray.
+
+If the simulation has ran through each of the days entered by the user, `if (currentDay == days)` it returns, alerting the user that the simulation has ended and prompted them to either end or play again.
+
+```c++
+void restartDay() {
+	int herbivoreIndex = 0;
+	int carnivoreIndex = 0;
+	int grassIndex = 0;
+
+	if (currentDay == days) {
+		return;
+	}
+
+	if (MatrixArray.size() > 0) {
+		for (int i = 0; i < MatrixArray.size();)
+		{
+			if (MatrixArray.size() > 0) {
+				if (MatrixArray[i].name == "grass") {
+					MatrixArray[i].ModelMatrix[3].x = grassArray[grassIndex].x;
+					MatrixArray[i].ModelMatrix[3].z = grassArray[grassIndex].z;
+					grassIndex++;
+				}
+
+				if (MatrixArray[i].hasEaten == false) {
+
+					if (MatrixArray[i].name == "herbivore") {
+						herbivoreCount--;
+					}
+
+					if (MatrixArray[i].name == "carnivore") {
+						carnivoreCount--;
+					}
+
+					MatrixArray.erase(MatrixArray.begin() + i);
+					myList.erase(myList.begin() + i);
+					i--;
+				}
+				else if (MatrixArray[i].hasEaten == true) {
+
+					if (MatrixArray[i].name == "herbivore") {
+						MatrixArray[i].ModelMatrix[3].x = herbivoreArray[herbivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = herbivoreArray[herbivoreIndex].z;
+						herbivoreIndex++;
+						
+						//add children
+					}
+					if (MatrixArray[i].name == "carnivore") {
+
+						// move carno's that have eaten back to start and add their children
+						MatrixArray[i].ModelMatrix[3].x = carnivoreArray[carnivoreIndex].x;
+						MatrixArray[i].ModelMatrix[3].z = carnivoreArray[carnivoreIndex].z;
+						carnivoreIndex++;
+
+						//add children						
+					}
+				}
+				i++;
+			}
+		}		
+	}
+	else {
+		return;
+	}
+	canMoveAt0 = true;
+	canMoveAt1 = true;
+	canMoveAt2 = true;
+	canMoveAt3 = true;
+	canMoveAt4 = true;
+	canMoveAt5 = true;
+	canMoveAt6 = true;
+	canMoveAt7 = true;
+	canMoveAt8 = true;
+	canMoveAt9 = true;
+	canMoveAt10 = true;
+	canMoveAt11 = true;
+	canMoveAt12 = true;
+	canMoveAt13 = true;
+	canMoveAt14 = true;
+	canMoveAt15 = true;
+	canMoveAt16 = true;
+	canMoveAt17 = true;
+	canMoveAt18 = true;
+	canMoveAt19 = true;
+	canMoveAt20 = true;
+	canMoveAt21 = true;
+	canMoveAt22 = true;
+	canMoveAt23 = true;
+	canMoveAt24 = true;
+
+	cout << "Day " << currentDay + 1 << " finished." << endl;
+	cout << "Herbivore count: " << herbivoreCount << endl;
+	cout << "Carnivore count: " << carnivoreCount << endl;
+	cout << "Grass count: " << grassCount << endl;
+	glfwSetTime(0);
+	currentDay++;
+}
+```
+
+### draw() function
+
+Each frame, after transformation, the code loops over the list of models and sends the transformation to the currently bound shader for each of the objects that have been input by the user and draws.
+
+```c++
+void draw(GLuint MatrixID, GLuint herbivoreVertexbuffer, GLuint herbivoreUvbuffer, vector<vec3> herbivoreVertices, GLuint grassVertexbuffer, GLuint grassUvbuffer, vector<vec3> grassVertices, GLuint carnivoreVertexbuffer, GLuint carnivoreUvbuffer, vector<vec3> carnivoreVertices, unsigned int pngTextureHerbivore, unsigned int pngTextureCarnivore, unsigned int pngTextureGrass)
+{
+mat4 ViewMatrix = getViewMatrix();
+mat4 ProjectionMatrix = getProjectionMatrix();
+
+int index = 0;	
+
+    for (vector<string>::const_iterator i = myList.begin(); i != myList.end(); ++i) {
+
+	string fileValue = *i;
+
+	if (fileValue == "herbivore") {
+
+		// 1rst attribute buffer : herbivoreVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, herbivoreUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureHerbivore);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, herbivoreVertices.size());
+	}
+	if (fileValue == "carnivore") {
+
+		// 1rst attribute buffer : carnivoreVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, carnivoreVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : carnivoreUVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, carnivoreUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureCarnivore);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, carnivoreVertices.size());
+	}
+
+	if (fileValue == "grass") {
+
+		// 1rst attribute buffer : grassVertices
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, grassVertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// 2nd attribute buffer : grassUVs
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, grassUvbuffer);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+		// Bind our texture in Texture Unit 0
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pngTextureGrass);
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		glUniform1i(TextureID, 0);
+
+		MatrixArray[index].hasEaten = true;
+		mat4 MVP;
+		MVP = ProjectionMatrix * ViewMatrix * MatrixArray[index].ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, grassVertices.size());
+	}
+
+		index++;
+    };
+}	
+```
 
 ## What makes your program special and how does it compare to similar things? (Where did you get the idea from? What did you start with? How did you make yours unique? Did you start with a given project?)
 
 
-GLuint shader = LoadShaders("TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader");
-glUseProgram(shader);
-
-GLuint MatrixID = glGetUniformLocation(shader, "MVP");
-GLuint TextureID = glGetUniformLocation(shader, "myTextureSampler");
-```
