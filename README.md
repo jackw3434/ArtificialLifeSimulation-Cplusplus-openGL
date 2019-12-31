@@ -1228,10 +1228,35 @@ if (strcmp(lineHeader, "f") == 0) {
 # Report
 
 ## How does the user interact with your executable? 
+The user will interact with the executable by clicking on the modelLoader.exe file.
+This will open a console for the user to read the rules and controls of the game and input the simulation parameters.
 
+The exectutable file requires other dependancies and assets to be located in the same directory as the executable.
+
+ - obj files
+  - cube.obj
+  - grass.obj
+ 
+ - png files
+  - grassTexture.png
+  - red.png
+  - green.png
+  
+ - dependacnies
+  - freeglut.dll
+  - glew32.dll
+  - glfw3.dll
+  
+ - additional files
+  - TextureFragmentShader.fragmentshader
+  - TransformVertexShader.vertexshader
+  
+The User will need to enter how many different models they want, ideally 3,
 
 ## How do you open and control the software you wrote (exe file)?
 
+The software can be opened through an executable file and the software is controled based of the user inputs at the start and
+the user can also control the camera through the use of the computer mouse and the arrow keys on the keyboard.
 
 ## How does the program code work? 
 
@@ -1605,5 +1630,15 @@ int index = 0;
 ```
 
 ## What makes your program special and how does it compare to similar things? (Where did you get the idea from? What did you start with? How did you make yours unique? Did you start with a given project?)
+
+What makes my program special is the fact that the user can easily create a simulation scenario by entering their own parameters.
+The user can run a simulation with a population of artificial life at any capacity, depending on the performance of their computer.
+Choosing any number of herbivores, carinvores and grass models, and how many days to run it for, the user can extract hypothetical data about the simulation parameters they just ran.
+
+The idea i had for this is very similar to other projects that i have seen. For example I have seen others create far more advanced and complex artificial life simulaters that could simulate supply and demand, or even personal traits for surviving such as, speed, size, energy, friendliness, un-friendliness and awareness levels.
+
+I got the idea for my prototype from a mixture of seeing these far more advanced simulations, and reading that it was a suggested idea in the SOFT 356 Programming for Entertainment Systems assignement description.
+
+My starting point for this project was from the formative part of the assignment. I had previously created a model loader that could parse .obj files, store the values and draw in a window. I also had the capabilities of camaera controls with the mouse and keyboard, i could control textures and the scene with a key press, i.e change textures, clear and reload the scene, activate and deactivate polygon mode. 
 
 
