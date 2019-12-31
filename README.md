@@ -1242,7 +1242,7 @@ The exectutable file requires other dependancies and assets to be located in the
   - red.png
   - green.png
   
- ### dependacnies
+ ### dependancies
   - freeglut.dll
   - glew32.dll
   - glfw3.dll
