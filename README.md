@@ -8,8 +8,6 @@ Visual Studio 2019
 OpenGL 3.3
 
 ## Used Libraries
-<details>
-<summary>Hello</summary>
 	
 ```c++
 #include "stb_image.h"
@@ -32,7 +30,6 @@ OpenGL 3.3
 #include <ctime>	
 ```
 
-</details>
 
 ## Game
 This is an artificial life simulation game.
