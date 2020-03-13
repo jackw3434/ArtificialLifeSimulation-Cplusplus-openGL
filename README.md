@@ -28,7 +28,7 @@ OpenGL 3.3
 #include <time.h>
 #include <windows.h>
 #include <ctime>
-	</details?
+	</details>
 ```
 ## Game
 This is an artificial life simulation game.
