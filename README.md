@@ -9,7 +9,7 @@ OpenGL 3.3
 
 ## Used Libraries
 <details>
-	<summary>Hello</summary>
+<summary>Hello</summary>
 ```c++
 #include "stb_image.h"
 #include <stdio.h>
@@ -28,9 +28,10 @@ OpenGL 3.3
 #include <glm\gtc\type_ptr.hpp>
 #include <time.h>
 #include <windows.h>
-#include <ctime>
-</details>	
+#include <ctime>	
 ```
+</details>
+
 ## Game
 This is an artificial life simulation game.
 The user selects how many herbivores, carnivores and grass they want, as well as how many days to run it for.
