@@ -10,6 +10,7 @@ OpenGL 3.3
 ## Used Libraries
 <details>
 <summary>Hello</summary>
+	
 ```c++
 #include "stb_image.h"
 #include <stdio.h>
@@ -30,6 +31,7 @@ OpenGL 3.3
 #include <windows.h>
 #include <ctime>	
 ```
+
 </details>
 
 ## Game
